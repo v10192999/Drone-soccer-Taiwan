@@ -1,0 +1,2226 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="author" content="鍾兆羽 Chao-Yu Chung">
+<meta name="description" content="無人機足球一站式學習平台：規則、總統盃 2026 規則、飛行教學、3D 戰術板、計分板、維修與教案。鍾兆羽老師整理。">
+<meta property="og:title" content="無人機足球一站式學習平台">
+<meta property="og:description" content="規則、飛行教學、3D 戰術板、計分板、維修與教案，鍾兆羽老師整理。">
+<title>無人機足球戰術板</title>
+<!-- ============================================================
+     無人機足球一站式學習平台（戰術板・規則・操作・構造・原理・維修）
+     鍾兆羽老師整理 © 2026　Compiled by Chao-Yu Chung
+     本頁內容與程式碼由鍾兆羽老師整理製作，供教學使用；轉載或修改請保留此標示。
+     ============================================================ -->
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700&family=Noto+Sans+TC:wght@400;500;700&display=swap">
+<style>
+:root{
+  --bg:#0d1218; --panel:#151c25; --panel2:#1c2531; --line:#2c3a4a; --line2:#3d4f63;
+  --text:#e8eef5; --muted:#8fa1b5; --accent:#ffc857;
+  --red:#ff5a5f; --red-dim:#7a2f33; --blue:#3fa2ff; --blue-dim:#25507a;
+  --ok:#5ad38a; --danger:#ff7b7b;
+  --num:"Barlow Condensed","Noto Sans TC",system-ui,sans-serif;
+  --body:"Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+}
+html,body{height:100%;}
+body{margin:0;background:var(--bg);color:var(--text);font-family:var(--body);font-size:14px;overflow:hidden;}
+*{box-sizing:border-box;}
+button,input,select{font-family:inherit;font-size:inherit;color:inherit;}
+#shell{display:flex;flex-direction:column;height:100%;width:100%;}
+#topbar{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--panel);border-bottom:1px solid var(--line);flex:0 0 auto;}
+#topbar .brand{font-family:var(--num);font-weight:700;font-size:18px;letter-spacing:.04em;}
+#topbar .credit{margin-left:auto;font-size:11px;color:var(--muted);letter-spacing:.06em;white-space:nowrap;}
+#navToggle{display:none;background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:4px 10px;font-size:18px;cursor:pointer;}
+#main{display:flex;flex:1 1 auto;min-height:0;}
+#nav{flex:0 0 218px;background:var(--panel);border-right:1px solid var(--line);overflow-y:auto;display:flex;flex-direction:column;padding:8px;gap:2px;}
+#nav .grp{font-size:11px;font-weight:700;color:var(--muted);letter-spacing:.12em;padding:12px 10px 4px;}
+#nav button{background:none;border:1px solid transparent;border-radius:6px;padding:7px 10px;cursor:pointer;color:var(--text);text-align:left;font-size:13px;}
+#nav button:hover{background:var(--panel2);}
+#nav button.on{background:var(--panel2);border-color:var(--line2);color:var(--accent);font-weight:700;}
+#nav .navfoot{margin-top:auto;padding:12px 10px 4px;font-size:11px;color:var(--muted);}
+#content{flex:1 1 auto;min-width:0;min-height:0;display:flex;flex-direction:column;}
+#navBackdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:19;}
+@media (max-width:900px){ #navToggle{display:block;} #nav{position:fixed;left:0;top:0;bottom:0;z-index:20;transform:translateX(-100%);transition:transform .2s;width:240px;} #nav.open{transform:none;} #navBackdrop.open{display:block;} #topbar .credit{display:none;} }
+#app{display:flex;flex:1 1 auto;min-height:0;width:100%;}
+.page{flex:1 1 auto;min-height:0;overflow-y:auto;padding:0 16px 40px;}
+.page .wrap{max-width:980px;margin:0 auto;}
+.page h2{font-family:var(--num);font-weight:700;font-size:26px;letter-spacing:.03em;margin:28px 0 6px;text-wrap:balance;}
+.page h3{font-size:15px;font-weight:700;color:var(--accent);letter-spacing:.06em;margin:22px 0 8px;}
+.page p{color:var(--text);line-height:1.7;max-width:70ch;margin:6px 0;}
+.page p.note{color:var(--muted);font-size:13px;}
+.card{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px;align-items:center;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px;margin:10px 0;}
+.card.solo{grid-template-columns:1fr;}
+.card svg{width:100%;height:auto;display:block;}
+.card .txt{min-width:0;}
+.card .txt h4{margin:0 0 6px;font-size:16px;font-weight:700;}
+.card .txt ul{margin:6px 0 0;padding-left:18px;line-height:1.7;}
+.card .txt li{margin:2px 0;}
+.anim{background:var(--bg);border:1px solid var(--line);border-radius:8px;overflow:hidden;position:relative;}
+.anim .cap{position:absolute;left:8px;bottom:6px;font-family:var(--num);font-size:13px;font-weight:600;color:var(--accent);letter-spacing:.04em;}
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0;}
+.tbl th,.tbl td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;}
+.tbl th{background:var(--panel2);color:var(--muted);font-weight:700;font-size:12px;letter-spacing:.06em;}
+.tbl td b{font-family:var(--num);font-size:15px;font-weight:600;}
+.tblwrap{overflow-x:auto;}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:8px 0;}
+.step{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:10px;transition:border-color .3s,background .3s;}
+.step .n{font-family:var(--num);font-weight:700;font-size:20px;color:var(--muted);}
+.step.on{border-color:var(--accent);background:#2a2618;}
+.step.on .n{color:var(--accent);}
+.step b{display:block;margin:2px 0 4px;}
+.step span{font-size:12px;color:var(--muted);line-height:1.5;}
+.tag-s{display:inline-block;padding:1px 7px;border-radius:4px;font-family:var(--num);font-weight:600;font-size:13px;letter-spacing:.04em;}
+.tag-y{background:#ffc857;color:#1a1200;} .tag-r{background:var(--red);color:#fff;} .tag-p{background:var(--blue);color:#fff;}
+/* 搖桿教學 */
+#ctrlGrid{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start;}
+#ctrlGrid .anim{padding:6px;}
+.modebar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:8px 0;}
+.modebar button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:7px 12px;cursor:pointer;}
+.modebar button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.demo{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:6px;margin:8px 0;}
+.demo button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:8px;cursor:pointer;font-weight:500;}
+.demo button.on{border-color:var(--accent);color:var(--accent);}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;font-size:13px;margin:8px 0;}
+.kv b{font-family:var(--num);font-size:15px;font-weight:600;color:var(--accent);}
+.credit-foot{margin:36px 0 8px;padding-top:12px;border-top:1px solid var(--line);font-size:12px;color:var(--muted);letter-spacing:.04em;display:flex;justify-content:space-between;flex-wrap:wrap;gap:6px;}
+.credit-foot b{color:var(--accent);font-weight:600;}
+#wm{position:absolute;right:12px;bottom:12px;font-family:var(--num);font-size:12px;letter-spacing:.08em;color:var(--muted);opacity:.85;pointer-events:none;background:rgba(13,18,24,.6);padding:3px 8px;border-radius:4px;}
+#panel .credit-foot{margin:auto 16px 12px;}
+/* 球機構造 */
+#partsGrid{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:14px;align-items:start;}
+#partsView{position:relative;height:460px;background:var(--bg);border:1px solid var(--line);border-radius:8px;overflow:hidden;touch-action:none;}
+#partsView canvas{display:block;width:100%;height:100%;}
+#partsHud{position:absolute;left:10px;top:10px;display:flex;flex-direction:column;gap:6px;}
+#partsHud button{background:rgba(21,28,37,.9);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;cursor:pointer;text-align:left;}
+#partsHud button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+#partsHud label{display:flex;align-items:center;gap:6px;background:rgba(21,28,37,.9);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;font-size:12px;color:var(--muted);}
+#partsHud input[type=range]{width:110px;accent-color:var(--accent);}
+#partList{display:flex;flex-direction:column;gap:4px;}
+.part{display:flex;gap:10px;align-items:flex-start;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;}
+.part:hover{border-color:var(--line2);}
+.part.on{border-color:var(--accent);background:var(--panel2);}
+.part .sw{width:12px;height:12px;border-radius:3px;flex:0 0 auto;margin-top:4px;}
+.part b{display:block;font-size:14px;}
+.part span{font-size:12px;color:var(--muted);line-height:1.5;}
+.part.on span{color:var(--text);}
+/* 飛行原理 */
+.ctlrow{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0;font-size:13px;color:var(--muted);}
+.ctlrow input[type=range]{accent-color:var(--accent);width:160px;}
+.ctlrow button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--text);}
+.ctlrow button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.propsel{display:grid;grid-template-columns:1fr 1fr;gap:6px;max-width:260px;margin:8px 0;}
+.propsel button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:8px;cursor:pointer;font-family:var(--num);font-weight:600;font-size:15px;}
+.propsel button.a{border-color:#5ad38a;color:#5ad38a;} .propsel button.b{border-color:#c084fc;color:#c084fc;}
+.verdict{font-size:14px;line-height:1.6;padding:8px 10px;border-radius:6px;background:var(--panel2);border:1px solid var(--line);margin-top:8px;}
+.verdict.ok{border-color:var(--ok);} .verdict.bad{border-color:var(--danger);}
+/* 維修手冊 */
+.fixsearch{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:10px 12px;color:var(--text);margin:8px 0 12px;}
+.acc{border:1px solid var(--line);border-radius:8px;background:var(--panel);margin:6px 0;overflow:hidden;}
+.acc summary{cursor:pointer;padding:10px 14px;font-weight:700;list-style:none;display:flex;gap:10px;align-items:center;}
+.acc summary::before{content:'+';font-family:var(--num);font-size:18px;color:var(--accent);width:14px;}
+.acc[open] summary::before{content:'−';}
+.acc summary .lv{margin-left:auto;font-size:11px;font-weight:600;letter-spacing:.06em;padding:2px 7px;border-radius:4px;background:var(--panel2);color:var(--muted);}
+.acc .body{padding:0 14px 12px;font-size:13px;line-height:1.7;}
+.acc .body h5{margin:8px 0 2px;font-size:12px;color:var(--accent);letter-spacing:.08em;}
+.acc .body ol,.acc .body ul{margin:2px 0;padding-left:20px;}
+.flash{animation:flashbg 1.6s ease-out;}
+@keyframes flashbg{0%{background:#3a3418}100%{background:transparent}}
+/* 首頁 */
+.hero{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:20px;align-items:center;margin:20px 0 8px;}
+.hero h1{font-family:var(--num);font-weight:700;font-size:38px;letter-spacing:.03em;margin:0 0 8px;line-height:1.1;text-wrap:balance;}
+.hero p{max-width:60ch;}
+.pathmap{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:14px 0;}
+.pm{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;position:relative;}
+.pm .idx{font-family:var(--num);font-size:30px;font-weight:700;color:var(--accent);line-height:1;}
+.pm h4{margin:4px 0 6px;font-size:15px;}
+.pm a{display:block;color:var(--text);text-decoration:none;font-size:13px;padding:4px 6px;border-radius:5px;cursor:pointer;}
+.pm a:hover{background:var(--panel2);color:var(--accent);}
+.pm a::before{content:'▸ ';color:var(--muted);}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px;margin:10px 0 20px;}
+.quick button{background:var(--panel2);border:1px solid var(--line2);border-radius:10px;padding:14px;cursor:pointer;text-align:left;color:var(--text);}
+.quick button b{display:block;font-size:16px;color:var(--accent);margin-bottom:4px;}
+.quick button span{font-size:12px;color:var(--muted);}
+/* 認識無人機 */
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px;margin:8px 0;}
+.tile{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;}
+.tile svg{width:100%;height:auto;display:block;margin-bottom:6px;background:var(--bg);border-radius:6px;}
+.tile b{display:block;font-size:15px;margin-bottom:4px;}
+.tile span{font-size:12px;color:var(--muted);line-height:1.6;}
+.timeline{position:relative;margin:12px 0 12px 12px;padding-left:22px;border-left:2px solid var(--line2);}
+.tl{position:relative;margin:0 0 16px;}
+.tl::before{content:'';position:absolute;left:-29px;top:4px;width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid var(--bg);}
+.tl .yr{font-family:var(--num);font-weight:700;font-size:18px;color:var(--accent);letter-spacing:.04em;}
+.tl b{display:block;margin:2px 0;}
+.tl span{font-size:13px;color:var(--muted);line-height:1.6;}
+.zone{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:-1px;margin-right:4px;}
+/* 計分板 */
+#board{background:#05080c;border:1px solid var(--line);border-radius:12px;padding:16px;margin:10px 0;color:#fff;}
+#board:fullscreen{border:0;border-radius:0;padding:4vh 4vw;display:flex;flex-direction:column;justify-content:center;}
+.sb-top{display:flex;justify-content:space-between;align-items:center;font-family:var(--num);font-size:clamp(14px,2.2vw,22px);letter-spacing:.08em;color:var(--muted);}
+.sb-main{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;margin:8px 0;}
+.sb-team{text-align:center;border-radius:12px;padding:10px 6px;}
+.sb-team.red{background:rgba(255,90,95,.12);border:2px solid var(--red);} .sb-team.blue{background:rgba(63,162,255,.12);border:2px solid var(--blue);}
+.sb-team .nm{font-size:clamp(16px,2.5vw,28px);font-weight:700;background:none;border:0;color:#fff;text-align:center;width:100%;}
+.sb-team .sc{font-family:var(--num);font-weight:700;font-size:clamp(64px,14vw,180px);line-height:1;font-variant-numeric:tabular-nums;}
+.sb-team .sets{font-family:var(--num);font-size:clamp(14px,2vw,22px);color:var(--muted);letter-spacing:.1em;}
+.sb-team .btns{display:flex;justify-content:center;gap:6px;margin-top:6px;}
+.sb-team .btns button,.sb-ctl button{background:var(--panel2);border:1px solid var(--line2);border-radius:8px;padding:8px 14px;cursor:pointer;color:#fff;font-family:var(--num);font-weight:600;font-size:16px;}
+.sb-team .btns button.big{font-size:22px;padding:8px 22px;}
+.sb-clock{text-align:center;}
+.sb-clock .ph{font-size:clamp(13px,1.8vw,20px);color:var(--accent);letter-spacing:.12em;font-weight:700;}
+.sb-clock .tm{font-family:var(--num);font-weight:700;font-size:clamp(56px,12vw,150px);line-height:1;font-variant-numeric:tabular-nums;}
+.sb-clock .tm.warn{color:var(--red);}
+.sb-clock .set{font-family:var(--num);font-size:clamp(14px,2vw,24px);color:var(--muted);letter-spacing:.1em;}
+.sb-ctl{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-top:10px;}
+.sb-ctl button.pri{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.sb-log{font-size:12px;color:var(--muted);margin-top:8px;max-height:80px;overflow:auto;font-family:ui-monospace,Menlo,monospace;}
+.sb-sets{display:flex;gap:6px;justify-content:center;margin-top:4px;}
+.sb-sets span{font-family:var(--num);font-size:13px;padding:2px 8px;border-radius:4px;background:var(--panel2);color:var(--muted);}
+.sb-sets span.r{background:var(--red);color:#fff;} .sb-sets span.b{background:var(--blue);color:#fff;} .sb-sets span.d{background:var(--muted);color:#0d1218;}
+/* 訓練關卡 */
+.lv{display:grid;grid-template-columns:200px minmax(0,1fr);gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;}
+.lv svg{width:100%;height:auto;background:var(--bg);border-radius:6px;}
+.lv h4{margin:0 0 4px;font-size:16px;} .lv h4 small{color:var(--muted);font-weight:500;margin-left:6px;}
+.lv .crit{font-size:13px;line-height:1.6;} .lv .crit li{margin:1px 0;}
+.lv .tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-top:8px;}
+.lv .tools button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;cursor:pointer;font-family:var(--num);font-weight:600;font-size:15px;}
+.lv .tools .sw{font-family:var(--num);font-size:22px;font-weight:700;min-width:70px;font-variant-numeric:tabular-nums;}
+.lv.done{border-color:var(--ok);} .lv.done h4::after{content:' ✓ 已通過';color:var(--ok);font-size:13px;}
+.lv .rec{font-size:12px;color:var(--muted);}
+.prog{height:8px;background:var(--panel2);border-radius:4px;overflow:hidden;margin:6px 0 12px;} .prog i{display:block;height:100%;background:var(--ok);width:0;transition:width .3s;}
+/* 測驗 */
+.q{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin:8px 0;}
+.q .qt{font-weight:700;margin-bottom:8px;} .q .qt em{font-family:var(--num);font-style:normal;color:var(--accent);margin-right:6px;}
+.q .opts{display:grid;gap:6px;}
+.q .opts button{background:var(--panel2);border:1px solid var(--line);border-radius:6px;padding:8px 10px;cursor:pointer;text-align:left;color:var(--text);}
+.q .opts button:hover{border-color:var(--line2);}
+.q .opts button.ok{border-color:var(--ok);background:#173222;} .q .opts button.ng{border-color:var(--danger);background:#3a1d1d;}
+.q .exp{font-size:13px;color:var(--muted);margin-top:8px;line-height:1.6;} .q .exp a{color:var(--accent);cursor:pointer;}
+.qscore{position:sticky;top:0;background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:8px 12px;font-family:var(--num);font-size:16px;z-index:2;display:flex;gap:14px;align-items:center;flex-wrap:wrap;}
+.qscore button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:4px 10px;cursor:pointer;font-size:13px;}
+/* 戰術範例 */
+.tac{display:grid;grid-template-columns:220px minmax(0,1fr);gap:14px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;}
+.tac svg{width:100%;height:auto;background:var(--bg);border-radius:6px;}
+.tac h4{margin:0 0 4px;font-size:16px;} .tac p{font-size:13px;margin:4px 0;}
+.tac .tools{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;}
+.tac .tools button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:7px 12px;cursor:pointer;} .tac .tools button.pri{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+/* 管理 */
+.subtabs{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 12px;}
+.subtabs button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:7px 12px;cursor:pointer;color:var(--text);}
+.subtabs button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.mg{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:12px;margin:8px 0;}
+.mg .bar{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px;}
+.mg .bar button{background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:6px 10px;cursor:pointer;color:var(--text);}
+.mg .bar button.pri{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.mg .bar .cnt{margin-left:auto;font-size:12px;color:var(--muted);}
+.mg table{width:100%;border-collapse:collapse;font-size:13px;}
+.mg th{background:var(--panel2);color:var(--muted);font-size:11px;letter-spacing:.06em;padding:6px 6px;text-align:left;border:1px solid var(--line);}
+.mg td{border:1px solid var(--line);padding:2px 4px;vertical-align:middle;}
+.mg td input,.mg td select{width:100%;background:transparent;border:0;border-bottom:1px solid transparent;padding:5px 4px;color:var(--text);font-size:13px;}
+.mg td input:focus,.mg td select:focus{outline:0;border-bottom-color:var(--accent);background:var(--bg);}
+.mg td select option{background:var(--panel);}
+.mg td.num{font-family:var(--num);font-size:15px;text-align:center;white-space:nowrap;}
+.mg td .x{background:none;border:0;color:var(--muted);cursor:pointer;font-size:16px;padding:2px 6px;} .mg td .x:hover{color:var(--danger);}
+.mg td .pl{background:var(--panel2);border:1px solid var(--line2);border-radius:4px;color:var(--text);cursor:pointer;padding:2px 8px;font-family:var(--num);font-weight:600;}
+.badge{display:inline-block;padding:1px 7px;border-radius:4px;font-size:11px;font-weight:700;}
+.badge.ok{background:#173222;color:var(--ok);} .badge.warn{background:#3a3418;color:var(--accent);} .badge.bad{background:#3a1d1d;color:var(--danger);}
+.chk{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:6px;}
+.chk label{display:flex;gap:10px;align-items:flex-start;background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:8px 10px;cursor:pointer;font-size:13px;line-height:1.5;}
+.chk label.on{border-color:var(--ok);} .chk input{margin-top:3px;accent-color:var(--ok);}
+.chk label b{display:block;} .chk label span{color:var(--muted);font-size:12px;}
+/* 教案 */
+.lesson{background:var(--panel);border:1px solid var(--line);border-radius:10px;margin:8px 0;overflow:hidden;}
+.lesson summary{list-style:none;cursor:pointer;padding:12px 14px;display:flex;gap:12px;align-items:center;}
+.lesson summary .n{font-family:var(--num);font-weight:700;font-size:26px;color:var(--accent);min-width:34px;}
+.lesson summary b{font-size:16px;} .lesson summary span{color:var(--muted);font-size:12px;display:block;}
+.lesson .body{padding:0 14px 14px;font-size:13px;line-height:1.7;}
+.lesson .body h5{margin:10px 0 3px;font-size:12px;color:var(--accent);letter-spacing:.08em;}
+.lesson .flow{display:grid;grid-template-columns:auto 1fr;gap:2px 12px;}
+.lesson .flow b{font-family:var(--num);font-weight:600;color:var(--muted);white-space:nowrap;}
+.lesson a[data-tab]{color:var(--accent);cursor:pointer;text-decoration:underline dotted;}
+.ws{background:#fff;color:#111;border-radius:8px;padding:20px 24px;margin:8px 0;font-size:14px;line-height:1.8;}
+.ws h4{margin:0 0 4px;font-size:18px;} .ws .meta{font-size:12px;color:#555;margin-bottom:10px;}
+.ws .line{border-bottom:1px solid #999;height:26px;}
+.ws ol{padding-left:22px;} .ws .box{border:1px solid #999;min-height:70px;border-radius:4px;margin:4px 0 10px;}
+.ws .grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 20px;}
+/* 詞彙表 */
+.gl{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px;}
+.gl .it{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:10px 12px;}
+.gl .it b{display:block;font-size:15px;} .gl .it b small{color:var(--accent);font-family:var(--num);font-weight:600;font-size:13px;margin-left:6px;letter-spacing:.03em;}
+.gl .it span{font-size:12px;color:var(--muted);line-height:1.6;display:block;margin-top:2px;}
+.gl .it .cat{display:inline-block;font-size:10px;color:var(--muted);border:1px solid var(--line);border-radius:3px;padding:0 5px;margin-top:6px;}
+@media print{ body{background:#fff;color:#000;overflow:visible;} #topbar,#nav,#navBackdrop,.credit-foot,.subtabs,.mg .bar,.no-print{display:none!important;} #shell,#main,#content{display:block;height:auto;} .page{overflow:visible;padding:0;} .ws{border:1px solid #999;page-break-after:always;} #lesson .wrap>:not(#wsList){display:none!important;} }
+@media (max-width:800px){ .card,#ctrlGrid,#partsGrid,.hero,.lv,.tac{grid-template-columns:1fr;} #partsView{height:340px;} }
+#stage{position:relative;flex:1 1 auto;min-width:0;background:var(--bg);touch-action:none;}
+#stage canvas{display:block;width:100%;height:100%;}
+#labels{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.lbl{position:absolute;transform:translate(-50%,-100%);white-space:nowrap;font-family:var(--num);font-weight:600;font-size:15px;letter-spacing:.02em;padding:2px 7px;border-radius:4px;background:rgba(13,18,24,.78);border:1px solid var(--line2);color:var(--text);line-height:1.25;}
+.lbl.red{border-color:var(--red);} .lbl.blue{border-color:var(--blue);}
+.lbl.sel{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.lbl small{display:block;font-family:var(--num);font-weight:500;font-size:12px;color:inherit;opacity:.85;}
+.lbl.dist{background:var(--accent);color:#1a1200;border-color:var(--accent);transform:translate(-50%,-50%);font-size:16px;}
+.lbl.goal{font-size:13px;font-weight:500;color:var(--muted);border-color:var(--line);background:rgba(13,18,24,.6);}
+#hud{position:absolute;left:12px;top:12px;display:flex;gap:6px;flex-wrap:wrap;}
+#hud button,#hud .chip{background:rgba(21,28,37,.9);border:1px solid var(--line2);color:var(--text);padding:6px 10px;border-radius:6px;cursor:pointer;font-family:var(--num);font-weight:600;font-size:15px;letter-spacing:.03em;}
+#hud button:hover{border-color:var(--accent);}
+#hud button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+#hint{position:absolute;left:12px;bottom:12px;color:var(--muted);font-size:12px;background:rgba(13,18,24,.7);padding:4px 8px;border-radius:4px;max-width:calc(100% - 150px);}
+#panel{flex:0 0 340px;background:var(--panel);border-left:1px solid var(--line);display:flex;flex-direction:column;overflow-y:auto;overflow-x:hidden;}
+#panel h1{font-family:var(--num);font-weight:700;font-size:22px;letter-spacing:.04em;margin:0;padding:14px 16px 6px;}
+#panel h1 span{color:var(--muted);font-weight:500;font-size:14px;margin-left:8px;letter-spacing:.02em;}
+.sec{padding:10px 16px 12px;border-top:1px solid var(--line);}
+.sec h2{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.12em;text-transform:uppercase;margin:0 0 8px;}
+.team{margin-bottom:10px;}
+.team-head{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
+.team-head .sw{width:12px;height:12px;border-radius:50%;flex:0 0 auto;}
+.team-head input{flex:1 1 auto;min-width:0;background:var(--panel2);border:1px solid var(--line);border-radius:5px;padding:5px 8px;font-weight:700;}
+.drone{display:grid;grid-template-columns:auto 1fr 1fr 1fr;gap:4px 6px;align-items:center;padding:5px 6px;border-radius:6px;border:1px solid transparent;cursor:pointer;}
+.drone:hover{background:var(--panel2);}
+.drone.sel{border-color:var(--accent);background:var(--panel2);}
+.drone .tag{font-family:var(--num);font-weight:700;font-size:16px;width:44px;}
+.drone .tag small{display:block;font-size:11px;font-weight:500;color:var(--muted);letter-spacing:.05em;}
+.drone label{display:flex;flex-direction:column;font-size:10px;color:var(--muted);letter-spacing:.06em;}
+.drone input[type=number]{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:3px 4px;font-family:var(--num);font-weight:600;font-size:15px;color:var(--text);}
+.drone input[type=range]{grid-column:2/5;width:100%;accent-color:var(--accent);margin:0;height:14px;}
+.row{display:flex;flex-wrap:wrap;gap:6px;}
+.row button{flex:1 1 auto;background:var(--panel2);border:1px solid var(--line2);border-radius:6px;padding:7px 8px;cursor:pointer;font-weight:500;}
+.row button:hover{border-color:var(--accent);}
+.row button.on{background:var(--accent);color:#1a1200;border-color:var(--accent);}
+.row button.danger:hover{border-color:var(--danger);color:var(--danger);}
+.row input[type=text]{flex:1 1 120px;min-width:0;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 8px;}
+.lab{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:12px;}
+.row input[type=number]{width:64px;background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:6px 6px;font-family:var(--num);font-size:15px;font-weight:600;}
+.info{font-size:13px;color:var(--muted);margin:6px 0 0;line-height:1.5;}
+.info b{color:var(--text);font-family:var(--num);font-size:16px;font-weight:600;}
+#saved{display:flex;flex-direction:column;gap:4px;margin-top:8px;}
+#saved .it{display:flex;align-items:center;gap:6px;background:var(--panel2);border-radius:6px;padding:4px 6px 4px 10px;}
+#saved .it span{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+#saved .it button{background:none;border:1px solid var(--line2);border-radius:4px;padding:3px 8px;cursor:pointer;font-size:12px;}
+#saved .it button:hover{border-color:var(--accent);}
+textarea{width:100%;height:80px;background:var(--bg);border:1px solid var(--line);border-radius:6px;color:var(--text);font-size:11px;font-family:ui-monospace,Menlo,monospace;resize:vertical;}
+#shot{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:16px;z-index:9;}
+#shot img{max-width:100%;max-height:80%;border:1px solid var(--line2);border-radius:6px;}
+#shot .row{width:min(520px,100%);}
+#shot p{margin:0;color:var(--muted);font-size:12px;text-align:center;}
+#toast{position:fixed;left:50%;bottom:20px;transform:translateX(-50%);background:var(--accent);color:#1a1200;padding:8px 14px;border-radius:6px;font-weight:700;z-index:10;transition:opacity .3s;pointer-events:none;}
+[hidden]{display:none!important;}
+@media (max-width:800px){
+  #app{flex-direction:column;}
+  #stage{flex:0 0 55%;}
+  #panel{flex:1 1 auto;border-left:0;border-top:1px solid var(--line);}
+}
+@media (prefers-reduced-motion:reduce){#toast{transition:none;}}
+</style>
+</head>
+<body>
+
+
+<div id="shell">
+<div id="navBackdrop"></div>
+<div id="topbar"><button id="navToggle" aria-label="選單">☰</button><span class="brand">無人機足球一站式學習平台</span><span class="credit">鍾兆羽老師整理</span></div>
+<div id="main">
+<nav id="nav">
+  <button data-tab="home" class="on">🏠 首頁・學習路徑</button>
+  <div class="grp">認識無人機</div>
+  <button data-tab="intro">無人機種類・用途・法規</button>
+  <button data-tab="taiwan">台灣的無人機與足球發展</button>
+  <button data-tab="world">世界的無人機足球</button>
+  <div class="grp">學規則</div>
+  <button data-tab="rules">規則介紹（FAI）</button>
+  <button data-tab="cup">總統盃 2026 規則</button>
+  <button data-tab="quiz">規則小測驗</button>
+  <div class="grp">學飛行</div>
+  <button data-tab="ctrl">搖桿與基本操作</button>
+  <button data-tab="fly">飛行原理</button>
+  <button data-tab="train">飛行訓練關卡</button>
+  <div class="grp">上場比賽</div>
+  <button data-tab="app">3D 戰術板</button>
+  <button data-tab="tactics">戰術範例庫</button>
+  <button data-tab="score">比賽計時計分板</button>
+  <button data-tab="manage">隊伍與器材管理</button>
+  <div class="grp">動手做</div>
+  <button data-tab="parts">球機構造 3D</button>
+  <button data-tab="fix">維修手冊</button>
+  <div class="grp">教學資源</div>
+  <button data-tab="lesson">教案與學習單</button>
+  <button data-tab="glossary">中英詞彙表</button>
+  <div class="navfoot">鍾兆羽老師整理 © 2026</div>
+</nav>
+<div id="content">
+<div id="app">
+  <div id="stage">
+    <div id="labels"></div>
+    <div id="hud">
+      <button data-view="free">自由視角</button>
+      <button data-view="top">俯視</button>
+      <button data-view="side">側視</button>
+      <button data-view="goalA" id="hudGoalA">紅隊球門</button>
+      <button data-view="goalB" id="hudGoalB">藍隊球門</button>
+    </div>
+    <div id="wm">鍾兆羽老師整理</div>
+    <div id="hint">拖曳球機移動｜Shift＋拖曳調高度｜點選一台再 Shift＋點另一台量距離｜空白處拖曳旋轉、滾輪縮放、右鍵平移</div>
+  </div>
+  <aside id="panel">
+    <h1>無人機足球戰術板<span>FAI F9A · 3 vs 3</span></h1>
+
+    <div class="sec">
+      <h2>球機位置（公尺）</h2>
+      <div id="teams"></div>
+      <div class="info" id="distInfo">點選一台球機，再按住 Shift 點另一台，會顯示兩機直線距離。</div>
+    </div>
+
+    <div class="sec">
+      <h2>路徑箭頭</h2>
+      <div class="row">
+        <button id="btnPath">為選取球機畫路徑</button>
+        <button id="btnClearPath" class="danger">清除此機路徑</button>
+        <button id="btnClearAll" class="danger">清除全部</button>
+      </div>
+      <div class="row" style="margin-top:6px;align-items:center;">
+        <button id="btnPlay">▶ 播放動向</button>
+        <button id="btnReset">↺ 回到起點</button>
+        <label class="lab">速度 m/s <input type="number" id="speed" value="3" min="0.5" max="20" step="0.5"></label>
+      </div>
+      <div class="info">畫路徑模式下，點場地任一點即新增一個航點，可以連續點出折線；播放時所有有路徑的球機會同時沿箭頭飛行。</div>
+    </div>
+
+    <div class="sec">
+      <h2>陣型</h2>
+      <div class="row">
+        <input type="text" id="saveName" placeholder="陣型名稱，例如：開球、防守">
+        <button id="btnSave">儲存</button>
+        <button id="btnDefault">預設陣型</button>
+      </div>
+      <div id="saved"></div>
+    </div>
+
+    <div class="sec">
+      <h2>匯出／匯入</h2>
+      <div class="row">
+        <button id="btnShot">📷 截圖</button>
+        <button id="btnExport">複製 JSON</button>
+        <button id="btnDownloadJson">下載 JSON 檔</button>
+        <button id="btnImport">貼上 JSON 載入</button>
+      </div>
+      <textarea id="json" placeholder="按「複製 JSON」會把目前陣型（含隊名與路徑）放到這裡；把別人給的 JSON 貼進來再按「貼上 JSON 載入」。" style="margin-top:6px;"></textarea>
+    </div>
+
+    <div class="sec">
+      <h2>場地設定</h2>
+      <div class="row">
+        <label class="lab">長 <input type="number" id="cfgL" value="20" min="10" max="30" step="1"></label>
+        <label class="lab">寬 <input type="number" id="cfgW" value="10" min="5" max="15" step="1"></label>
+        <label class="lab">高 <input type="number" id="cfgH" value="5" min="3" max="8" step="0.5"></label>
+        <label class="lab">球門中心高 <input type="number" id="cfgGH" value="3.5" min="2" max="5" step="0.1"></label>
+        <label class="lab">球門距端線 <input type="number" id="cfgGD" value="2" min="0.5" max="5" step="0.5"></label>
+        <label class="lab">球機直徑 cm <input type="number" id="cfgD" value="40" min="20" max="60" step="5"></label>
+      </div>
+      <div class="info">預設為 FAI F9A 規格：20 × 10 × 5 m，球門環外徑 1.0 m、中心離地 3.5 m、距端線 2 m。</div>
+    </div>
+    <div class="credit-foot"><span><b>鍾兆羽老師整理</b></span><span>© 2026</span></div>
+  </aside>
+</div>
+
+<!-- ============ 首頁 ============ -->
+<div id="home" class="page" hidden>
+<div class="wrap">
+  <div class="hero">
+    <div><h1>無人機足球<br>一站式學習平台</h1>
+      <p>從認識無人機、看懂規則、學會飛，到上場比賽和動手維修，六個模組、十八個單元，每個單元都有互動圖或動畫。適合國中小到高中的無人機足球社團與課程，也可以投影在教室講解。</p>
+      <p class="note">依 FAI F9A 規則與教育部 115 年無人機足球競賽實施計畫整理 · 鍾兆羽老師整理</p></div>
+    <div class="anim"><svg id="homeAnim" viewBox="0 0 320 180"></svg></div>
+  </div>
+  <h3>建議學習路徑</h3>
+  <div class="pathmap">
+    <div class="pm"><div class="idx">1</div><h4>認識無人機</h4><a data-tab="intro">種類、用途與法規</a><a data-tab="taiwan">台灣的發展</a><a data-tab="world">世界的無人機足球</a></div>
+    <div class="pm"><div class="idx">2</div><h4>學規則</h4><a data-tab="rules">FAI 規則介紹</a><a data-tab="cup">總統盃 2026 規則</a><a data-tab="quiz">規則小測驗</a></div>
+    <div class="pm"><div class="idx">3</div><h4>學飛行</h4><a data-tab="ctrl">搖桿與基本操作</a><a data-tab="fly">飛行原理</a><a data-tab="train">飛行訓練關卡</a></div>
+    <div class="pm"><div class="idx">4</div><h4>上場比賽</h4><a data-tab="tactics">戰術範例庫</a><a data-tab="app">3D 戰術板</a><a data-tab="score">計時計分板</a><a data-tab="manage">隊伍與器材管理</a></div>
+    <div class="pm"><div class="idx">5</div><h4>動手做</h4><a data-tab="parts">球機構造 3D</a><a data-tab="fix">維修手冊</a></div>
+    <div class="pm"><div class="idx">6</div><h4>教學資源</h4><a data-tab="lesson">教案與學習單</a><a data-tab="glossary">中英詞彙表</a></div>
+  </div>
+  <h3>老師常用</h3>
+  <div class="quick">
+    <button data-tab="score"><b>⏱ 計時計分板</b><span>3 分鐘倒數、局間休息、比分與局數，可全螢幕投影</span></button>
+    <button data-tab="app"><b>◎ 3D 戰術板</b><span>拖曳擺位、畫動向、播放，講解陣型</span></button>
+    <button data-tab="train"><b>▲ 訓練關卡</b><span>五級任務與計時，記錄學生進度</span></button>
+    <button data-tab="quiz"><b>? 規則小測驗</b><span>20 題選擇題，答錯直接跳回教材</span></button>
+  </div>
+</div>
+</div>
+
+<!-- ============ 認識無人機：種類・用途・法規 ============ -->
+<div id="intro" class="page" hidden>
+<div class="wrap">
+  <h2>無人機的種類、用途與法規</h2>
+  <p>「無人機」是所有沒有人在機上、由遙控或程式控制的飛行器的統稱。無人機足球用的球機是其中最小的一種多旋翼機，但它的飛行原理和大型空拍機、農噴機是一樣的。</p>
+
+  <h3 id="intro-types">一、依構型分類</h3>
+  <div class="tiles">
+    <div class="tile"><svg viewBox="0 0 200 110" id="tQuad"></svg><b>多旋翼機（四軸／六軸）</b><span>靠多顆旋翼直接產生升力，可垂直起降、懸停、原地轉向，操作最直覺但續航短（通常 10～40 分鐘）。空拍機、球機、教育用小四軸都屬於這類。</span></div>
+    <div class="tile"><svg viewBox="0 0 200 110" id="tFixed"></svg><b>固定翼機</b><span>像飛機一樣靠機翼產生升力，飛得快、飛得遠（數小時），但需要跑道或彈射起飛，不能懸停。用於大範圍測繪、巡邏、長程物流。</span></div>
+    <div class="tile"><svg viewBox="0 0 200 110" id="tVtol"></svg><b>垂直起降固定翼（VTOL）</b><span>結合兩者：用旋翼垂直起飛，再切換成固定翼巡航。近年農業測繪與國防偵察的主流構型之一。</span></div>
+    <div class="tile"><svg viewBox="0 0 200 110" id="tHeli"></svg><b>單旋翼（直升機型）</b><span>一大一小兩個旋翼，載重大、效率高，但機械複雜、危險性高，多用於農噴與工業吊掛。</span></div>
+  </div>
+
+  <h3 id="intro-motor">二、依動力與用途分類</h3>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>類型</th><th>特徵</th><th>代表</th></tr>
+    <tr><td>有刷微型機</td><td>空心杯有刷馬達、1S 電池、100～300 g，便宜耐撞、適合室內與初學</td><td>教育用小四軸、20 cm 足球球機（Class 20）</td></tr>
+    <tr><td>無刷穿越機／FPV</td><td>無刷馬達、3S～6S、以第一人稱視角飛行，速度可超過 150 km/h</td><td>穿越機競速、40 cm 足球球機（Class 40）多為無刷</td></tr>
+    <tr><td>消費級空拍機</td><td>GPS 定位、雲台相機、避障感測器、自動返航</td><td>攝影、旅遊記錄</td></tr>
+    <tr><td>工業／農業機</td><td>載重 10～50 kg、RTK 定位、可程式航線</td><td>農噴、電塔巡檢、物流、消防、救災搜索</td></tr>
+    <tr><td>國防／公共安全機</td><td>長航時、加密鏈路、抗干擾</td><td>偵察、巡邏、災害評估</td></tr>
+  </table></div></div></div>
+
+  <h3 id="intro-law">三、台灣的無人機法規（民用航空法遙控無人機專章）</h3>
+  <div class="card">
+    <div class="anim"><svg id="lawAnim" viewBox="0 0 320 200"></svg></div>
+    <div class="txt"><h4>飛之前先問三件事：要不要註冊？能不能飛這裡？飛多高？</h4><ul>
+      <li><b>註冊</b>：自然人所有、最大起飛重量 <b>250 g 以上</b>要向民航局註冊（有效期 2 年）；<b>政府機關、學校、法人</b>所有的無人機<b>不分重量</b>都要註冊。20 cm 球機約 100～200 g，個人持有可免註冊，但學校購置的球機仍須依規定辦理。</li>
+      <li><b>操作證</b>：<b>2 kg 以上</b>需操作證；學習操作證 16 歲、普通與專業操作證 18 歲以上。休閒操作 2 kg 以下免證，球機遠低於此。</li>
+      <li><b>高度</b>：實際高度不得超過離地 <b>400 呎（約 120 m）</b>；黃區限 60 m。</li>
+      <li><b>禁飛區</b>：<span class="zone" style="background:#ff5a5f"></span>紅區禁飛（機場周邊、軍事設施、政府機關等）、<span class="zone" style="background:#ffc857"></span>黃區限高 60 m、<span class="zone" style="background:#5ad38a"></span>綠區可飛 120 m 以下；國家公園需另外申請。飛前用民航局 <b>DroneMap</b> App 或空域查詢系統確認。</li>
+      <li><b>十大操作限制</b>：不得超過 400 呎、不得投擲或噴灑物件、不得裝載危險物品、不得在人群聚集或集會遊行上空、日落後至日出前不得飛、須在目視範圍內、一人一次只能操作一架、隨時監看並避讓其他航空器與障礙物。</li>
+      <li><b>室內</b>：在有屋頂、四周封閉的室內空間飛行，民航局說明不適用遙控無人機專章的空域規範，這也是無人機足球在體育館比賽的法律基礎；但校內仍應有自己的安全規範（護籠、防護網、護目鏡）。</li>
+      <li><b>罰則</b>：未註冊 3 萬～15 萬元；無證操作 6 萬～30 萬元；超高、闖禁區 30 萬～150 萬元。</li>
+    </ul></div>
+  </div>
+
+  <h3 id="intro-safety">四、教室與體育館的安全守則</h3>
+  <div class="card solo"><div class="txt"><ul>
+    <li>飛行區一定要有<b>防護網或圍籠</b>，觀眾與等待的同學站在網外；操作者戴護目鏡。</li>
+    <li>拿球機時<b>先拔電池</b>；裝槳、換電池、檢查時遙控器油門必須在最低。</li>
+    <li>鋰電池：不過充、不過放、不拉扯線材；鼓起或發熱的電池放入防火袋隔離；充電時有人看管。</li>
+    <li>失控時第一反應是<b>收油門讓它落地</b>，不要伸手去抓飛行中的球機，也不要用手接住。</li>
+    <li>比賽用球機必須有<b>失控保護（failsafe）</b>：訊號中斷自動停槳。</li>
+  </ul></div></div>
+  <p class="note">法規依民用航空法第 99 條之 14 與遙控無人機管理規則（第 6、9、15、20、30 條）整理；金額與分區以民航局最新公告為準。</p>
+</div>
+</div>
+
+<!-- ============ 台灣的發展 ============ -->
+<div id="taiwan" class="page" hidden>
+<div class="wrap">
+  <h2>台灣的無人機與無人機足球發展</h2>
+  <p>台灣的無人機足球是在「無人機國家隊」政策帶動下，由教育部從校園端推進的。下面的時間軸把產業政策和校園推廣放在一起看，比較容易理解為什麼 2026 年會有第一屆總統盃。</p>
+  <div class="timeline">
+    <div class="tl"><div class="yr">2020</div><b>亞洲無人機 AI 創新應用研發中心（亞創中心）啟用</b><span>設於嘉義縣朴子市，由經濟部與嘉義縣政府推動，成為國內無人機測試、驗證與產業聚落的核心，也是後來總統盃關鍵技術挑戰賽的場地。</span></div>
+    <div class="tl"><div class="yr">2022–2024</div><b>「非紅供應鏈」與無人機國家隊</b><span>政府將無人機列為國防與產業重點，推動零組件國產化、排除紅色供應鏈；這項政策後來直接寫進總統盃與教育部無人機足球競賽的器材規範。</span></div>
+    <div class="tl"><div class="yr">2024–2025</div><b>教育部啟動無人機教育推廣</b><span>設立無人機教育推廣辦公室，辦理 FAI 無人機足球裁判培訓課程，建立教育用無人機（足球機、程控機、空拍機）的共同供應契約規格，讓各校可以依規格採購。</span></div>
+    <div class="tl"><div class="yr">2025</div><b>採用 FAI F9A-B（20 cm 級）作為校園比賽規格</b><span>FAI 於 2025 年 6 月公布 F9A-B 世界錦標賽競賽規則，教育部競賽實施計畫以此為基礎並做國內調整：場地 6×3 m、3 對 3、每局 3 分鐘。</span></div>
+    <div class="tl"><div class="yr">2026</div><b>第一屆總統盃無人機競賽・教育部 115 年無人機足球競賽</b><span>由經濟部、教育部、國科會共同舉辦。教育部負責無人機足球，分國中小、高中職、大專三組，<b>共 245 隊報名</b>，國中小組 7 月營隊與集訓、8/24–26 北中南分區賽，10/2–3 台大準決賽、12 月 25 日於大臺南會展中心決賽。教育部 115 年度並編列約 1.45 億元、採購約 2,000 架教學用無人機（含足球機、程控機、空拍機與教學配套）推動校園無人機教育。</span></div>
+  </div>
+  <h3>台灣校園推動的特色</h3>
+  <div class="card solo"><div class="txt"><ul>
+    <li><b>從 20 cm 級入門</b>：便宜、安全、教室就能飛，先普及再往 40 cm 正式級發展；決賽同時安排 40 cm 五對五示範賽讓學生看到下一步。</li>
+    <li><b>同校組隊、三對三</b>：降低組隊門檻，一個社團就能成隊；國中小組每隊 5 人（3 先發＋2 候補）。</li>
+    <li><b>器材國產化與檢核</b>：國中小組統一使用主辦單位提供的球機，設備貼檢核標籤與防拆封條、零組件編號不得塗改，把「認識器材」變成課程的一部分。</li>
+    <li><b>跨部會連結</b>：經濟部的技術競賽、國科會的關鍵技術挑戰賽與教育部的足球賽放在同一個總統盃裡，讓學生看到從校園到產業的路徑。</li>
+  </ul></div></div>
+  <p class="note">資料來源：總統府新聞稿、教育部 115 年無人機足球競賽實施計畫、經濟日報與中時新聞報導（2026）。年份與數字以官方公告為準；亞創中心與政策時間點為概略整理。</p>
+</div>
+</div>
+
+<!-- ============ 世界的無人機足球 ============ -->
+<div id="world" class="page" hidden>
+<div class="wrap">
+  <h2>世界的無人機足球</h2>
+  <p>無人機足球是目前唯一被國際航空運動聯盟（FAI）承認的「面對面對抗」團體航空運動，從韓國一個研究機構的點子，十年內變成十八國參加的世界錦標賽。</p>
+  <div class="card">
+    <div class="anim"><svg id="worldMap" viewBox="0 0 320 200"></svg></div>
+    <div class="txt"><ul>
+      <li><b>2016 韓國全州</b>：CAMTIC 先進機電技術研究院的研究員李範洙（Lee Beom-su，曾任軍人與消防員）受《哈利波特》魁地奇與帶籠無人機互撞的畫面啟發，發明無人機足球。</li>
+      <li><b>2017</b>：韓國首次公開比賽；<b>2018</b> 在政府支持下進入全國學校與青少年中心。</li>
+      <li><b>2019 年 5 月 1 日</b>：FAI 正式承認無人機足球，編為 <b>F9A</b> 級，成為 FAI 第一個對抗型團體運動。</li>
+      <li><b>2021</b>：傳入美國，最早在科羅拉多、加州、俄亥俄、紐約等航空教育活躍的州推廣，並發展出 U19 Class 20 規則。</li>
+      <li><b>2022</b>：國際無人機足球協會 FIDA 成立；<b>2023</b> 首屆世界盃在韓國舉行。</li>
+      <li><b>2025 年 6 月</b>：FAI 公布 F9A-B（20 cm）世界錦標賽規則；<b>2025 年 11 月 15～18 日</b>首屆 FAI 世界無人機足球錦標賽在中國上海舉行，<b>18 個國家</b>參賽。</li>
+      <li><b>2026</b>：台灣舉辦第一屆總統盃無人機足球競賽，245 隊報名。</li>
+    </ul></div>
+  </div>
+  <h3>兩種級別、兩種玩法</h3>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th></th><th>Class B／Class 20（20 cm）</th><th>Class A／Class 40（40 cm）</th></tr>
+    <tr><td>每隊人數</td><td>3 對 3（FAI）</td><td>5 對 5（FAI／KDSA）</td></tr>
+    <tr><td>場地</td><td>6 × 3 m，高 3 m</td><td>20 × 10 m 以下，高 5 m 以上</td></tr>
+    <tr><td>球機</td><td>≤ 300 g，有刷或小型無刷</td><td>≤ 1 kg，多為無刷 4S</td></tr>
+    <tr><td>主要地區</td><td>學校、青少年、美國 U19</td><td>韓國職業聯賽、世界盃、FAI 世錦賽</td></tr>
+    <tr><td>角色</td><td>前鋒＋2 名防守／輔助</td><td>Striker、Guide、Libero、Sweeper、Keeper</td></tr>
+  </table></div>
+  <p class="note">FAI 規則：三局制、每局 3 分鐘、先贏兩局者勝；平局以罰球決勝，每隊 3 次、每次 10 秒。</p></div></div>
+  <h3>為什麼它適合教育</h3>
+  <div class="card solo"><div class="txt"><ul>
+    <li><b>低門檻的 STEM 入口</b>：一台球機同時教到空氣力學、電子、控制、程式與團隊戰術。</li>
+    <li><b>安全的對抗</b>：護籠加防護網，可以撞、可以擋，卻不會受傷，這是它跟穿越機競速最大的不同。</li>
+    <li><b>男女與年齡差距小</b>：靠反應與戰術而非體能，國小到大學可以用同一套規則。</li>
+    <li><b>產業連結</b>：韓國把它當作無人機人才培育的第一階，台灣總統盃也把它與關鍵技術挑戰賽放在一起。</li>
+  </ul></div></div>
+  <p class="note">資料來源：FAI 官方新聞與規則頁、Drone Sports USA「The History of Drone Soccer」、DroneXL 報導。</p>
+</div>
+</div>
+
+<!-- ============ 計時計分板 ============ -->
+<div id="score" class="page" hidden>
+<div class="wrap">
+  <h2>比賽計時計分板</h2>
+  <p>依 3 局制、每局 3 分鐘、局間休息 3 分鐘設計。按「開始」會先倒數 3 秒並鳴笛，時間到自動鳴笛並進入休息；比分與局數會自動結算，也可以手動修正。全螢幕後投影即可當正式計分板用。快捷鍵：空白鍵 開始／暫停，Q／P 紅隊加減分，Z／M 藍隊加減分，F 全螢幕。</p>
+  <div id="board" tabindex="0">
+    <div class="sb-top"><span>教育部無人機足球競賽・3 局 2 勝</span><span id="sbSetInfo">第 1 局</span><span>鍾兆羽老師整理</span></div>
+    <div class="sb-main">
+      <div class="sb-team red"><input class="nm" id="sbNameA" value="紅隊" maxlength="10"><div class="sc" id="sbScA">0</div><div class="sets">局數 <span id="sbSetA">0</span></div><div class="btns"><button data-sc="A-1">−</button><button class="big" data-sc="A+1">＋1</button></div></div>
+      <div class="sb-clock"><div class="ph" id="sbPhase">準備</div><div class="tm" id="sbTime">3:00</div><div class="set" id="sbSub">按開始 → 倒數 3 秒鳴笛</div><div class="sb-sets" id="sbSets"></div></div>
+      <div class="sb-team blue"><input class="nm" id="sbNameB" value="藍隊" maxlength="10"><div class="sc" id="sbScB">0</div><div class="sets">局數 <span id="sbSetB">0</span></div><div class="btns"><button data-sc="B-1">−</button><button class="big" data-sc="B+1">＋1</button></div></div>
+    </div>
+    <div class="sb-ctl">
+      <button class="pri" id="sbStart">▶ 開始</button><button id="sbPause">‖ 暫停</button><button id="sbEndSet">結束本局</button><button id="sbBreak">局間休息 3:00</button><button id="sbPen">罰球（不計時）</button><button id="sbWhistle">🔔 鳴笛</button><button id="sbFoul">記錄犯規</button><button id="sbFull">⛶ 全螢幕</button><button id="sbReset">重設比賽</button>
+    </div>
+    <div class="sb-log" id="sbLog"></div>
+  </div>
+  <div class="card solo"><div class="txt"><h4>使用流程</h4><ol style="margin:4px 0;padding-left:20px;line-height:1.8">
+    <li>改隊名，按「全螢幕」投影。</li><li>雙方球機放好、裁判宣告「Arm your quads」後按「開始」：倒數 3 秒後一短聲鳴笛起飛。</li><li>進球按該隊「＋1」，誤按用「−」。罰球時按「罰球」暫停計時，罰完再按開始。</li><li>3 分鐘到自動一長一短鳴笛，該局勝負自動記入局數，並自動開始 3 分鐘休息倒數。</li><li>休息結束再按「開始」進入下一局；某隊先拿 2 局時會顯示勝方。</li></ol></div></div>
+</div>
+</div>
+
+<!-- ============ 飛行訓練關卡 ============ -->
+<div id="train" class="page" hidden>
+<div class="wrap">
+  <h2>飛行訓練關卡</h2>
+  <p>五個等級、由易到難，每關有示意圖、通過標準與計時器。通過後按「標記通過」，紀錄會存在這台裝置的瀏覽器裡（換電腦不會帶著走，可以請學生用自己的帳號截圖留存）。</p>
+  <div class="prog"><i id="trainProg"></i></div>
+  <div id="levels"></div>
+  <p class="note">場地以 6×3 m 的 20 cm 級場地為準；沒有正式場地時，用膠帶在地上貼出 1 m 方格與圓圈即可。</p>
+</div>
+</div>
+
+<!-- ============ 規則小測驗 ============ -->
+<div id="quiz" class="page" hidden>
+<div class="wrap">
+  <h2>規則小測驗</h2>
+  <p>20 題選擇題，涵蓋得分、犯規、賽制、球機規格與飛行原理。作答後立刻顯示對錯與解說，答錯的題目會給你「回去看」的連結，直接跳到對應的教材段落。</p>
+  <div class="qscore"><span>得分 <b id="qzScore">0</b> / <span id="qzTotal">20</span></span><span id="qzMsg" style="color:var(--muted);font-size:13px"></span><button id="qzReset">重新作答</button><button id="qzShuffle">隨機出題順序</button></div>
+  <div id="qzList"></div>
+</div>
+</div>
+
+<!-- ============ 戰術範例庫 ============ -->
+<div id="tactics" class="page" hidden>
+<div class="wrap">
+  <h2>戰術範例庫</h2>
+  <p>六個常用陣型與動向，每個都有俯視示意圖與講解。按「載入戰術板」會把陣型和路徑箭頭送進 3D 戰術板，再按「載入並播放」可以直接看球機飛動。座標以 20×10 m 場地為準，紅隊在左、進攻右邊的藍隊球門；換成 6×3 m 場地時會依比例縮放。</p>
+  <div id="tacList"></div>
+</div>
+</div>
+
+<!-- ============ 隊伍與器材管理 ============ -->
+<div id="manage" class="page" hidden>
+<div class="wrap">
+  <h2>隊伍與器材管理</h2>
+  <p>隊員、球機、電池、維修紀錄與飛前檢查清單。資料存在這台裝置的瀏覽器裡；按「匯出備份」可以把全部資料存成 JSON 檔，換電腦時用「匯入」還原，也可以把每張表存成 CSV 用 Excel 開。</p>
+  <div class="subtabs" id="mgTabs"><button data-m="members" class="on">隊員</button><button data-m="drones">球機</button><button data-m="batteries">電池</button><button data-m="repairs">維修紀錄</button><button data-m="check">飛前檢查</button></div>
+  <div class="mg">
+    <div class="bar"><button class="pri" id="mgAdd">＋ 新增一列</button><button id="mgCsv">存成 CSV</button><button id="mgExport">匯出備份 JSON</button><button id="mgImport">匯入備份</button><input type="file" id="mgFile" accept=".json" hidden><button id="mgClear" style="color:var(--danger)">清空此表</button><span class="cnt" id="mgCnt"></span></div>
+    <div class="tblwrap" id="mgTable"></div>
+    <div id="mgCheck" hidden></div>
+    <p class="note" id="mgHint" style="margin-top:8px"></p>
+  </div>
+</div>
+</div>
+
+<!-- ============ 教案與學習單 ============ -->
+<div id="lesson" class="page" hidden>
+<div class="wrap">
+  <h2>教案與學習單</h2>
+  <p>八節課、每節 45 分鐘的無人機足球入門課程，從認識無人機到打一場正式規則的比賽。每節課標明對應的平台單元，上課時直接點連結投影；最下方有三張可列印的學習單（用瀏覽器的列印功能，會自動隱藏選單）。</p>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>節次</th><th>主題</th><th>核心能力</th><th>平台單元</th></tr>
+    <tr><td>1</td><td>認識無人機與安全</td><td>分辨構型、說出法規重點、遵守安全守則</td><td>種類・法規、球機構造</td></tr>
+    <tr><td>2</td><td>飛行原理與槳的方向</td><td>解釋升力與扭力、正確裝槳</td><td>飛行原理</td></tr>
+    <tr><td>3</td><td>搖桿與起飛降落</td><td>完成解鎖、起飛、懸停、降落</td><td>搖桿操作、訓練關卡 1</td></tr>
+    <tr><td>4</td><td>平移與轉向</td><td>方形航線、機頭控制</td><td>訓練關卡 2–3</td></tr>
+    <tr><td>5</td><td>穿環與繞樁</td><td>穿環成功率 2/3、S 形繞樁</td><td>訓練關卡 4–5</td></tr>
+    <tr><td>6</td><td>規則與角色</td><td>說明得分、犯規、賽制；通過測驗</td><td>總統盃規則、小測驗</td></tr>
+    <tr><td>7</td><td>戰術與分工</td><td>執行一種進攻與一種防守陣型</td><td>戰術範例庫、戰術板</td></tr>
+    <tr><td>8</td><td>班際友誼賽</td><td>依正式規則完成比賽並擔任裁判</td><td>計分板、管理</td></tr>
+  </table></div></div></div>
+  <div id="lessonList"></div>
+  <h3 class="no-print">學習單（可列印）</h3>
+  <div class="ctlrow no-print"><button id="wsPrint">🖨 列印學習單</button><span style="font-size:12px;color:var(--muted)">列印時只會印出下方三張學習單</span></div>
+  <div id="wsList"></div>
+</div>
+</div>
+
+<!-- ============ 詞彙表 ============ -->
+<div id="glossary" class="page" hidden>
+<div class="wrap">
+  <h2>中英詞彙表</h2>
+  <p>無人機足球與無人機常見的中英文術語，比賽與國際規則會用到的英文都在這裡。可以搜尋中文、英文或縮寫。</p>
+  <input type="search" id="glSearch" class="fixsearch" placeholder="搜尋，例如：前鋒、Yaw、失控保護、ESC">
+  <div class="subtabs" id="glCats"></div>
+  <div class="gl" id="glList"></div>
+</div>
+</div>
+
+<!-- ============ 規則介紹 ============ -->
+<div id="rules" class="page" hidden>
+<div class="wrap">
+  <h2>無人機足球規則介紹</h2>
+  <p>以下整理自 FAI（國際航空運動聯盟）F9A 無人機足球規則與韓國 KDSA Class 40 規則書。正式比賽以主辦單位公告為準；校內教學用的 20 cm 有刷球機（Class 20）場地與球門會等比縮小，規格差異見最後一節。</p>
+
+  <h3>一、怎麼得分</h3>
+  <div class="card">
+    <div class="anim"><svg id="anGoal" viewBox="0 0 320 170"></svg><div class="cap" id="anGoalCap"></div></div>
+    <div class="txt"><h4>只有前鋒（Striker）能得分</h4>
+      <ul>
+        <li>每隊只有一台指定的 <b>前鋒（Striker）</b> 穿過對方球門環才算分，其他球機穿過不算。</li>
+        <li>必須從球門環的<b>正面</b>穿入、朝對方端線方向穿出；FAI 規則以「球體一半通過正面」為準，KDSA 規則要求整顆球完全穿過。</li>
+        <li>得分後，該隊<b>所有</b>球機必須先退回己方半場（越過中線），才能再次進攻；沒退回就再進球，該球不算並判罰球。</li>
+        <li>其他球機的工作是<b>開路、卡位與防守</b>：擋住對方前鋒、守住己方球門前的空間。</li>
+      </ul></div>
+  </div>
+
+  <h3>二、賽制與時間</h3>
+  <div class="card">
+    <div class="anim"><svg id="anTime" viewBox="0 0 320 110"></svg></div>
+    <div class="txt"><h4>三局兩勝，每局 3 分鐘</h4>
+      <ul>
+        <li>一場比賽打 <b>3 局（set）</b>，每局 <b>3 分鐘</b>，拿下多數局者獲勝。</li>
+        <li>局與局之間休息約 <b>2 到 3 分鐘</b>（KDSA 版本為 5 分鐘保養時間），可換電池、換槳、更換上場球員。</li>
+        <li>局中不可以更換上場球員；墜落的球機可以在裁判允許下回起飛區重新起飛。</li>
+        <li>KDSA 哨音：一短聲＝開局、兩短聲＝前鋒更換完成、一長一短＝該局結束。</li>
+      </ul></div>
+  </div>
+
+  <h3>三、開局流程</h3>
+  <div class="card solo">
+    <div class="steps" id="anStart">
+      <div class="step"><div class="n">1</div><b>球機放進起飛區</b><span>每隊的起飛區在自己端線內側，約 1.5 m 深、半個端線寬。</span></div>
+      <div class="step"><div class="n">2</div><b>裁判確認雙方隊長就緒</b><span>隊長舉手或口頭回覆。</span></div>
+      <div class="step"><div class="n">3</div><b>「Arm your quads」</b><span>裁判宣告後才可解鎖馬達，此時球機仍須停在地上。</span></div>
+      <div class="step"><div class="n">4</div><b>3～5 秒後鳴笛</b><span>聽到信號才能起飛，提早離地判罰球。</span></div>
+      <div class="step"><div class="n">5</div><b>比賽進行 3 分鐘</b><span>時間到再次鳴笛，所有球機降落回起飛區。</span></div>
+    </div>
+  </div>
+
+  <h3>四、場上角色（三對三）</h3>
+  <div class="card">
+    <div class="anim"><svg id="anRole" viewBox="0 0 320 170"></svg></div>
+    <div class="txt"><h4>1 台前鋒（Striker）＋ 2 台防守／輔助（Guard）</h4>
+      <ul>
+        <li><b>前鋒（Striker）</b>：唯一能得分的球機，通常裝上明顯的 LED 顏色讓裁判辨識。</li>
+        <li><b>輔助（Guard，前衛／開路）</b>：跟在前鋒前方清出路線，用身體卡住對方的防守球機。</li>
+        <li><b>防守（Guard，後衛／守門）</b>：留在己方球門前方，擋住對方前鋒的射門路線；注意<b>不能穿過自家球門環</b>來防守。</li>
+        <li>五人制（KDSA）再細分為 Striker、Guide、Libero、Sweeper、Keeper，三人制通常合併成上面三種。</li>
+      </ul></div>
+  </div>
+
+  <h3>五、常見犯規與判罰</h3>
+  <div class="card">
+    <div class="anim"><svg id="anFoul" viewBox="0 0 320 170"></svg><div class="cap" id="anFoulCap"></div></div>
+    <div class="txt"><h4>判罰球（penalty shot）的情況</h4>
+      <ul>
+        <li>鳴笛前提早起飛或離開起飛區。</li>
+        <li>得分後沒有全隊退回己方半場就再次進球（該球不算）。</li>
+        <li>非前鋒的球機為了防守而穿過自家球門環。</li>
+        <li>罰球時由對方前鋒在無防守干擾下射門一次，細節依主辦單位規定。</li>
+      </ul></div>
+  </div>
+  <div class="card solo">
+    <div class="txt"><h4>警告與卡片</h4>
+      <div class="tblwrap"><table class="tbl">
+        <tr><th>判罰</th><th>情況</th><th>結果</th></tr>
+        <tr><td><span class="tag-s tag-y">黃牌</span></td><td>局中更換上場球員；比賽中用手或身體去撥動、抓取球機；故意用球機撞擊人員；不當運動行為</td><td>該局判負；累積兩張黃牌等於紅牌</td></tr>
+        <tr><td><span class="tag-s tag-r">紅牌</span></td><td>未登錄的球員上場；危險飛行行為；累積兩張黃牌</td><td>整場比賽判負</td></tr>
+        <tr><td><span class="tag-s tag-p">一般</span></td><td>球機飛出圍網、撞落地面</td><td>不算犯規，可在裁判示意下由起飛區重新起飛</td></tr>
+      </table></div>
+    </div>
+  </div>
+
+  <h3>六、球機與場地規格</h3>
+  <div class="card solo">
+    <div class="txt">
+      <div class="tblwrap"><table class="tbl">
+        <tr><th>項目</th><th>Class 40（FAI / KDSA 正式賽）</th><th>Class 20（教育用有刷小球機）</th></tr>
+        <tr><td>球體直徑</td><td><b>40 cm</b> ± 2 cm，底部可削平最多 2 cm</td><td><b>20 cm</b> ± 2 cm</td></tr>
+        <tr><td>總重（含電池）</td><td>≤ <b>1 kg</b>（KDSA：≤ 1,100 g）</td><td>≤ <b>300 g</b></td></tr>
+        <tr><td>動力</td><td>最多 4 顆電動馬達，電池最高 <b>4S / 17.0 V</b>，槳最大 6 吋，禁止全金屬槳</td><td>4 顆有刷馬達，1S 3.7 V 鋰電，槳約 2～3 吋</td></tr>
+        <tr><td>必備裝置</td><td>失控保護（failsafe，觸發即停馬達）、可切換顏色的 LED；禁止自動定位與預編程飛行</td><td>多數機型內建失控保護與 LED，可切換顏色以辨識前鋒</td></tr>
+        <tr><td>場地</td><td>長 <b>14～20 m</b>、寬 <b>7～10 m</b>（長寬比 2:1）、淨高 ≥ 5 m，四周圍網</td><td>依主辦單位等比縮小，教室常見約 6～10 m 長、3 m 以上淨高</td></tr>
+        <tr><td>球門環</td><td>外徑 <b>100～120 cm</b>、內徑 60～80 cm，環心離地 <b>3～3.5 m</b>，距端線約 2 m，環面朝場中央</td><td>同比例縮小的圓環，高度依場地公告</td></tr>
+        <tr><td>上場人數</td><td>最多 5 台，主辦單位可指定 2～5 台；本板以 3 對 3 為準</td><td>常見 3 對 3</td></tr>
+      </table></div>
+      <p class="note">Class 20 目前沒有 FAI 統一規範，重量與直徑取自美國 U19 Class 20 規則；場地與球門尺寸請依各賽事公告。</p>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- ============ 總統盃規則 ============ -->
+<div id="cup" class="page" hidden>
+<div class="wrap">
+  <h2>總統盃 2026 · 教育部 115 年無人機足球競賽</h2>
+  <p>本頁依教育部「115 年無人機足球競賽實施計畫」與<b>「國中小組簡章」（115.5.13 公告版）</b>整理。簡章明定以 FAI 2025 年《無人機足球世界錦標賽競賽規則》（F9A-B，20 公分級）為核心標準，並修正為<b>「進球積分制」</b>；簡章沒有寫到的細節（例如完整犯規清單、罰球執行方式），以 FAI F9A 規則補齊並標註來源。高中職組、大專校院組另有各自的簡章，部分規定（如隊伍人數、球機來源）可能不同。<b>正式比賽以裁判與賽事委員會判定為準。</b></p>
+
+  <h3 id="cup-flow">一、賽事流程與晉級</h3>
+  <div class="card solo">
+    <div class="anim"><svg id="cupFlow" viewBox="0 0 640 170"></svg></div>
+    <div class="txt" style="margin-top:10px"><ul>
+      <li><b>營隊</b>（國中小組，7/2–3、7/6–7 兩梯次）：每區每梯次 20 隊、每區至多 40 隊，第 1 天上課（原理與法規、組裝與故障排除、基礎飛行），第 2 天<b>實測</b>，各區前 <b>20 隊</b>晉級分區賽，其餘列備取。</li>
+      <li><b>集訓</b>（7/20，一日）：分區賽賽制、角色分配與攻防策略、無刷無人機足球組裝測試與維修管理、競賽模擬練習。</li>
+      <li><b>分區賽</b>（南區 8/24、中區 8/25、北區 8/26）：依營隊實測成績 <b>S 型分組</b>，組內單循環，每場勝 3 分、平 1 分、負 0 分；積分相同依淨勝球數、再依總進球數排序。各區<b>前 3 名</b>晉級。</li>
+      <li><b>準決賽</b>（10/2–3，國立臺灣大學體育館）：採積分賽制，積分最高<b>前 2 名</b>晉級決賽；積分相同依淨勝球數、總進球數排序。</li>
+      <li><b>決賽</b>（預計 12 月，大臺南會展中心）：由準決賽前 2 名對決，於總統盃無人機競賽中舉行；決賽當天另有 F9A-A（40 公分級／5 對 5）國際規格示範賽。</li>
+      <li>國中小組：主辦<b>教育部國民及學前教育署</b>、承辦<b>國立高雄師範大學</b>；分區辦理地點為北區臺北市新興、中區南投縣埔里、南區嘉義縣永慶自造教育及科技中心。</li>
+      <li>分組：國中小組、高中職組、大專校院組。分區：北區（臺北、新北、桃園、基隆、宜蘭、花蓮、連江）、中區（新竹市、新竹縣、苗栗、臺中、彰化、南投、雲林、金門）、南區（嘉義市、嘉義縣、臺南、高雄、臺東、屏東、澎湖）。</li>
+    </ul></div>
+  </div>
+
+  <div class="card solo"><div class="txt"><h4>國中小組營隊「實測」怎麼算（決定誰晉級分區賽）</h4><ul>
+    <li><b>接力機制</b>：3 位選手輪流操作，每人從起點出發攻門，<b>120 秒內完成 10 次有效進球</b>；每次進球後須先返回中線（球機碰到中線即算完成折返）才能再攻門。</li>
+    <li><b>計時</b>：第 10 球完成時立即停錶，以秒數為個人成績；120 秒到仍未滿 10 球，以 120 秒計並記錄實際進球數。</li>
+    <li><b>換員與換電池</b>：限時 60 秒，不計入競賽時間，換員時球機回到出發線。</li>
+    <li><b>故障</b>：每隊 1 顆預備球機；故障時舉手請裁判停錶，損壞球機可由其他選手維修後再當預備機；兩顆都失能則以當下秒數與進球數計。</li>
+    <li><b>排名</b>：先比全隊有效進球總數（多者前），相同再比團體總秒數（少者前，計至小數點後兩位四捨五入）。</li>
+  </ul><p class="note">訓練關卡第 4 關（穿環）可以直接改成這個「120 秒 10 球」的實測格式來練習。</p></div></div>
+
+  <h3 id="cup-field">二、場地與球門（F9A-B 20 cm 級）</h3>
+  <div class="card">
+    <div class="anim"><svg id="cupField" viewBox="0 0 320 230"></svg></div>
+    <div class="txt"><ul>
+      <li>飛行區 <b>長 6 m × 寬 3 m</b>（以框柱內緣距離為準），四周防護網（籠）<b>高 3 m</b>，完整包覆、內部無障礙物；場地由主辦單位提供。</li>
+      <li>球門環 <b>內徑 40 cm、外徑約 70 cm</b>，設置於場地兩端底線上方，懸掛高度<b>離地 2 m</b>，以<b>圓環內緣底部</b>為測量基準（FAI 另規定環距底線約 1 m，示意圖依 FAI 繪製）。</li>
+      <li>起飛區位於底線中央，<b>寬度不超過 1 m</b>。</li>
+      <li>選手區設在防護籠短邊外側，每隊一區、兩側位置與尺寸完全相同；比賽進行中<b>只有上場選手</b>可以待在選手區內。</li>
+      <li>比戰術板預設的 20×10 m（40 cm 級）小得多：等比例來看球機相對場地大了 2.4 倍，空間很擠，卡位和撞擊更頻繁。</li>
+    </ul></div>
+  </div>
+
+  <h3 id="cup-spec">三、隊伍與球機規格</h3>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>項目</th><th>規定</th></tr>
+    <tr><td>隊伍</td><td>國中小組每隊註冊 <b>5 名</b>選手（<b>3 名先發＋2 名候補</b>），指定 1 名先發為<b>隊長</b>；至少 3 名具中華民國國籍，上場 3 人中至少 2 名；場上 <b>3 對 3</b>。指導老師至多 2 名（含 1 名本校老師）＋候補指導老師 1 名，須為在職教師。每校以 1 隊為原則、同校組隊；一人只能報一隊。（實施計畫寫 3～5 名，高中職、大專組依各組簡章。）</td></tr>
+    <tr><td>更換選手</td><td>集訓到決賽期間可更換 <b>1 名、限 1 次</b>；由指導老師填「更換選手申請書」，經主辦單位查核同意，須在下一場比賽開始前完成；更換後總數仍不超過 5 名。</td></tr>
+    <tr><td>前鋒</td><td>場上 3 架中<b>僅 1 架</b>指定為前鋒，須有特殊識別（尾部飄帶或特定燈色）供裁判辨識；其餘 2 架為<b>防守／輔助</b>，只能防守己方球門或協助前鋒進攻，進球不列入計分。</td></tr>
+    <tr><td>球體</td><td>球型保護框直徑 <b>20 cm（＋2 cm）</b>，主要單元為交錯的五角與六角形；底部可平整但高度不超過 2 cm。</td></tr>
+    <tr><td>重量</td><td>含電池起飛總重 <b>≤ 300 g</b>。</td></tr>
+    <tr><td>動力</td><td>限電動馬達；電池最高 <b>4S（17 V）</b>；螺旋槳最大 <b>3 吋</b>，禁止金屬槳。</td></tr>
+    <tr><td>遙控</td><td><b>2.4 GHz</b>。</td></tr>
+    <tr><td>燈光</td><td>必須安裝 LED 燈條，隊伍分<b>紅隊</b>與<b>藍隊</b>（FAI：圓周至少 16 顆＋尾部 6 顆）。</td></tr>
+    <tr><td>來源限制</td><td>須符合教育部無人機足球共同供應契約採購規格或工程會遙控無人機採購作業指引，<b>國產化、非紅供應鏈</b>。國中小組<b>應使用主辦單位提供之無人機足球</b>參賽（實施計畫另允許自備並經檢核）；外殼可以更換，但主要單元須為交錯五角與六角形、且為非紅供應鏈。整機或零組件編號不可塗銷或塗改。</td></tr>
+    <tr><td>設備檢核</td><td>須有完整球型保護框、無破損鬆脫或尖銳外露、符合尺寸重量；<b>貼附檢核標籤與防拆封條</b>，未經檢核不得使用；禁止改裝或可能影響安全的設備。</td></tr>
+  </table></div></div></div>
+
+  <h3 id="cup-time">四、比賽怎麼進行</h3>
+  <div class="card">
+    <div class="anim"><svg id="cupTime" viewBox="0 0 320 120"></svg></div>
+    <div class="txt"><ul>
+      <li>每場 <b>3 局</b>，每局 <b>3 分鐘</b>，局間休息 <b>3 分鐘</b>（更換電池與維修）。</li>
+      <li>每局比賽期間，<b>球機損壞即不得在該局繼續參賽</b>，要等下一局才能更換。</li>
+      <li>單局進球多者勝；同分或都沒進為平局。<b>先贏 2 局</b>者勝（3 局 2 勝）。</li>
+      <li>3 局打完雙方平手（例如各 1 勝 1 負 1 和，或 3 局皆和）→ <b>點球大戰</b>；點球仍平手 → <b>黃金進球驟死賽</b>（先進球者勝）。</li>
+      <li>FAI：罰球所耗時間不計入該局 3 分鐘；局中不得更換上場選手，只能在局間換。</li>
+    </ul></div>
+  </div>
+  <div class="card solo" id="cup-start">
+    <div class="steps" id="cupStart">
+      <div class="step"><div class="n">1</div><b>球機放入起飛區</b><span>底線中央、寬 1 m 內，機頭朝場內。</span></div>
+      <div class="step"><div class="n">2</div><b>裁判確認雙方就緒</b><span>隊長回覆準備完成。</span></div>
+      <div class="step"><div class="n">3</div><b>「Arm your quads」</b><span>解鎖馬達但不離地。</span></div>
+      <div class="step"><div class="n">4</div><b>3～5 秒後鳴笛起飛</b><span>笛聲前離地＝提早起飛，判罰球。</span></div>
+      <div class="step"><div class="n">5</div><b>3 分鐘後鳴笛結束</b><span>落地、收油門，回到選手區準備下一局。</span></div>
+    </div>
+    <p class="note" style="margin-top:8px">開局流程簡章未細述，此處依 FAI F9A 規則 A.8.2；簡章規定比賽開始與結束由裁判宣告。</p>
+  </div>
+
+  <h3 id="cup-goal">五、得分方式</h3>
+  <div class="card">
+    <div class="anim"><svg id="cupGoal" viewBox="0 0 320 190"></svg><div class="cap" id="cupGoalCap"></div></div>
+    <div class="txt"><ul>
+      <li><b>只有前鋒</b>穿過對方球門環才得分，每次 <b>1 分</b>；非前鋒球員穿過球門不予計分。</li>
+      <li>必須<b>「由前向後」完整穿越</b>對手球門環，且飛行方向正確（FAI 40 cm 級是球體一半通過即可，本賽事採完全穿過）。</li>
+      <li>得分後，該隊<b>所有球機</b>必須退回己方半場（中線後），方可發動下一次進攻；違者判罰點球。</li>
+      <li>得分判定與進球有效性由場上裁判認定；FAI：失控時應盡力飛回己方半場，若無法恢復則啟動失控保護落地並通知裁判。</li>
+    </ul></div>
+  </div>
+
+  <h3 id="cup-foul">六、違規情形與處罰</h3>
+  <div class="card">
+    <div class="anim"><svg id="cupFoul" viewBox="0 0 320 190"></svg><div class="cap" id="cupFoulCap"></div></div>
+    <div class="txt"><h4>動畫輪播五種情境</h4>
+      <div class="ctlrow" id="cupFoulBtns"><button data-i="0" class="on">提早起飛</button><button data-i="1">得分未回半場</button><button data-i="2">非前鋒穿越自家球門</button><button data-i="3">撞擊落地球機</button><button data-i="4">用手干預</button></div>
+      <p class="note">簡章明列「得分後未退回半場判罰點球」與安全違規的處置，其餘依 FAI F9A 規則（2026 年版）補充。</p>
+    </div>
+  </div>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>處罰</th><th>情形</th><th>結果</th><th>來源</th></tr>
+    <tr><td><span class="tag-s tag-p">罰點球</span></td><td>① 鳴笛前球機離地（提早起飛）<br>② 得分後球員沒有正確退回己方半場<br>③ 前鋒以外的球機為了防守而<b>穿過或停留在</b>自家球門環內</td><td>由對方執行一次罰球；罰球時間不計入該局。得分後未回半場所進的球不算</td><td>簡章（②）、FAI A.9.1</td></tr>
+    <tr><td><span class="tag-s" style="background:#ff7b7b;color:#1a0000">安全違規</span></td><td>違反安全規定、在指定選手區以外操作、危險行為；設備在比賽中異常或失控</td><td>裁判得依情節予以<b>警告、判罰（暫停該機參賽、扣分、判敗）或取消資格</b>；設備異常時裁判得要求立即停止使用</td><td>國中小組簡章 拾肆</td></tr>
+    <tr><td><span class="tag-s tag-y" style="background:#8fa1b5">警告</span></td><td>飛行中的球機<b>非故意</b>碰撞在地面上的球機</td><td>口頭警告，記錄在案</td><td>FAI 2026 版 A.9.2（新增）</td></tr>
+    <tr><td><span class="tag-s tag-y">黃牌</span></td><td>① 局中更換上場選手<br>② 選手或教練對裁判、對手或觀眾有重大不文明行為<br>③ 比賽中<b>故意用手操作、撥動、抓取</b>球機<br>④ 故意用球機撞擊人員<br>⑤ 飛行中的球機<b>故意</b>碰撞在地面上的球機</td><td>該局停止並判該隊<b>輸掉該局</b>；2026 版改為可只處罰該名選手。兩張黃牌＝紅牌</td><td>FAI A.9.3、2026 版</td></tr>
+    <tr><td><span class="tag-s tag-r">紅牌</span></td><td>① 未登錄在選手名單上的人上場<br>② 嚴重不文明行為<br>③ 比賽中危險或有害的飛行行為<br>④ 累積兩張黃牌</td><td>比賽停止並判該隊<b>輸掉整場</b>；2026 版改為可只處罰該名選手</td><td>FAI A.9.4</td></tr>
+    <tr><td><span class="tag-s" style="background:var(--panel2);color:var(--text)">中斷</span></td><td>外部干擾或其他正當理由，裁判可中斷該局</td><td>該局重賽；若某隊是造成中斷的直接責任者（例如棄權），該隊判輸該局</td><td>FAI A.10</td></tr>
+    <tr><td><span class="tag-s" style="background:var(--panel2);color:var(--text)">失控</span></td><td>暫時失控應盡力飛回己方半場；確定無法控制時啟動失控保護、落地後立即通知裁判並離開選手區</td><td>不算犯規；落地且無法再起飛的球機不受「退回半場」限制</td><td>FAI A.8.4</td></tr>
+    <tr><td><span class="tag-s" style="background:var(--panel2);color:var(--text)">資格</span></td><td>國中小組：轉學即喪失資格（升學改變學制或畢業不在此限，仍以 114 學年度級別參賽）；跨校或聯合組隊；一人報多隊；偽造、冒名或資料不實；設備未通過檢核或編號塗改</td><td>取消參賽資格／不得使用該設備</td><td>國中小組簡章 陸、拾肆</td></tr>
+  </table></div></div></div>
+
+  <h3 id="cup-ref">七、裁判與賽事委員會</h3>
+  <div class="card solo"><div class="txt"><ul>
+    <li><b>判決原則</b>：「現場裁判判決優先，賽事委員會最終裁定」。一般情況由場上裁判即時判定；重大爭議或特殊情況提請賽事委員會審議。裁判現場判決即時生效，比賽進行中不得提出爭議或干擾賽事。</li>
+    <li><b>賽事委員會</b>：裁判長 1 名、資深裁判或技術專家若干名、主辦單位指派代表；負責解釋規則、統一判準、審議爭議、設備合規（含非紅供應鏈）最終認定、處理未規範情形。<b>委員會決議為最終決定</b>，不得再提異議。</li>
+    <li><b>裁判職責</b>：宣告比賽開始與結束、得分判定與進球有效性、違規判定與處置、秩序與安全維護、比賽暫停／延續／終止。</li>
+    <li><b>裁判資格</b>：須完成教育部無人機教育推廣辦公室的「教育部總統盃無人機足球裁判培訓課程」並通過資格測驗，證書有效期間內才能執裁。</li>
+  </ul></div></div>
+
+  <h3 id="cup-rank">八、積分與排名範例</h3>
+  <div class="card solo"><div class="txt">
+    <div class="tblwrap"><table class="tbl" id="cupStand">
+      <tr><th>名次</th><th>隊伍</th><th>勝</th><th>平</th><th>負</th><th>進球</th><th>失球</th><th>淨勝</th><th>積分</th></tr>
+    </table></div>
+    <p class="note">範例數據僅供說明排序方式：先比積分（勝 3、平 1、負 0），相同再比淨勝球，再比總進球。</p>
+  </div></div>
+
+  <h3>九、獎勵與保險</h3>
+  <div class="card solo"><div class="txt"><p>分區賽各分組冠軍 1 萬元、亞軍 5,000 元、季軍 3,000 元；準決賽全國各分組積分前 3 名各 2 萬元；決賽冠軍 5 萬元、亞軍 3 萬元；另頒獎盃，指導老師及參賽學生每人獎狀 1 紙。承辦單位統一辦理公共意外責任保險，各隊可視需要自行加保；因個人操作不當或違規造成的損害由相關責任人自行負責。</p>
+  <p class="note">資料來源：教育部「115 年無人機足球競賽實施計畫」與「國中小組簡章」（115.5.13 公告版）、總統府「總統盃 2026 無人機競賽」新聞稿、FAI F9A 無人機足球規則（暫行版）與 FAI CIAM Volume F9 2026 年版。</p></div></div>
+</div>
+</div>
+
+<!-- ============ 搖桿與基本操作 ============ -->
+<div id="ctrl" class="page" hidden>
+<div class="wrap">
+  <h2>搖桿與基本操作</h2>
+  <p>下方的遙控器可以直接用滑鼠或手指拖動搖桿（放開會自動回中），右邊的球機會即時反應。也可以按「示範」按鈕看每個動作的動畫。鍵盤：W/S 油門、A/D 旋轉、方向鍵前後左右。</p>
+  <div class="modebar"><span style="color:var(--muted);font-size:12px;">搖桿模式</span><button id="modeM2" class="on">Mode 2（美手）</button><button id="modeM1">Mode 1（日手）</button><span id="modeDesc" style="color:var(--muted);font-size:12px;"></span></div>
+
+  <div id="ctrlGrid">
+    <div class="anim"><svg id="txSvg" viewBox="0 0 360 230"></svg></div>
+    <div class="anim"><svg id="droneSvg" viewBox="0 0 360 230"></svg></div>
+  </div>
+  <div class="demo">
+    <button data-demo="thr">示範：油門（上升／下降）</button>
+    <button data-demo="yaw">示範：旋轉（機頭左右轉）</button>
+    <button data-demo="pit">示範：前進／後退</button>
+    <button data-demo="rol">示範：左右平移</button>
+    <button data-demo="stop">停止示範</button>
+  </div>
+
+  <h3>四個基本動作</h3>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>動作</th><th>英文</th><th>Mode 2（美手）</th><th>Mode 1（日手）</th><th>球機反應</th></tr>
+    <tr><td>油門</td><td>Throttle</td><td>左桿 上／下</td><td>右桿 上／下</td><td>上升／下降（改變高度）</td></tr>
+    <tr><td>旋轉</td><td>Yaw</td><td>左桿 左／右</td><td>左桿 左／右</td><td>機頭原地左轉／右轉</td></tr>
+    <tr><td>俯仰</td><td>Pitch</td><td>右桿 上／下</td><td>左桿 上／下</td><td>往機頭方向前進／後退</td></tr>
+    <tr><td>橫滾</td><td>Roll</td><td>右桿 左／右</td><td>右桿 左／右</td><td>向左／向右平移（機頭方向不變）</td></tr>
+  </table></div>
+  <p class="note">「前後左右」是相對於<b>機頭</b>的方向。球機轉頭之後，你眼中的前方就變了，這是初學者最常撞籠的原因，先學會讓機頭永遠朝前再開始移動。</p></div></div>
+
+  <h3>起飛到降落的標準流程</h3>
+  <div class="steps" id="flightSteps">
+    <div class="step"><div class="n">1</div><b>先開遙控器，再插球機電池</b><span>兩支搖桿油門放最低。先開遙控器可以避免球機在無訊號狀態下亂動。</span></div>
+    <div class="step"><div class="n">2</div><b>放平、機頭朝前</b><span>放在平地讓陀螺儀校正，LED 亮起穩定後才動作。機頭（通常有標記或不同色 LED）朝遠離自己的方向。</span></div>
+    <div class="step"><div class="n">3</div><b>解鎖（Arm）</b><span>依機型：油門桿左下＋方向桿右下持續 2 秒，或按解鎖鍵。馬達會低速轉動，此時不要碰球機。</span></div>
+    <div class="step"><div class="n">4</div><b>緩推油門起飛</b><span>油門慢慢推到球機離地約 1 m 後回到中間附近，找到能懸停的油門位置。</span></div>
+    <div class="step"><div class="n">5</div><b>懸停練習</b><span>只用小幅度修正，讓球機停在原地 10 秒。飄走就反方向輕推，不要大動作。</span></div>
+    <div class="step"><div class="n">6</div><b>降落與上鎖</b><span>油門慢慢收到最低讓球機輕觸地面，再做上鎖（Disarm）動作或按鎖定鍵。</span></div>
+    <div class="step"><div class="n">7</div><b>先拔電池，再關遙控器</b><span>與開機順序相反。有刷球機電池小，飛完通常微熱是正常的，鼓起或發燙就停用。</span></div>
+  </div>
+
+  <h3>有刷小球機的注意事項</h3>
+  <div class="card solo"><div class="txt"><ul>
+    <li><b>飛行時間短</b>：1S 電池通常只能飛 5～8 分鐘，一局 3 分鐘剛好一顆電，比賽前把電池都充飽並標號輪替。</li>
+    <li><b>馬達壽命</b>：有刷馬達是耗材，飛行時間累積數小時後推力會明顯下降，備幾顆同規格馬達。裝馬達時注意線色與位置（順時針／逆時針馬達不能裝反）。</li>
+    <li><b>螺旋槳分 A／B 兩種</b>：對角線是同一種，裝反會起飛翻倒。撞擊後檢查槳葉有沒有缺角，缺角會抖動、耗電。</li>
+    <li><b>撞擊是正常的</b>：無人機足球本來就是身體對抗，但每次撞完檢查護籠有沒有鬆脫、變形，鬆的籠子會卡到槳。</li>
+    <li><b>失控就收油門</b>：飛歪、撞籠、看不清楚時，第一反應是把油門收到底讓它落地，不要試圖救。</li>
+    <li><b>無頭模式（Headless）先關掉</b>：許多教育用球機有無頭模式，練習階段建議關閉，養成看機頭方向的習慣，比賽時才不會混亂。</li>
+    <li><b>微調（Trim）</b>：如果放手就往某個方向飄，用遙控器上的微調鍵往反方向調 1～2 格，或重新放平做校正。</li>
+  </ul></div></div>
+</div>
+</div>
+
+<!-- ============ 球機構造 3D ============ -->
+<div id="parts" class="page" hidden>
+<div class="wrap">
+  <h2>球機構造 3D</h2>
+  <p>以 20 cm 有刷小球機為原型。拖曳旋轉、滾輪縮放；點右邊的零件會在模型上亮起並說明功能，拉「拆解」滑桿可以把零件散開來看內部。</p>
+  <div id="partsGrid">
+    <div id="partsView">
+      <div id="partsHud">
+        <button id="btnSpin">▶ 啟動螺旋槳</button>
+        <button id="btnCage">隱藏護籠</button>
+        <button id="btnDir">顯示旋轉方向</button>
+        <label>拆解 <input type="range" id="explode" min="0" max="1" step="0.01" value="0"></label>
+      </div>
+    </div>
+    <div id="partList"></div>
+  </div>
+  <p class="note">馬達編號採用飛控常見的 X 型配置：右前 CCW（逆時針）、左前 CW（順時針）、左後 CCW、右後 CW，對角線同方向。不同廠牌的教育用球機可能相反，但「對角同向、相鄰反向」的原則不變。</p>
+</div>
+</div>
+
+<!-- ============ 飛行原理 ============ -->
+<div id="fly" class="page" hidden>
+<div class="wrap">
+  <h2>無人機是怎麼飛起來的</h2>
+  <p>四軸無人機沒有機翼，也沒有任何會轉向的舵面，全部動作都靠<b>改變四顆馬達的轉速</b>完成。下面四個互動圖依序說明升力、扭力抵銷、傾斜移動，以及螺旋槳裝錯會發生什麼事。</p>
+
+  <h3>一、升力：把空氣往下推，機身就被往上推</h3>
+  <div class="card">
+    <div class="anim"><svg id="anLift" viewBox="0 0 320 200"></svg></div>
+    <div class="txt"><h4>推力 vs 重力</h4>
+      <div class="ctlrow">油門 <input type="range" id="liftThr" min="0" max="100" value="50"><b id="liftVal" style="font-family:var(--num)">50%</b></div>
+      <ul>
+        <li>螺旋槳是一片斜的葉子，轉動時把空氣往<b>下</b>撥；依作用力與反作用力，空氣就把槳（和整台球機）往<b>上</b>推。</li>
+        <li>四顆馬達的推力加起來<b>大於</b>重力 → 上升；<b>等於</b>重力 → 懸停；<b>小於</b>重力 → 下降。</li>
+        <li>轉速越高推力越大，但推力跟轉速的平方成正比，所以油門靠近懸停點時要用很小的動作。</li>
+        <li>20 cm 有刷球機約 100～150 g，四顆小馬達全開大約能出 200 g 以上的推力，推重比大約 1.5～2。</li>
+      </ul></div>
+  </div>
+
+  <h3 id="fly-torque">二、扭力：為什麼四顆槳要兩個順時針、兩個逆時針</h3>
+  <div class="card">
+    <div class="anim"><svg id="anTorque" viewBox="0 0 320 220"></svg></div>
+    <div class="txt"><h4>對角同向，相鄰反向</h4>
+      <div class="ctlrow"><button id="tqHover" class="on">懸停</button><button id="tqYawL">左轉（Yaw）</button><button id="tqYawR">右轉（Yaw）</button></div>
+      <ul>
+        <li>馬達讓槳往一個方向轉，機身就會被往<b>反方向</b>扭（跟直升機沒有尾槳會打轉是同一件事）。</li>
+        <li>兩顆順時針（CW）、兩顆逆時針（CCW），扭力互相抵銷，機身才不會自轉。</li>
+        <li>要<b>左轉</b>時，把 CW 那一對加速、CCW 那一對減速：總推力不變（不掉高度），但扭力不平衡，機身就往 CCW 方向轉。右轉相反。</li>
+        <li>對角線同一個方向，這樣加速一對時左右前後的推力仍然對稱，不會順便傾斜。</li>
+      </ul></div>
+  </div>
+
+  <h3>三、移動：讓一邊的馬達快一點，機身傾斜，推力就有水平分量</h3>
+  <div class="card">
+    <div class="anim"><svg id="anTilt" viewBox="0 0 320 200"></svg></div>
+    <div class="txt"><h4>前進 = 後面兩顆快、前面兩顆慢</h4>
+      <div class="ctlrow"><button id="tiHover" class="on">懸停</button><button id="tiFwd">前進</button><button id="tiBack">後退</button></div>
+      <ul>
+        <li>後面兩顆馬達加速、前面兩顆減速 → 機頭下壓、機身<b>向前傾</b>。</li>
+        <li>推力永遠垂直於機身，機身一傾斜，推力就分成「向上」和「向前」兩個分量，向前的分量推著球機前進。</li>
+        <li>左右平移（Roll）是同一個道理，只是換成左右兩側的馬達。</li>
+        <li>傾斜後向上分量變小，飛控會自動把總油門稍微加大來維持高度，這是為什麼激烈移動時電池特別耗。</li>
+      </ul></div>
+  </div>
+
+  <h3 id="fly-wrong">四、螺旋槳裝錯會怎麼樣？自己試試看</h3>
+  <div class="card">
+    <div class="anim"><svg id="anWrong" viewBox="0 0 320 240"></svg></div>
+    <div class="txt"><h4>點擊四個位置切換 A／B 槳</h4>
+      <p class="note">A 槳（順時針 CW）與 B 槳（逆時針 CCW）葉片斜度相反。正確配置是右前 B、左前 A、左後 B、右後 A。裝上去按「起飛測試」看結果。</p>
+      <div class="propsel"><button data-p="FL">左前</button><button data-p="FR">右前</button><button data-p="RL">左後</button><button data-p="RR">右後</button></div>
+      <div class="ctlrow"><button id="wrongTest">起飛測試</button><button id="wrongReset">還原正確</button></div>
+      <div class="verdict" id="wrongVerdict"></div>
+    </div>
+  </div>
+  <div class="card solo"><div class="txt"><div class="tblwrap"><table class="tbl">
+    <tr><th>裝錯方式</th><th>會發生什麼</th><th>怎麼看出來</th></tr>
+    <tr><td>一顆槳裝反（A/B 對調）</td><td>那顆槳把空氣往上吹，等於少一顆推力又多一份反向扭力：一推油門就<b>朝那個角翻倒</b></td><td>起飛瞬間往固定的一個角翻</td></tr>
+    <tr><td>相鄰兩顆對調（例如左前與右前）</td><td>前面兩顆把空氣往上吹、後面兩顆往下：一推油門就<b>往前翻倒</b>（左右對調則往側邊翻）</td><td>離地瞬間往固定的一側翻</td></tr>
+    <tr><td>對角兩顆對調</td><td>兩顆往上推、兩顆往下推，淨推力為零：<b>原地不動</b>，但機身受扭，可能側翻</td><td>油門推到底也離不了地</td></tr>
+    <tr><td>四顆全部裝反（槳上下顛倒或 A/B 全換）</td><td>全部把空氣往<b>上</b>吹，機身被壓在地上，油門全開也飛不起來，馬達與電池發熱</td><td>槳轉很快但不動、有風往上吹到手</td></tr>
+    <tr><td>換馬達時轉向裝反，又「順便」配了相反的槳</td><td>推力是對的，但扭力方向錯了：扭力抵銷不了，<b>起飛就自轉</b>，飛控修不回來</td><td>能離地，但一直打轉或明顯偏航</td></tr>
+    <tr><td>槳缺角、變形</td><td>推力不對稱又震動，飛控一直在修正：<b>抖動、飄移、耗電</b></td><td>懸停時明顯抖、聲音不均勻</td></tr>
+  </table></div>
+  <p class="note">判斷小訣竅：槳的正面（有字的那面）朝上，葉片較高的那一側就是「前緣」，槳一定往前緣方向轉。裝好後用手輕撥，看轉向跟馬達標示是否一致。</p></div></div>
+</div>
+</div>
+
+<!-- ============ 維修手冊 ============ -->
+<div id="fix" class="page" hidden>
+<div class="wrap">
+  <h2>常見故障與維修</h2>
+  <p>依「症狀」找問題，每一項從最簡單、最常見的原因開始檢查。有刷小球機的零件便宜，多數問題換零件比修快。</p>
+  <input type="search" id="fixSearch" class="fixsearch" placeholder="輸入症狀關鍵字，例如：翻倒、不轉、飄、抖、對頻">
+  <div class="card solo"><div class="txt"><h4>建議常備工具與零件</h4>
+    <p>小十字起子（PH0／PH00）、鑷子、電烙鐵與焊錫（有刷馬達多為焊線式）、熱縮套管、雙面膠與束帶、備用 A/B 槳各 4 片以上、備用有刷馬達（CW／CCW 各 2 顆）、備用電池 3～4 顆與平衡充、備用護籠或修補用尼龍束帶。</p></div></div>
+  <div id="fixList"></div>
+</div>
+</div>
+</div><!-- /content -->
+</div><!-- /main -->
+</div><!-- /shell -->
+
+<div id="shot" hidden>
+  <img id="shotImg" alt="戰術板截圖">
+  <div class="row"><button id="shotCopy">複製圖片到剪貼簿</button><button id="shotDl">下載 PNG</button><button id="shotClose">關閉</button></div>
+  <p>也可以長按或右鍵圖片另存。</p>
+</div>
+<div id="toast" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/0.152.2/three.min.js"></script>
+<script>
+/* 無人機足球戰術板 · 鍾兆羽老師整理 © 2026 · Compiled by Chao-Yu Chung */
+window.__AUTHOR__='鍾兆羽老師整理';
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+console.log('%c無人機足球一站式學習平台 · 鍾兆羽老師整理 © 2026','color:#ffc857;font-weight:700');
+
+/* ---------- 設定與狀態 ---------- */
+const cfg={L:20,W:10,H:5,goalH:3.5,goalD:2,droneD:0.4,ringR:0.5,ringT:0.15};
+const COLORS={A:0xff5a5f,B:0x3fa2ff,Adim:0x7a2f33,Bdim:0x25507a,accent:0xffc857};
+const state={
+  teams:{A:{name:'紅隊'},B:{name:'藍隊'}},
+  drones:[],           // {id,team,idx,role,x,y,h,path:[{x,y,h}],start:{x,y,h}}
+  sel:null, sel2:null, pathMode:false, playing:false, view:'free'
+};
+function defaultDrones(){
+  const L=cfg.L,W=cfg.W;
+  return [
+    {id:'A1',team:'A',idx:1,role:'S',x:L*0.30,y:W*0.5,h:2.0},
+    {id:'A2',team:'A',idx:2,role:'G',x:L*0.12,y:W*0.30,h:2.5},
+    {id:'A3',team:'A',idx:3,role:'G',x:L*0.12,y:W*0.70,h:2.5},
+    {id:'B1',team:'B',idx:1,role:'S',x:L*0.70,y:W*0.5,h:2.0},
+    {id:'B2',team:'B',idx:2,role:'G',x:L*0.88,y:W*0.30,h:2.5},
+    {id:'B3',team:'B',idx:3,role:'G',x:L*0.88,y:W*0.70,h:2.5},
+  ].map(d=>({...d,path:[]}));
+}
+state.drones=defaultDrones();
+
+/* ---------- three.js 基礎 ---------- */
+const stage=$('#stage'), labelsEl=$('#labels');
+const renderer=new THREE.WebGLRenderer({antialias:true,preserveDrawingBuffer:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+stage.insertBefore(renderer.domElement,labelsEl);
+const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0d1218);
+const camera=new THREE.PerspectiveCamera(50,1,0.1,200);
+scene.add(new THREE.HemisphereLight(0xdde8f5,0x1a2230,1.1));
+const dl=new THREE.DirectionalLight(0xffffff,0.7); dl.position.set(6,14,8); scene.add(dl);
+
+// 場地座標：x 沿長邊（0..L → -L/2..L/2），y 沿寬邊 → z，h → y
+const toW=(x,y,h)=>new THREE.Vector3(x-cfg.L/2,h,y-cfg.W/2);
+const fromW=v=>({x:v.x+cfg.L/2,y:v.z+cfg.W/2,h:v.y});
+
+/* ---------- 自製軌道相機 ---------- */
+const orbit={target:new THREE.Vector3(0,1.2,0),theta:0.35,phi:1.0,dist:19};
+function applyCam(){
+  const s=Math.sin(orbit.phi);
+  camera.position.set(orbit.target.x+orbit.dist*s*Math.sin(orbit.theta),orbit.target.y+orbit.dist*Math.cos(orbit.phi),orbit.target.z+orbit.dist*s*Math.cos(orbit.theta));
+  camera.lookAt(orbit.target);
+}
+const VIEWS={
+  free:()=>({theta:0.35,phi:1.0,dist:Math.max(cfg.L,cfg.W*1.8)*0.95,target:[0,1.2,0]}),
+  top:()=>({theta:0,phi:0.0001,dist:Math.max(cfg.L,cfg.W*1.7)*1.05,target:[0,0,0]}),
+  side:()=>({theta:0,phi:Math.PI/2-0.02,dist:cfg.L*1.15,target:[0,cfg.H/2,0]}),
+  goalA:()=>({theta:-Math.PI/2,phi:1.35,dist:cfg.L*0.95,target:[0,1.5,0]}),   // 從藍隊端看紅隊球門
+  goalB:()=>({theta:Math.PI/2,phi:1.35,dist:cfg.L*0.95,target:[0,1.5,0]}),
+};
+function setView(name){
+  const v=VIEWS[name](); Object.assign(orbit,{theta:v.theta,phi:v.phi,dist:v.dist}); orbit.target.set(...v.target);
+  state.view=name; document.querySelectorAll('#hud button').forEach(b=>b.classList.toggle('on',b.dataset.view===name)); applyCam();
+}
+
+/* ---------- 場地 ---------- */
+const arena=new THREE.Group(); scene.add(arena);
+function lineMat(c,o){return new THREE.LineBasicMaterial({color:c,transparent:o<1,opacity:o});}
+function buildArena(){
+  while(arena.children.length) arena.remove(arena.children[0]);
+  const L=cfg.L,W=cfg.W,H=cfg.H,hx=L/2,hz=W/2;
+  // 地板
+  const floor=new THREE.Mesh(new THREE.PlaneGeometry(L,W),new THREE.MeshLambertMaterial({color:0x141c26}));
+  floor.rotation.x=-Math.PI/2; floor.position.y=-0.005; arena.add(floor);
+  // 格線（1m）
+  const g=[]; for(let x=-hx;x<=hx+1e-6;x+=1){g.push(x,0,-hz,x,0,hz);} for(let z=-hz;z<=hz+1e-6;z+=1){g.push(-hx,0,z,hx,0,z);}
+  const gg=new THREE.BufferGeometry(); gg.setAttribute('position',new THREE.Float32BufferAttribute(g,3));
+  arena.add(new THREE.LineSegments(gg,lineMat(0x2c3a4a,1)));
+  // 邊界框
+  const box=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.BoxGeometry(L,H,W)),lineMat(0x5e7590,1)); box.position.y=H/2; arena.add(box);
+  // 中線、中心點
+  const mid=new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0,0.01,-hz),new THREE.Vector3(0,0.01,hz)]); arena.add(new THREE.Line(mid,lineMat(0xffffff,0.8)));
+  const cp=new THREE.Mesh(new THREE.RingGeometry(0.18,0.25,32),new THREE.MeshBasicMaterial({color:0xffffff,side:THREE.DoubleSide})); cp.rotation.x=-Math.PI/2; cp.position.y=0.011; arena.add(cp);
+  // 半場淡淡著色
+  const halfA=new THREE.Mesh(new THREE.PlaneGeometry(hx,W),new THREE.MeshBasicMaterial({color:COLORS.A,transparent:true,opacity:0.06})); halfA.rotation.x=-Math.PI/2; halfA.position.set(-hx/2,0.002,0); arena.add(halfA);
+  const halfB=halfA.clone(); halfB.material=new THREE.MeshBasicMaterial({color:COLORS.B,transparent:true,opacity:0.06}); halfB.position.x=hx/2; arena.add(halfB);
+  // 起飛區（1.5m 深、半個端線寬）
+  [[-hx,COLORS.A],[hx,COLORS.B]].forEach(([ex,c])=>{
+    const w=W/2,d=1.5,sx=ex<0?-hx+d/2:hx-d/2;
+    const z=new THREE.Mesh(new THREE.PlaneGeometry(d,w),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.18,side:THREE.DoubleSide}));
+    z.rotation.x=-Math.PI/2; z.position.set(sx,0.012,0); arena.add(z);
+    const e=new THREE.LineSegments(new THREE.EdgesGeometry(new THREE.PlaneGeometry(d,w)),lineMat(c,0.9)); e.rotation.x=-Math.PI/2; e.position.set(sx,0.013,0); arena.add(e);
+  });
+  // 球門環
+  [[-hx+cfg.goalD,COLORS.A,'A'],[hx-cfg.goalD,COLORS.B,'B']].forEach(([gx,c,t])=>{
+    const ring=new THREE.Mesh(new THREE.TorusGeometry(cfg.ringR-cfg.ringT/2,cfg.ringT/2,16,48),new THREE.MeshStandardMaterial({color:c,emissive:c,emissiveIntensity:0.35,metalness:0.2,roughness:0.5}));
+    ring.rotation.y=Math.PI/2; ring.position.set(gx,cfg.goalH,0); arena.add(ring);
+    const disc=new THREE.Mesh(new THREE.CircleGeometry(cfg.ringR-cfg.ringT,40),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.22,side:THREE.DoubleSide}));
+    disc.rotation.y=Math.PI/2; disc.position.copy(ring.position); arena.add(disc);
+    // 支柱
+    const pole=new THREE.Mesh(new THREE.CylinderGeometry(0.03,0.03,cfg.goalH-cfg.ringR,8),new THREE.MeshLambertMaterial({color:0x6b7d92}));
+    pole.position.set(gx,(cfg.goalH-cfg.ringR)/2,0); arena.add(pole);
+    // 進球方向箭頭（地面）
+    const dir=t==='A'?1:-1; const a=new THREE.ArrowHelper(new THREE.Vector3(-dir,0,0),new THREE.Vector3(gx+dir*1.6,0.02,0),1.1,c,0.35,0.22); arena.add(a);
+  });
+}
+
+/* ---------- 球機 ---------- */
+const droneGroup=new THREE.Group(); scene.add(droneGroup);
+const meshes={}; // id -> {grp, body, cage, shadow, stem, halo}
+function buildDrones(){
+  while(droneGroup.children.length) droneGroup.remove(droneGroup.children[0]);
+  const r=cfg.droneD/2;
+  state.drones.forEach(d=>{
+    const c=d.team==='A'?COLORS.A:COLORS.B;
+    const grp=new THREE.Group(); grp.userData.id=d.id;
+    const body=new THREE.Mesh(new THREE.SphereGeometry(r*0.55,24,16),new THREE.MeshStandardMaterial({color:c,roughness:0.4,metalness:0.1})); grp.add(body);
+    const cage=new THREE.Mesh(new THREE.SphereGeometry(r,14,10),new THREE.MeshBasicMaterial({color:c,wireframe:true,transparent:true,opacity:0.55})); grp.add(cage);
+    const hit=new THREE.Mesh(new THREE.SphereGeometry(r*1.4,8,6),new THREE.MeshBasicMaterial({visible:false})); hit.userData.id=d.id; grp.add(hit);
+    let halo=null;
+    if(d.role==='S'){ halo=new THREE.Mesh(new THREE.TorusGeometry(r*1.15,0.02,8,40),new THREE.MeshBasicMaterial({color:COLORS.accent})); halo.rotation.x=Math.PI/2; grp.add(halo); }
+    const selRing=new THREE.Mesh(new THREE.TorusGeometry(r*1.5,0.025,8,40),new THREE.MeshBasicMaterial({color:COLORS.accent})); selRing.visible=false; grp.add(selRing);
+    // 地面影子與垂直線
+    const shadow=new THREE.Mesh(new THREE.CircleGeometry(r*0.9,24),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.35})); shadow.rotation.x=-Math.PI/2; shadow.position.y=0.015; droneGroup.add(shadow);
+    const stem=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3(0,1,0)]),new THREE.LineDashedMaterial({color:c,dashSize:0.15,gapSize:0.1,transparent:true,opacity:0.7})); droneGroup.add(stem);
+    droneGroup.add(grp);
+    meshes[d.id]={grp,hit,shadow,stem,selRing};
+  });
+  syncMeshes();
+}
+function syncMeshes(){
+  state.drones.forEach(d=>{
+    const m=meshes[d.id]; if(!m) return;
+    const p=toW(d.x,d.y,d.h); m.grp.position.copy(p);
+    m.shadow.position.set(p.x,0.015,p.z);
+    m.stem.geometry.setFromPoints([new THREE.Vector3(p.x,0.02,p.z),new THREE.Vector3(p.x,p.y-cfg.droneD/2,p.z)]); m.stem.computeLineDistances();
+    m.selRing.visible=(state.sel===d.id||state.sel2===d.id);
+  });
+  syncPaths(); syncDistance();
+}
+
+/* ---------- 路徑箭頭 ---------- */
+const pathGroup=new THREE.Group(); scene.add(pathGroup);
+function syncPaths(){
+  while(pathGroup.children.length) pathGroup.remove(pathGroup.children[0]);
+  state.drones.forEach(d=>{
+    if(!d.path.length) return;
+    const c=d.team==='A'?COLORS.A:COLORS.B;
+    const pts=[toW(d.x,d.y,d.h),...d.path.map(p=>toW(p.x,p.y,p.h))];
+    // 若播放中，箭頭從起點畫
+    if(d.start) pts[0]=toW(d.start.x,d.start.y,d.start.h);
+    for(let i=0;i<pts.length-1;i++){
+      const a=pts[i],b=pts[i+1],v=b.clone().sub(a),len=v.length(); if(len<0.05) continue;
+      const arr=new THREE.ArrowHelper(v.clone().normalize(),a,len,c,Math.min(0.4,len*0.4),0.2); arr.line.material.linewidth=2; pathGroup.add(arr);
+      // 航點地面標記
+      const dot=new THREE.Mesh(new THREE.CircleGeometry(0.12,16),new THREE.MeshBasicMaterial({color:c,transparent:true,opacity:0.5})); dot.rotation.x=-Math.PI/2; dot.position.set(b.x,0.02,b.z); pathGroup.add(dot);
+      const st=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(b.x,0.02,b.z),b]),new THREE.LineBasicMaterial({color:c,transparent:true,opacity:0.3})); pathGroup.add(st);
+    }
+  });
+}
+
+/* ---------- 距離線 ---------- */
+const distLine=new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(),new THREE.Vector3()]),new THREE.LineDashedMaterial({color:COLORS.accent,dashSize:0.25,gapSize:0.12})); distLine.visible=false; scene.add(distLine);
+function syncDistance(){
+  const a=byId(state.sel),b=byId(state.sel2);
+  if(a&&b&&a!==b){
+    const pa=toW(a.x,a.y,a.h),pb=toW(b.x,b.y,b.h);
+    distLine.geometry.setFromPoints([pa,pb]); distLine.computeLineDistances(); distLine.visible=true;
+    const dxy=Math.hypot(a.x-b.x,a.y-b.y),d3=pa.distanceTo(pb);
+    $('#distInfo').innerHTML=`${dName(a)} ↔ ${dName(b)}：直線 <b>${d3.toFixed(2)} m</b>，水平 <b>${dxy.toFixed(2)} m</b>，高差 <b>${Math.abs(a.h-b.h).toFixed(2)} m</b>`;
+  }else{
+    distLine.visible=false;
+    $('#distInfo').textContent='點選一台球機，再按住 Shift 點另一台，會顯示兩機直線距離。';
+  }
+}
+const byId=id=>state.drones.find(d=>d.id===id);
+const dName=d=>`${state.teams[d.team].name} ${d.idx}${d.role==='S'?' S':''}`;
+
+/* ---------- 標籤（HTML 覆蓋層） ---------- */
+const labelPool={};
+function getLabel(key,cls){
+  let el=labelPool[key]; if(!el){ el=document.createElement('div'); el.className='lbl '+cls; labelsEl.appendChild(el); labelPool[key]=el; el._cls='lbl '+cls; }
+  el._used=true; return el;
+}
+const _v=new THREE.Vector3();
+function placeLabel(el,pos,dy){
+  _v.copy(pos).project(camera);
+  const w=stage.clientWidth,h=stage.clientHeight;
+  if(_v.z>1){el.style.display='none';return;}
+  el.style.display=''; el.style.left=((_v.x+1)/2*w)+'px'; el.style.top=((1-_v.y)/2*h-(dy||0))+'px';
+}
+function updateLabels(){
+  Object.values(labelPool).forEach(el=>el._used=false);
+  state.drones.forEach(d=>{
+    const el=getLabel(d.id,d.team==='A'?'red':'blue');
+    const s=(state.sel===d.id||state.sel2===d.id);
+    el.className=el._cls+(s?' sel':'');
+    el.innerHTML=`${state.teams[d.team].name} ${d.idx} · ${d.role==='S'?'前鋒':'防守'}${s?`<small>X ${d.x.toFixed(1)} · Y ${d.y.toFixed(1)} · H ${d.h.toFixed(1)} m</small>`:''}`;
+    placeLabel(el,toW(d.x,d.y,d.h),22);
+  });
+  const a=byId(state.sel),b=byId(state.sel2);
+  if(a&&b&&a!==b){ const el=getLabel('dist','dist'); const pa=toW(a.x,a.y,a.h),pb=toW(b.x,b.y,b.h); el.textContent=pa.distanceTo(pb).toFixed(2)+' m'; placeLabel(el,pa.clone().add(pb).multiplyScalar(0.5),0); }
+  const gA=getLabel('gA','goal'); gA.textContent=state.teams.A.name+'球門'; placeLabel(gA,new THREE.Vector3(-cfg.L/2+cfg.goalD,cfg.goalH+cfg.ringR,0),8);
+  const gB=getLabel('gB','goal'); gB.textContent=state.teams.B.name+'球門'; placeLabel(gB,new THREE.Vector3(cfg.L/2-cfg.goalD,cfg.goalH+cfg.ringR,0),8);
+  Object.values(labelPool).forEach(el=>{ if(!el._used) el.style.display='none'; });
+}
+
+/* ---------- 面板 ---------- */
+function clamp(v,a,b){return Math.min(b,Math.max(a,v));}
+function buildPanel(){
+  const el=$('#teams'); el.innerHTML='';
+  ['A','B'].forEach(t=>{
+    const team=document.createElement('div'); team.className='team';
+    team.innerHTML=`<div class="team-head"><span class="sw" style="background:${t==='A'?'var(--red)':'var(--blue)'}"></span><input type="text" id="name${t}" value="${state.teams[t].name}" maxlength="12" aria-label="隊名"></div>`;
+    team.querySelector('input').addEventListener('input',e=>{state.teams[t].name=e.target.value||(t==='A'?'紅隊':'藍隊'); refreshNames();});
+    state.drones.filter(d=>d.team===t).forEach(d=>{
+      const row=document.createElement('div'); row.className='drone'; row.dataset.id=d.id;
+      row.innerHTML=`<div class="tag">${d.idx}<small>${d.role==='S'?'前鋒':'防守'}</small></div>
+        <label>X 長<input type="number" step="0.1" data-k="x" id="${d.id}x"></label>
+        <label>Y 寬<input type="number" step="0.1" data-k="y" id="${d.id}y"></label>
+        <label>H 高<input type="number" step="0.1" data-k="h" id="${d.id}h"></label>
+        <input type="range" min="0.3" step="0.1" data-k="h" id="${d.id}r" aria-label="高度">`;
+      row.addEventListener('click',e=>{ if(e.target.tagName==='INPUT') return; select(d.id,e.shiftKey); });
+      row.querySelectorAll('input').forEach(inp=>inp.addEventListener('focus',()=>{ if(state.sel!==d.id) select(d.id,false); }));
+      row.querySelectorAll('input').forEach(inp=>inp.addEventListener('input',e=>{
+        const k=e.target.dataset.k,v=parseFloat(e.target.value); if(isNaN(v)) return;
+        const lim=k==='x'?cfg.L:k==='y'?cfg.W:cfg.H; d[k]=clamp(v,k==='h'?0.3:0,lim);
+        if(!state.sel) state.sel=d.id;
+        syncMeshes(); refreshRow(d,e.target);
+      }));
+      team.appendChild(row);
+    });
+    el.appendChild(team);
+  });
+  refreshPanel();
+}
+function refreshRow(d,skip){
+  ['x','y','h'].forEach(k=>{ const i=document.getElementById(d.id+k); if(i&&i!==skip) i.value=d[k].toFixed(1); });
+  const r=document.getElementById(d.id+'r'); if(r&&r!==skip){ r.max=cfg.H; r.value=d.h; }
+}
+function refreshPanel(){
+  state.drones.forEach(d=>refreshRow(d));
+  document.querySelectorAll('.drone').forEach(r=>r.classList.toggle('sel',r.dataset.id===state.sel||r.dataset.id===state.sel2));
+  $('#btnPath').classList.toggle('on',state.pathMode);
+  $('#btnPath').textContent=state.pathMode?'畫路徑中：點場地新增航點（再按一次結束）':'為選取球機畫路徑';
+}
+function refreshNames(){ $('#hudGoalA').textContent=state.teams.A.name+'球門'; $('#hudGoalB').textContent=state.teams.B.name+'球門'; syncDistance(); }
+function select(id,shift){
+  if(shift&&state.sel&&state.sel!==id){ state.sel2=id; }
+  else { state.sel=id; state.sel2=null; }
+  syncMeshes(); refreshPanel();
+}
+
+/* ---------- 互動：拖曳／點選／相機 ---------- */
+const ray=new THREE.Raycaster(), ptr=new THREE.Vector2();
+const ground=new THREE.Plane(new THREE.Vector3(0,1,0),0);
+let drag=null; // {id, plane, offset, mode:'move'|'height', startY, startH}
+let camDrag=null; // {mode:'rotate'|'pan', x,y}
+let pinch=null;
+function setPtr(e){ const r=renderer.domElement.getBoundingClientRect(); ptr.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1); ray.setFromCamera(ptr,camera); }
+function pickDrone(){ const hits=ray.intersectObjects(Object.values(meshes).map(m=>m.hit)); return hits.length?hits[0].object.userData.id:null; }
+function groundPoint(plane){ const p=new THREE.Vector3(); return ray.ray.intersectPlane(plane||ground,p)?p:null; }
+const pointers=new Map();
+renderer.domElement.addEventListener('pointerdown',e=>{
+  if(state.playing) return;
+  pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pointers.size===2){ drag=null; camDrag=null; const [a,b]=[...pointers.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y),dist:orbit.dist}; return; }
+  renderer.domElement.setPointerCapture(e.pointerId);
+  setPtr(e);
+  const id=pickDrone();
+  if(id&&e.button===0){
+    if(state.pathMode&&state.sel&&id!==state.sel){ /* 允許點其他球機作為航點目標 */ }
+    select(id,e.shiftKey);
+    const d=byId(id);
+    if(e.shiftKey&&state.sel2){ return; }           // 只是量距離
+    if(e.shiftKey){ drag={id,mode:'height',startY:e.clientY,startH:d.h}; return; }
+    const plane=new THREE.Plane(new THREE.Vector3(0,1,0),-d.h);
+    const p=groundPoint(plane); if(!p) return;
+    drag={id,mode:'move',plane,offset:p.sub(toW(d.x,d.y,d.h))};
+    return;
+  }
+  if(state.pathMode&&state.sel&&e.button===0){
+    const d=byId(state.sel);
+    let p=null;
+    if(id){ const t=byId(id); p={x:t.x,y:t.y,h:t.h}; }
+    else { const g=groundPoint(); if(g){ const q=fromW(g); p={x:clamp(q.x,0,cfg.L),y:clamp(q.y,0,cfg.W),h:d.path.length?d.path[d.path.length-1].h:d.h}; } }
+    if(p){ d.path.push(p); syncPaths(); toast(`新增航點 ${d.path.length}`); }
+    return;
+  }
+  camDrag={mode:(e.button===2||e.ctrlKey)?'pan':'rotate',x:e.clientX,y:e.clientY};
+});
+renderer.domElement.addEventListener('pointermove',e=>{
+  if(pointers.has(e.pointerId)) pointers.set(e.pointerId,{x:e.clientX,y:e.clientY});
+  if(pinch&&pointers.size===2){ const [a,b]=[...pointers.values()]; const d=Math.hypot(a.x-b.x,a.y-b.y); orbit.dist=clamp(pinch.dist*pinch.d/d,4,60); applyCam(); return; }
+  if(drag){
+    const d=byId(drag.id);
+    if(drag.mode==='height'){ d.h=clamp(drag.startH+(drag.startY-e.clientY)*0.02,0.3,cfg.H); }
+    else { setPtr(e); const p=groundPoint(drag.plane); if(!p) return; p.sub(drag.offset); const q=fromW(p); d.x=clamp(q.x,0,cfg.L); d.y=clamp(q.y,0,cfg.W); }
+    syncMeshes(); refreshRow(d); return;
+  }
+  if(camDrag){
+    const dx=e.clientX-camDrag.x,dy=e.clientY-camDrag.y; camDrag.x=e.clientX; camDrag.y=e.clientY;
+    if(camDrag.mode==='rotate'){ orbit.theta-=dx*0.006; orbit.phi=clamp(orbit.phi-dy*0.006,0.0001,Math.PI/2-0.01); }
+    else { const s=orbit.dist*0.0012; const right=new THREE.Vector3().setFromMatrixColumn(camera.matrix,0); const up=new THREE.Vector3().setFromMatrixColumn(camera.matrix,1); orbit.target.addScaledVector(right,-dx*s).addScaledVector(up,dy*s); }
+    applyCam();
+  }
+});
+function endPtr(e){ pointers.delete(e.pointerId); if(pointers.size<2) pinch=null; drag=null; camDrag=null; if(state.sel) refreshPanel(); }
+renderer.domElement.addEventListener('pointerup',endPtr); renderer.domElement.addEventListener('pointercancel',endPtr);
+renderer.domElement.addEventListener('wheel',e=>{ e.preventDefault(); orbit.dist=clamp(orbit.dist*(1+Math.sign(e.deltaY)*0.08),4,60); applyCam(); },{passive:false});
+renderer.domElement.addEventListener('contextmenu',e=>e.preventDefault());
+
+/* ---------- 視角按鈕 ---------- */
+document.querySelectorAll('#hud button').forEach(b=>b.addEventListener('click',()=>setView(b.dataset.view)));
+
+/* ---------- 路徑與播放 ---------- */
+$('#btnPath').addEventListener('click',()=>{ if(!state.sel){toast('先點選一台球機');return;} state.pathMode=!state.pathMode; refreshPanel(); });
+$('#btnClearPath').addEventListener('click',()=>{ const d=byId(state.sel); if(!d){toast('先點選一台球機');return;} d.path=[]; syncPaths(); });
+$('#btnClearAll').addEventListener('click',()=>{ state.drones.forEach(d=>d.path=[]); syncPaths(); });
+let anim=null;
+$('#btnPlay').addEventListener('click',()=>{
+  if(state.playing) return;
+  const movers=state.drones.filter(d=>d.path.length); if(!movers.length){toast('還沒有任何路徑');return;}
+  const speed=Math.max(0.2,parseFloat($('#speed').value)||3);
+  movers.forEach(d=>{ if(!d.start) d.start={x:d.x,y:d.y,h:d.h}; });
+  const tracks=movers.map(d=>{ const pts=[d.start,...d.path]; const segs=[]; let acc=0; for(let i=0;i<pts.length-1;i++){ const len=Math.hypot(pts[i+1].x-pts[i].x,pts[i+1].y-pts[i].y,pts[i+1].h-pts[i].h); segs.push({a:pts[i],b:pts[i+1],t0:acc,t1:acc+len/speed}); acc+=len/speed; } return {d,segs,total:acc}; });
+  const T=Math.max(...tracks.map(t=>t.total)); state.playing=true; state.pathMode=false; refreshPanel(); $('#btnPlay').classList.add('on');
+  const t0=performance.now();
+  (function step(now){
+    const t=(now-t0)/1000;
+    tracks.forEach(({d,segs,total})=>{
+      const tt=Math.min(t,total); const s=segs.find(s=>tt>=s.t0&&tt<=s.t1)||segs[segs.length-1];
+      const k=s.t1>s.t0?clamp((tt-s.t0)/(s.t1-s.t0),0,1):1;
+      d.x=s.a.x+(s.b.x-s.a.x)*k; d.y=s.a.y+(s.b.y-s.a.y)*k; d.h=s.a.h+(s.b.h-s.a.h)*k;
+    });
+    syncMeshes(); state.drones.forEach(d=>refreshRow(d));
+    if(t<T+0.3) anim=requestAnimationFrame(step); else { state.playing=false; $('#btnPlay').classList.remove('on'); }
+  })(t0);
+});
+$('#btnReset').addEventListener('click',()=>{ if(anim) cancelAnimationFrame(anim); state.playing=false; $('#btnPlay').classList.remove('on'); state.drones.forEach(d=>{ if(d.start){ Object.assign(d,d.start); delete d.start; } }); syncMeshes(); refreshPanel(); });
+
+/* ---------- 陣型儲存 ---------- */
+const LS='droneSoccerBoard.v1';
+function snapshot(){ return {app:'無人機足球戰術板',author:'鍾兆羽老師整理',exported:new Date().toISOString(),cfg:{...cfg},teams:JSON.parse(JSON.stringify(state.teams)),drones:state.drones.map(d=>({id:d.id,team:d.team,idx:d.idx,role:d.role,x:d.start?d.start.x:d.x,y:d.start?d.start.y:d.y,h:d.start?d.start.h:d.h,path:d.path}))}; }
+function restore(s){
+  if(!s||!s.drones) throw new Error('bad');
+  if(s.cfg) Object.assign(cfg,s.cfg); ['cfgL','cfgW','cfgH','cfgGH','cfgGD'].forEach((id,i)=>{ $('#'+id).value=[cfg.L,cfg.W,cfg.H,cfg.goalH,cfg.goalD][i]; }); $('#cfgD').value=Math.round(cfg.droneD*100);
+  if(s.teams) state.teams=s.teams;
+  state.drones=s.drones.map(d=>({...d,path:d.path||[]})); state.sel=null; state.sel2=null; delete state.playing;
+  buildArena(); buildDrones(); buildPanel(); refreshNames();
+}
+function loadSaved(){ try{ return JSON.parse(localStorage.getItem(LS)||'{}'); }catch(e){ return {}; } }
+function renderSaved(){
+  const all=loadSaved(), el=$('#saved'); el.innerHTML='';
+  const names=Object.keys(all); if(!names.length){ el.innerHTML='<div class="info">尚未儲存任何陣型（儲存在這個瀏覽器裡）。</div>'; return; }
+  names.forEach(n=>{ const it=document.createElement('div'); it.className='it'; it.innerHTML=`<span>${n}</span><button data-a="load">載入</button><button data-a="del">刪除</button>`;
+    it.querySelector('[data-a=load]').addEventListener('click',()=>{ try{ restore(all[n]); toast('已載入：'+n); }catch(e){ toast('載入失敗'); } });
+    it.querySelector('[data-a=del]').addEventListener('click',()=>{ delete all[n]; try{ localStorage.setItem(LS,JSON.stringify(all)); }catch(e){} renderSaved(); });
+    el.appendChild(it); });
+}
+$('#btnSave').addEventListener('click',()=>{ const n=$('#saveName').value.trim()||('陣型 '+new Date().toLocaleTimeString('zh-TW',{hour:'2-digit',minute:'2-digit'})); const all=loadSaved(); all[n]=snapshot(); try{ localStorage.setItem(LS,JSON.stringify(all)); toast('已儲存：'+n); }catch(e){ toast('這個瀏覽器無法儲存，請改用複製 JSON'); } renderSaved(); });
+$('#btnDefault').addEventListener('click',()=>{ state.drones=defaultDrones(); state.sel=state.sel2=null; buildDrones(); buildPanel(); });
+$('#btnExport').addEventListener('click',()=>{ const s=JSON.stringify(snapshot()); $('#json').value=s; navigator.clipboard?.writeText(s).then(()=>toast('JSON 已複製到剪貼簿'),()=>toast('已放入下方文字框，請手動複製')); });
+$('#btnImport').addEventListener('click',()=>{ try{ restore(JSON.parse($('#json').value)); toast('已載入 JSON'); }catch(e){ toast('JSON 格式不正確'); } });
+
+/* ---------- 場地設定 ---------- */
+['cfgL','cfgW','cfgH','cfgGH','cfgGD','cfgD'].forEach(id=>$('#'+id).addEventListener('change',()=>{
+  cfg.L=clamp(+$('#cfgL').value||20,10,30); cfg.W=clamp(+$('#cfgW').value||10,5,15); cfg.H=clamp(+$('#cfgH').value||5,3,8);
+  cfg.goalH=clamp(+$('#cfgGH').value||3.5,2,cfg.H-0.6); cfg.goalD=clamp(+$('#cfgGD').value||2,0.5,5); cfg.droneD=clamp(+$('#cfgD').value||40,20,60)/100;
+  state.drones.forEach(d=>{ d.x=clamp(d.x,0,cfg.L); d.y=clamp(d.y,0,cfg.W); d.h=clamp(d.h,0.3,cfg.H); });
+  buildArena(); buildDrones(); refreshPanel(); setView(state.view);
+}));
+
+/* ---------- 截圖 ---------- */
+$('#btnShot').addEventListener('click',()=>{
+  renderer.render(scene,camera);
+  // 把 HTML 標籤畫進去
+  const src=renderer.domElement, c=document.createElement('canvas'); c.width=src.width; c.height=src.height; const g=c.getContext('2d'); g.drawImage(src,0,0);
+  const sc=src.width/stage.clientWidth; g.font=`600 ${15*sc}px "Barlow Condensed","Noto Sans TC",sans-serif`; g.textAlign='center';
+  Object.values(labelPool).forEach(el=>{ if(el.style.display==='none'||!el._used) return; const x=parseFloat(el.style.left)*sc,y=parseFloat(el.style.top)*sc; const lines=el.innerText.split('\n'); const w=Math.max(...lines.map(l=>g.measureText(l).width))+14*sc, h=lines.length*18*sc+6*sc; const isDist=el.classList.contains('dist'); const top=isDist?y-h/2:y-h;
+    g.fillStyle=el.classList.contains('sel')||isDist?'#ffc857':'rgba(13,18,24,.85)'; g.fillRect(x-w/2,top,w,h); g.fillStyle=el.classList.contains('sel')||isDist?'#1a1200':'#e8eef5'; lines.forEach((l,i)=>g.fillText(l,x,top+(i+1)*18*sc-2*sc)); });
+  g.textAlign='right'; g.font=`600 ${13*sc}px "Barlow Condensed","Noto Sans TC",sans-serif`; g.fillStyle='rgba(232,238,245,.75)'; g.fillText('無人機足球戰術板 · 鍾兆羽老師整理',c.width-12*sc,c.height-12*sc);
+  const url=c.toDataURL('image/png'); $('#shotImg').src=url; $('#shot').hidden=false;
+  $('#shotDl').onclick=()=>c.toBlob(b=>saveFile('drone-soccer-'+stamp()+'.png',b));
+  $('#shotCopy').onclick=()=>{ c.toBlob(b=>{ try{ navigator.clipboard.write([new ClipboardItem({'image/png':b})]).then(()=>toast('圖片已複製'),()=>toast('此瀏覽器不支援複製圖片')); }catch(e){ toast('此瀏覽器不支援複製圖片'); } }); };
+});
+$('#shotClose').addEventListener('click',()=>{ $('#shot').hidden=true; });
+
+/* ---------- 對外 API（戰術範例庫使用） ---------- */
+window.board={
+  load(preset,play){
+    state.drones=preset.drones.map(d=>({...d,x:d.x*cfg.L/20,y:d.y*cfg.W/10,h:Math.min(cfg.H,d.h*cfg.H/5),path:(d.path||[]).map(p=>({x:p.x*cfg.L/20,y:p.y*cfg.W/10,h:Math.min(cfg.H,p.h*cfg.H/5)}))}));
+    state.sel=state.sel2=null; state.playing=false; state.pathMode=false; if(anim) cancelAnimationFrame(anim);
+    buildDrones(); buildPanel(); setView('free'); toast('已載入：'+preset.name);
+    if(play) setTimeout(()=>$('#btnPlay').click(),500);
+  }
+};
+
+/* ---------- 檔案下載（發佈頁透過 downloads 能力；獨立檔案則直接下載） ---------- */
+const stamp=()=>new Date().toISOString().slice(0,16).replace(/[-:T]/g,'');
+let dlNs=null; (async()=>{ try{ dlNs=window.claude?.use?await window.claude.use('downloads'):null; }catch(e){ dlNs=null; } })();
+async function saveFile(filename,data){
+  if(dlNs){ try{ await dlNs.save({filename,data}); toast('已儲存'); }catch(e){ if(e&&e.code!=='declined') toast('無法下載：'+(e.message||e.code||'')); } return; }
+  try{ const a=document.createElement('a'); a.href=URL.createObjectURL(data instanceof Blob?data:new Blob([data])); a.download=filename; document.body.appendChild(a); a.click(); a.remove(); }catch(e){ toast('此環境不支援下載'); }
+}
+window.saveFile=saveFile;
+$('#btnDownloadJson').addEventListener('click',()=>saveFile('drone-soccer-'+stamp()+'.json',JSON.stringify(snapshot(),null,1)));
+
+/* ---------- 其他 ---------- */
+let toastT; function toast(m){ const t=$('#toast'); t.textContent=m; t.hidden=false; t.style.opacity=1; clearTimeout(toastT); toastT=setTimeout(()=>{ t.style.opacity=0; setTimeout(()=>t.hidden=true,300); },1800); }
+window.addEventListener('keydown',e=>{ if(e.key==='Escape'){ document.getElementById('nav').classList.remove('open'); document.getElementById('navBackdrop').classList.remove('open'); state.pathMode=false; state.sel2=null; refreshPanel(); syncMeshes(); } });
+function resize(){ const w=stage.clientWidth,h=stage.clientHeight; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+new ResizeObserver(resize).observe(stage);
+
+buildArena(); buildDrones(); buildPanel(); renderSaved(); refreshNames(); resize(); setView('free');
+(function loop(){ requestAnimationFrame(loop); if(!$('#app').hidden){ renderer.render(scene,camera); updateLabels(); } })();
+})();
+</script>
+<script>
+/* 教學頁面（規則・總統盃・操作・構造・原理・維修） · 鍾兆羽老師整理 © 2026 */
+(function(){
+'use strict';
+const $=s=>document.querySelector(s);
+const NS='http://www.w3.org/2000/svg';
+const RED='#ff5a5f',BLUE='#3fa2ff',ACC='#ffc857',MUTED='#8fa1b5',LINE='#3d4f63',TXT='#e8eef5';
+const reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---------- 頁尾標示 ---------- */
+document.querySelectorAll('.page .wrap').forEach(w=>{ const f=document.createElement('div'); f.className='credit-foot'; f.innerHTML='<span>無人機足球一站式學習平台 · <b>鍾兆羽老師整理</b></span><span>© 2026 · 教學使用，轉載請註明出處</span>'; w.appendChild(f); });
+
+/* ---------- 分頁（側欄導覽） ---------- */
+const PAGES=['home','intro','taiwan','world','rules','cup','quiz','ctrl','fly','train','app','tactics','score','manage','parts','fix','lesson','glossary'];
+let tab='home';
+function goTab(id,anchor){
+  if(!PAGES.includes(id)) return; tab=id;
+  document.querySelectorAll('#nav button').forEach(x=>x.classList.toggle('on',x.dataset.tab===id));
+  PAGES.forEach(p=>{ const e=$('#'+p); if(e) e.hidden=(p!==id); });
+  $('#nav').classList.remove('open'); $('#navBackdrop').classList.remove('open');
+  window.dispatchEvent(new Event('resize'));
+  if(anchor){ const a=document.querySelector(anchor); if(a){ const pg=$('#'+id); requestAnimationFrame(()=>{ pg.scrollTop=a.offsetTop-70; a.classList.add('flash'); setTimeout(()=>a.classList.remove('flash'),1600); }); } }
+  else { const pg=$('#'+id); if(pg&&pg.classList.contains('page')) pg.scrollTop=0; }
+  try{ history.replaceState(null,'','#'+id); }catch(e){}
+}
+window.goTab=goTab;
+document.addEventListener('click',e=>{ const b=e.target.closest('[data-tab]'); if(b){ e.preventDefault(); goTab(b.dataset.tab,b.dataset.anchor); } });
+$('#navToggle').addEventListener('click',()=>{ $('#nav').classList.toggle('open'); $('#navBackdrop').classList.toggle('open'); });
+$('#navBackdrop').addEventListener('click',()=>{ $('#nav').classList.remove('open'); $('#navBackdrop').classList.remove('open'); });
+{ const h=(location.hash||'').slice(1); goTab(PAGES.includes(h)?h:'home'); }
+
+/* ---------- SVG 小工具 ---------- */
+function el(tag,attrs,parent){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(parent) parent.appendChild(e); return e; }
+function txt(parent,x,y,s,attrs){ const t=el('text',Object.assign({x,y,fill:TXT,'font-size':11,'font-family':'"Barlow Condensed","Noto Sans TC",sans-serif','font-weight':600,'text-anchor':'middle'},attrs||{}),parent); t.textContent=s; return t; }
+function miniField(svg,W,H,pad){ // 俯視小場地，回傳座標換算
+  const g=el('g',{},svg);
+  el('rect',{x:pad,y:pad,width:W-2*pad,height:H-2*pad,fill:'#141c26',stroke:LINE,'stroke-width':1.2},g);
+  el('rect',{x:pad,y:pad,width:(W-2*pad)/2,height:H-2*pad,fill:RED,opacity:.06},g);
+  el('rect',{x:W/2,y:pad,width:(W-2*pad)/2,height:H-2*pad,fill:BLUE,opacity:.06},g);
+  el('line',{x1:W/2,y1:pad,x2:W/2,y2:H-pad,stroke:'#fff',opacity:.6},g);
+  el('circle',{cx:W/2,cy:H/2,r:4,fill:'none',stroke:'#fff',opacity:.6},g);
+  // 起飛區
+  el('rect',{x:pad+1,y:H/4+pad/2,width:12,height:H/2-pad,fill:RED,opacity:.25},g); el('rect',{x:W-pad-13,y:H/4+pad/2,width:12,height:H/2-pad,fill:BLUE,opacity:.25},g);
+  // 球門（俯視為一條短線＋方向）
+  const gx=pad+22,gxB=W-pad-22;
+  el('line',{x1:gx,y1:H/2-11,x2:gx,y2:H/2+11,stroke:RED,'stroke-width':4,'stroke-linecap':'round'},g);
+  el('line',{x1:gxB,y1:H/2-11,x2:gxB,y2:H/2+11,stroke:BLUE,'stroke-width':4,'stroke-linecap':'round'},g);
+  return {gxA:gx,gxB,cy:H/2};
+}
+function drone(svg,color,striker){ const g=el('g',{},svg); el('circle',{r:7,fill:color,opacity:.9},g); el('circle',{r:9.5,fill:'none',stroke:color,'stroke-width':1,opacity:.7,'stroke-dasharray':'2 2'},g); if(striker) el('circle',{r:12,fill:'none',stroke:ACC,'stroke-width':1.5},g); g.move=(x,y)=>g.setAttribute('transform',`translate(${x},${y})`); return g; }
+const lerp=(a,b,t)=>a+(b-a)*t, ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2, clamp=(v,a,b)=>Math.min(b,Math.max(a,v));
+const anims=[]; function addAnim(page,fn){ anims.push({page,fn}); }
+let t0=performance.now();
+(function loop(now){ requestAnimationFrame(loop); if(tab==='app') return; const t=Math.max(0,(now-t0)/1000); anims.forEach(a=>{ if(a.page!==tab) return; try{ a.fn(t); }catch(e){ console.warn(e); } }); })(t0);
+
+function cycleSteps(page,sel,period){ const st=[...document.querySelectorAll(sel)]; addAnim(page,t=>{ const i=Math.floor(t/period)%st.length; st.forEach((s,j)=>s.classList.toggle('on',j===i)); }); }
+function timelineAnim(page,svg,segs,W,y,dur){ const x0=16,x1=W-16,total=segs[segs.length-1][1],sx=m=>x0+(x1-x0)*m/total;
+  segs.forEach(([a,b,l,c])=>{ el('rect',{x:sx(a),y:y-10,width:sx(b)-sx(a)-2,height:20,rx:3,fill:c,opacity:c===ACC?.85:.35},svg); txt(svg,(sx(a)+sx(b))/2,y+4,l,{fill:c===ACC?'#1a1200':TXT,'font-size':11}); txt(svg,(sx(a)+sx(b))/2,y+26,(b-a)+' 分鐘',{fill:MUTED,'font-size':10}); });
+  const cur=el('line',{x1:sx(0),y1:y-16,x2:sx(0),y2:y+16,stroke:'#fff','stroke-width':2},svg); const clock=txt(svg,W/2,y+48,'',{'font-size':16,fill:ACC});
+  addAnim(page,t=>{ const p=(t*1.2)%total; cur.setAttribute('x1',sx(p)); cur.setAttribute('x2',sx(p)); const seg=segs.find(s=>p>=s[0]&&p<s[1])||segs[0]; const rem=seg[1]-p,mm=Math.floor(rem),ss=Math.floor((rem-mm)*60); clock.textContent=`${seg[2]}　剩 ${mm}:${String(ss).padStart(2,'0')}`; }); }
+
+/* ---------- 一、得分動畫 ---------- */
+/* 鍾兆羽老師整理 */
+(function(){
+  const svg=$('#anGoal'),W=320,H=170,f=miniField(svg,W,H,14);
+  const guardA1=drone(svg,RED),guardA2=drone(svg,RED),gB1=drone(svg,BLUE),gB2=drone(svg,BLUE),sB=drone(svg,BLUE,true),s=drone(svg,RED,true);
+  gB1.move(f.gxB-40,f.cy-30); gB2.move(f.gxB-40,f.cy+30); sB.move(W*0.62,f.cy+45);
+  const flash=txt(svg,W/2,40,'GOAL!',{'font-size':26,fill:ACC,opacity:0});
+  const cap=$('#anGoalCap');
+  const D=9; // 週期秒
+  addAnim('rules',t=>{
+    const p=(t%D);
+    let x,y,c;
+    if(p<3){ const k=ease(p/3); x=lerp(60,f.gxB+18,k); y=lerp(f.cy+20,f.cy,k); c='前鋒從正面穿過對方球門環'; guardA1.move(lerp(80,f.gxB-25,k),f.cy-28); guardA2.move(lerp(80,W*0.6,k),f.cy+40); flash.setAttribute('opacity',0); }
+    else if(p<4.2){ x=f.gxB+18; y=f.cy; c='得分！'; flash.setAttribute('opacity',Math.sin((p-3)/1.2*Math.PI)); }
+    else if(p<7.5){ const k=ease((p-4.2)/3.3); x=lerp(f.gxB+18,90,k); y=lerp(f.cy,f.cy+10,k); c='全隊退回己方半場（越過中線）'; guardA1.move(lerp(f.gxB-25,70,k),f.cy-28); guardA2.move(lerp(W*0.6,70,k),f.cy+40); flash.setAttribute('opacity',0); }
+    else { x=90; y=f.cy+10; c='可以再次進攻'; guardA1.move(70,f.cy-28); guardA2.move(70,f.cy+40); }
+    s.move(x,y); cap.textContent=c;
+  });
+})();
+
+/* ---------- 二、賽制時間軸 ---------- */
+timelineAnim('rules',$('#anTime'),[[0,3,'第 1 局',ACC],[3,5.5,'休息',MUTED],[5.5,8.5,'第 2 局',ACC],[8.5,11,'休息',MUTED],[11,14,'第 3 局',ACC]],320,50);
+
+/* ---------- 三、開局流程（步驟輪播） ---------- */
+cycleSteps('rules','#anStart .step',1.8);
+
+/* ---------- 四、角色 ---------- */
+(function(){
+  const svg=$('#anRole'),W=320,H=170,f=miniField(svg,W,H,14);
+  const s=drone(svg,RED,true),g1=drone(svg,RED),g2=drone(svg,RED),bs=drone(svg,BLUE,true),bg1=drone(svg,BLUE),bg2=drone(svg,BLUE);
+  const lab=(x,y,t)=>txt(svg,x,y,t,{'font-size':10,fill:ACC});
+  const L1=lab(0,0,'前鋒'),L2=lab(0,0,'輔助'),L3=lab(0,0,'防守');
+  addAnim('rules',t=>{
+    const k=Math.sin(t*1.2)*0.5+0.5; // 來回推進
+    const sx=lerp(110,200,k),sy=f.cy+Math.sin(t*2)*10;
+    s.move(sx,sy); L1.setAttribute('x',sx); L1.setAttribute('y',sy-16);
+    g1.move(sx+28,sy-22); L2.setAttribute('x',sx+28); L2.setAttribute('y',sy-40);
+    g2.move(f.gxA+22,f.cy+Math.cos(t*1.5)*18); L3.setAttribute('x',f.gxA+22); L3.setAttribute('y',f.cy-24+Math.cos(t*1.5)*18);
+    bs.move(lerp(230,180,k),f.cy+40); bg1.move(f.gxB-30,f.cy-25+Math.sin(t*1.7)*12); bg2.move(f.gxB-45,f.cy+25);
+  });
+})();
+
+/* ---------- 五、犯規三連播 ---------- */
+(function(){
+  const svg=$('#anFoul'),W=320,H=170,f=miniField(svg,W,H,14),cap=$('#anFoulCap');
+  const s=drone(svg,RED,true),g=drone(svg,RED),b=drone(svg,BLUE);
+  const whistle=txt(svg,W/2,36,'',{'font-size':16,fill:ACC});
+  const bad=txt(svg,W/2,H-22,'',{'font-size':13,fill:'#ff7b7b'});
+  b.move(f.gxB-40,f.cy-28);
+  const D=15;
+  addAnim('rules',t=>{
+    const p=t%D;
+    if(p<5){ // 提早起飛
+      const k=p/5; whistle.textContent=k<0.6?'裁判尚未鳴笛…':'嗶！'; s.move(k<0.3?f.gxA-4:lerp(f.gxA-4,90,ease(clamp((k-0.3)/0.4,0,1))),f.cy+20); g.move(f.gxA-4,f.cy-20);
+      cap.textContent='犯規 1：鳴笛前提早離開起飛區'; bad.textContent=k>0.35&&k<0.6?'提早起飛 → 罰球':''; }
+    else if(p<10){ // 得分後未退回
+      const k=(p-5)/5; whistle.textContent='';
+      const x=k<0.4?lerp(150,f.gxB+18,ease(k/0.4)):k<0.7?lerp(f.gxB+18,f.gxB-40,ease((k-0.4)/0.3)):lerp(f.gxB-40,f.gxB+18,ease((k-0.7)/0.3));
+      s.move(x,f.cy); g.move(W*0.62,f.cy+40);
+      cap.textContent='犯規 2：得分後沒退回己方半場就再射門'; bad.textContent=k>0.7?'第二球不算 → 罰球':k>0.4?'需先退回中線左側':''; }
+    else { // 非 Striker 穿過自家球門
+      const k=(p-10)/5; whistle.textContent='';
+      s.move(120,f.cy+30); g.move(lerp(f.gxA+30,f.gxA-14,ease(clamp(k/0.6,0,1))),f.cy); b.move(lerp(200,f.gxA+20,ease(clamp(k/0.6,0,1))),f.cy-10);
+      cap.textContent='犯規 3：非前鋒為了防守穿過自家球門環'; bad.textContent=k>0.6?'防守機穿過自家環 → 罰球':''; }
+  });
+})();
+
+/* ---------- 搖桿與球機互動 ---------- */
+/* 鍾兆羽老師整理 */
+(function(){
+  const tx=$('#txSvg'),ds=$('#droneSvg');
+  let mode=2; const st={lx:0,ly:0,rx:0,ry:0}; // -1..1，ly/ry 上為正
+  const drn={x:0,y:0,h:0,yaw:0}; // 頂視 x,y（右、前），高度，機頭角（度，0=朝前）
+  // 遙控器
+  el('rect',{x:20,y:30,width:320,height:180,rx:22,fill:'#1c2531',stroke:LINE},tx);
+  el('rect',{x:150,y:20,width:60,height:14,rx:4,fill:'#2c3a4a'},tx); el('line',{x1:60,y1:30,x2:40,y2:2,stroke:MUTED,'stroke-width':3},tx);
+  const gimbal=(cx,cy)=>{ el('circle',{cx,cy,r:52,fill:'#0d1218',stroke:LINE},tx); el('line',{x1:cx-52,y1:cy,x2:cx+52,y2:cy,stroke:LINE,'stroke-dasharray':'3 3'},tx); el('line',{x1:cx,y1:cy-52,x2:cx,y2:cy+52,stroke:LINE,'stroke-dasharray':'3 3'},tx); const k=el('circle',{cx,cy,r:16,fill:'#3d4f63',stroke:'#8fa1b5','stroke-width':2,style:'cursor:grab'},tx); el('circle',{cx,cy,r:6,fill:'#0d1218','pointer-events':'none'},tx); return {cx,cy,k}; };
+  const L=gimbal(100,125),R=gimbal(260,125);
+  const lblL=[txt(tx,100,62,'',{fill:ACC}),txt(tx,100,196,'',{fill:ACC}),txt(tx,40,128,'',{fill:ACC}),txt(tx,160,128,'',{fill:ACC})];
+  const lblR=[txt(tx,260,62,'',{fill:ACC}),txt(tx,260,196,'',{fill:ACC}),txt(tx,200,128,'',{fill:ACC}),txt(tx,320,128,'',{fill:ACC})];
+  txt(tx,100,222,'左搖桿',{fill:MUTED}); txt(tx,260,222,'右搖桿',{fill:MUTED});
+  function labels(){
+    const thr=['油門 ↑','油門 ↓'],yaw=['← 左轉','右轉 →'],pit=['前進 ↑','後退 ↓'],rol=['← 左移','右移 →'];
+    const [a,b]=mode===2?[[...thr,...yaw],[...pit,...rol]]:[[...pit,...yaw],[...thr,...rol]];
+    lblL.forEach((t,i)=>t.textContent=a[i]); lblR.forEach((t,i)=>t.textContent=b[i]);
+    $('#modeDesc').textContent=mode===2?'左桿：油門＋旋轉　右桿：前後＋左右':'左桿：前後＋旋轉　右桿：油門＋左右';
+  }
+  $('#modeM2').addEventListener('click',()=>{mode=2;$('#modeM2').classList.add('on');$('#modeM1').classList.remove('on');labels();});
+  $('#modeM1').addEventListener('click',()=>{mode=1;$('#modeM1').classList.add('on');$('#modeM2').classList.remove('on');labels();});
+  labels();
+  // 拖曳搖桿
+  let grab=null;
+  function svgPt(e){ const p=tx.createSVGPoint(); p.x=e.clientX; p.y=e.clientY; return p.matrixTransform(tx.getScreenCTM().inverse()); }
+  [['l',L],['r',R]].forEach(([side,g])=>{
+    g.k.addEventListener('pointerdown',e=>{ grab=side; demo=null; g.k.setPointerCapture(e.pointerId); e.preventDefault(); });
+    g.k.addEventListener('pointermove',e=>{ if(grab!==side) return; const p=svgPt(e); st[side+'x']=clamp((p.x-g.cx)/36,-1,1); st[side+'y']=clamp((g.cy-p.y)/36,-1,1); });
+    const rel=()=>{ if(grab===side){ grab=null; st[side+'x']=0; st[side+'y']=0; } };
+    g.k.addEventListener('pointerup',rel); g.k.addEventListener('pointercancel',rel);
+  });
+  // 鍵盤
+  const keys={};
+  window.addEventListener('keydown',e=>{ if(tab!=='ctrl'||e.target.tagName==='INPUT') return; keys[e.key.toLowerCase()]=1; demo=null; if(e.key.startsWith('Arrow')) e.preventDefault(); });
+  window.addEventListener('keyup',e=>{ keys[e.key.toLowerCase()]=0; });
+  // 示範
+  let demo=null,demoT=0;
+  document.querySelectorAll('.demo button').forEach(b=>b.addEventListener('click',()=>{ demo=b.dataset.demo==='stop'?null:b.dataset.demo; demoT=performance.now(); document.querySelectorAll('.demo button').forEach(x=>x.classList.toggle('on',x===b&&demo)); }));
+  // 球機畫面：左＝俯視，右＝側視
+  el('rect',{x:10,y:14,width:200,height:200,rx:6,fill:'#141c26',stroke:LINE},ds); txt(ds,110,10,'俯視（你站在下方往前看）',{fill:MUTED,'font-size':10});
+  for(let i=1;i<5;i++){ el('line',{x1:10+i*40,y1:14,x2:10+i*40,y2:214,stroke:LINE,opacity:.5},ds); el('line',{x1:10,y1:14+i*40,x2:210,y2:14+i*40,stroke:LINE,opacity:.5},ds); }
+  el('path',{d:'M110 205 l-6 6 l12 0 z',fill:MUTED},ds); txt(ds,110,226,'操作者',{fill:MUTED,'font-size':10});
+  el('rect',{x:225,y:14,width:125,height:200,rx:6,fill:'#141c26',stroke:LINE},ds); txt(ds,287,10,'側視（高度）',{fill:MUTED,'font-size':10});
+  el('line',{x1:230,y1:206,x2:345,y2:206,stroke:MUTED},ds);
+  const top=el('g',{},ds); el('circle',{r:16,fill:RED,opacity:.9},top); el('circle',{r:20,fill:'none',stroke:RED,'stroke-dasharray':'3 2'},top); el('path',{d:'M0 -20 l-6 8 l12 0 z',fill:ACC},top); txt(top,0,4,'頭',{fill:'#fff','font-size':9});
+  const side=el('g',{},ds); el('circle',{r:14,fill:RED,opacity:.9},side); el('circle',{r:18,fill:'none',stroke:RED,'stroke-dasharray':'3 2'},side);
+  const shadow=el('ellipse',{cx:287,cy:206,rx:14,ry:3,fill:'#000',opacity:.4},ds);
+  const hTxt=txt(ds,287,226,'',{fill:ACC,'font-size':12});
+  const readout=txt(tx,180,14,'',{fill:ACC,'font-size':12});
+  let last=performance.now();
+  addAnim('ctrl',()=>{
+    const now=performance.now(),dt=Math.min(0.05,(now-last)/1000); last=now;
+    // 示範動畫覆寫搖桿
+    if(demo){ const p=(now-demoT)/1000, s=Math.sin(p*1.5); const v=Math.abs(s)>0.15?Math.sign(s):0; const set=(k,val)=>{ st.lx=st.ly=st.rx=st.ry=0; st[k]=val*0.8; };
+      const map={thr:mode===2?'ly':'ry',yaw:'lx',pit:mode===2?'ry':'ly',rol:'rx'}; set(map[demo],v); if(demo!=='thr'&&drn.h<1) drn.h=1; }
+    else if(!grab){ // 鍵盤
+      const thrK=(keys.w?1:0)-(keys.s?1:0),yawK=(keys.d?1:0)-(keys.a?1:0),pitK=(keys.arrowup?1:0)-(keys.arrowdown?1:0),rolK=(keys.arrowright?1:0)-(keys.arrowleft?1:0);
+      if(mode===2){ st.ly=thrK; st.lx=yawK; st.ry=pitK; st.rx=rolK; } else { st.ly=pitK; st.lx=yawK; st.ry=thrK; st.rx=rolK; }
+    }
+    L.k.setAttribute('cx',L.cx+st.lx*36); L.k.setAttribute('cy',L.cy-st.ly*36); R.k.setAttribute('cx',R.cx+st.rx*36); R.k.setAttribute('cy',R.cy-st.ry*36);
+    const thr=mode===2?st.ly:st.ry, yaw=st.lx, pit=mode===2?st.ry:st.ly, rol=st.rx;
+    // 動力學（簡化）
+    drn.h=clamp(drn.h+thr*1.2*dt,0,3); drn.yaw+=yaw*120*dt;
+    const r=drn.yaw*Math.PI/180; const fx=Math.sin(r),fy=Math.cos(r); // 機頭方向（俯視：y 向前）
+    if(drn.h>0.05){ drn.x=clamp(drn.x+(fx*pit+fy*rol)*1.6*dt,-2.2,2.2); drn.y=clamp(drn.y+(fy*pit-fx*rol)*1.6*dt,-2.2,2.2); }
+    top.setAttribute('transform',`translate(${110+drn.x*40},${114-drn.y*40}) rotate(${drn.yaw})`);
+    side.setAttribute('transform',`translate(287,${192-drn.h*55})`); shadow.setAttribute('rx',14-drn.h*2);
+    hTxt.textContent='高度 '+drn.h.toFixed(1)+' m';
+    const act=[]; if(thr>0.1)act.push('上升'); if(thr<-0.1)act.push('下降'); if(yaw>0.1)act.push('右轉'); if(yaw<-0.1)act.push('左轉'); if(pit>0.1)act.push('前進'); if(pit<-0.1)act.push('後退'); if(rol>0.1)act.push('右移'); if(rol<-0.1)act.push('左移');
+    readout.textContent=act.length?act.join('＋'):(drn.h>0.05?'懸停':'停在地面（推油門起飛）');
+  });
+  // 流程步驟輪播
+  cycleSteps('ctrl','#flightSteps .step',2.2);
+})();
+
+/* ================= 球機構造 3D ================= */
+/* 鍾兆羽老師整理 */
+(function(){
+  const view=$('#partsView');
+  const renderer=new THREE.WebGLRenderer({antialias:true,alpha:true}); renderer.setPixelRatio(Math.min(devicePixelRatio,2)); view.insertBefore(renderer.domElement,view.firstChild);
+  const scene=new THREE.Scene(); scene.background=new THREE.Color(0x0d1218);
+  const camera=new THREE.PerspectiveCamera(40,1,0.1,200);
+  scene.add(new THREE.HemisphereLight(0xdde8f5,0x1a2230,1.0)); const dl=new THREE.DirectionalLight(0xffffff,0.9); dl.position.set(8,12,6); scene.add(dl);
+  const grid=new THREE.GridHelper(40,20,0x2c3a4a,0x1c2531); grid.position.y=-11; scene.add(grid);
+  const orbit={theta:0.7,phi:1.1,dist:36,target:new THREE.Vector3(0,0,0)};
+  function applyCam(){ const s=Math.sin(orbit.phi); camera.position.set(orbit.dist*s*Math.sin(orbit.theta),orbit.dist*Math.cos(orbit.phi),orbit.dist*s*Math.cos(orbit.theta)).add(orbit.target); camera.lookAt(orbit.target); }
+  let cd=null; const ptrs=new Map(); let pinch=null;
+  renderer.domElement.addEventListener('pointerdown',e=>{ ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(ptrs.size===2){ const [a,b]=[...ptrs.values()]; pinch={d:Math.hypot(a.x-b.x,a.y-b.y),dist:orbit.dist}; cd=null; return; } renderer.domElement.setPointerCapture(e.pointerId); cd={x:e.clientX,y:e.clientY}; });
+  renderer.domElement.addEventListener('pointermove',e=>{ if(ptrs.has(e.pointerId)) ptrs.set(e.pointerId,{x:e.clientX,y:e.clientY}); if(pinch&&ptrs.size===2){ const [a,b]=[...ptrs.values()]; orbit.dist=clamp(pinch.dist*pinch.d/Math.hypot(a.x-b.x,a.y-b.y),12,80); applyCam(); return; } if(!cd) return; orbit.theta-=(e.clientX-cd.x)*0.008; orbit.phi=clamp(orbit.phi-(e.clientY-cd.y)*0.008,0.05,Math.PI-0.05); cd={x:e.clientX,y:e.clientY}; applyCam(); });
+  const up=e=>{ ptrs.delete(e.pointerId); if(ptrs.size<2) pinch=null; cd=null; }; renderer.domElement.addEventListener('pointerup',up); renderer.domElement.addEventListener('pointercancel',up);
+  renderer.domElement.addEventListener('wheel',e=>{ e.preventDefault(); orbit.dist=clamp(orbit.dist*(1+Math.sign(e.deltaY)*0.08),12,80); applyCam(); },{passive:false});
+
+  // 零件定義（單位 cm，球徑 20）
+  const PARTS=[
+    {id:'cage',name:'護籠（外框）',color:0x9fb3c8,desc:'20 cm 的球型外殼，比賽時互相撞擊靠它保護槳與機身。多為塑膠射出件拼接，撞鬆了會卡到槳，每次比賽前檢查扣點。'},
+    {id:'frame',name:'機架（X 型臂）',color:0x6b7d92,desc:'固定馬達與飛控的骨架。X 型配置讓四顆馬達到中心距離相等，重心在正中央。'},
+    {id:'motor',name:'有刷馬達 ×4',color:0x3a3f47,desc:'空心杯有刷馬達（常見 7 mm 或 8.5 mm），兩顆順時針、兩顆逆時針，用線色或標示區分。是消耗品，推力衰退就換。'},
+    {id:'propA',name:'A 槳 ×2（順時針 CW）',color:0x5ad38a,desc:'裝在左前與右後。葉片斜度朝一個方向，只能配順時針轉的馬達。'},
+    {id:'propB',name:'B 槳 ×2（逆時針 CCW）',color:0xc084fc,desc:'裝在右前與左後。與 A 槳互為鏡像，裝反會把空氣往上吹。'},
+    {id:'fc',name:'飛控板（含接收機）',color:0x2dd4bf,desc:'球機的大腦：陀螺儀＋加速度計每秒讀取上千次姿態，依搖桿指令算出四顆馬達各自要多快。教育用球機通常把接收機整合在同一片板子上。'},
+    {id:'batt',name:'鋰電池（1S 3.7 V）',color:0xffc857,desc:'容量約 300～600 mAh，飛 5～8 分鐘。插拔時抓插頭不要拉線；鼓起、發燙就停用。'},
+    {id:'led',name:'LED 燈環',color:0xff5a5f,desc:'可切換顏色，比賽時用來標示隊伍與前鋒，也讓裁判和觀眾看得到球在哪裡。'},
+    {id:'ant',name:'天線',color:0xe8eef5,desc:'接收遙控訊號。撞斷或折彎會讓訊號變差、失控保護頻繁觸發。'},
+  ];
+  const mats={}; PARTS.forEach(p=>mats[p.id]=new THREE.MeshStandardMaterial({color:p.color,roughness:0.5,metalness:0.15,transparent:true}));
+  const objs=[]; // {mesh, part, base:Vector3, dir:Vector3}
+  const root=new THREE.Group(); scene.add(root);
+  function add(mesh,part,dir){ mesh.userData.part=part; objs.push({mesh,part,base:mesh.position.clone(),dir:dir.clone()}); root.add(mesh); return mesh; }
+  // 護籠
+  const cage=new THREE.Group();
+  const wire=new THREE.Mesh(new THREE.IcosahedronGeometry(10,2),new THREE.MeshBasicMaterial({color:0x9fb3c8,wireframe:true,transparent:true,opacity:0.35})); cage.add(wire);
+  [0,Math.PI/3,2*Math.PI/3].forEach(a=>{ const r=new THREE.Mesh(new THREE.TorusGeometry(10,0.18,8,64),mats.cage); r.rotation.y=a; cage.add(r); });
+  const eq=new THREE.Mesh(new THREE.TorusGeometry(10,0.18,8,64),mats.cage); eq.rotation.x=Math.PI/2; cage.add(eq);
+  cage.userData.part='cage'; objs.push({mesh:cage,part:'cage',base:new THREE.Vector3(),dir:new THREE.Vector3(0,1,0),scaleExplode:true}); root.add(cage);
+  // 機架
+  const armLen=6.2; const pos={FR:[armLen*0.707,0,-armLen*0.707],FL:[-armLen*0.707,0,-armLen*0.707],RL:[-armLen*0.707,0,armLen*0.707],RR:[armLen*0.707,0,armLen*0.707]};
+  const frame=new THREE.Group();
+  [Math.PI/4,-Math.PI/4].forEach(a=>{ const b=new THREE.Mesh(new THREE.BoxGeometry(armLen*2+1,0.5,1.2),mats.frame); b.rotation.y=a; frame.add(b); });
+  frame.add(new THREE.Mesh(new THREE.CylinderGeometry(2.6,2.6,0.5,24),mats.frame));
+  add(frame,'frame',new THREE.Vector3(0,0,0));
+  // 馬達與槳
+  const DIR={FR:-1,FL:1,RL:-1,RR:1}; // +1 CW（俯視），-1 CCW
+  const props={};
+  Object.entries(pos).forEach(([k,[x,y,z]])=>{
+    const m=new THREE.Mesh(new THREE.CylinderGeometry(0.45,0.45,1.8,16),mats.motor); m.position.set(x,1.1,z); add(m,'motor',new THREE.Vector3(x,0,z).normalize().multiplyScalar(0.5).add(new THREE.Vector3(0,-0.4,0)));
+    const cw=DIR[k]>0, pid=cw?'propA':'propB';
+    const pg=new THREE.Group(); pg.position.set(x,2.2,z);
+    [0,Math.PI].forEach(a=>{ const bl=new THREE.Mesh(new THREE.BoxGeometry(2.3,0.08,0.7),mats[pid]); bl.position.x=1.25; const h=new THREE.Group(); h.add(bl); h.rotation.y=a; bl.rotation.x=(cw?1:-1)*0.35; pg.add(h); });
+    pg.add(new THREE.Mesh(new THREE.CylinderGeometry(0.35,0.35,0.5,12),mats[pid]));
+    add(pg,pid,new THREE.Vector3(x,0,z).normalize().multiplyScalar(0.8).add(new THREE.Vector3(0,2.2,0)));
+    // 方向弧線
+    const arc=new THREE.Mesh(new THREE.TorusGeometry(2.0,0.08,6,32,Math.PI*1.5),new THREE.MeshBasicMaterial({color:cw?0x5ad38a:0xc084fc})); arc.rotation.x=Math.PI/2; arc.rotation.z=cw?0:Math.PI/2;
+    const cone=new THREE.Mesh(new THREE.ConeGeometry(0.3,0.7,10),arc.material);
+    const ex=Math.cos(cw?0:Math.PI*1.5),ez=Math.sin(cw?0:Math.PI*1.5); cone.position.set(2.0*ex,0,cw?2.0*ez:-2.0*ez); cone.rotation.x=Math.PI/2; cone.rotation.z=cw?0:Math.PI;
+    const dg=new THREE.Group(); dg.add(arc); dg.add(cone); dg.position.set(x,3.2,z); dg.visible=false; dg.rotation.y=cw?0:Math.PI/2; root.add(dg);
+    props[k]={pg,dir:DIR[k],dg};
+  });
+  // 飛控、電池、LED、天線
+  const fc=new THREE.Group(); fc.add(new THREE.Mesh(new THREE.BoxGeometry(2.8,0.25,2.8),mats.fc)); const chip=new THREE.Mesh(new THREE.BoxGeometry(0.8,0.3,0.8),new THREE.MeshStandardMaterial({color:0x111827})); chip.position.y=0.25; fc.add(chip); fc.position.y=0.9; add(fc,'fc',new THREE.Vector3(0,2.5,0));
+  const batt=new THREE.Mesh(new THREE.BoxGeometry(3.6,1.0,1.8),mats.batt); batt.position.y=-1.0; add(batt,'batt',new THREE.Vector3(0,-3,0));
+  const led=new THREE.Mesh(new THREE.TorusGeometry(2.4,0.18,8,48),new THREE.MeshStandardMaterial({color:0xff5a5f,emissive:0xff5a5f,emissiveIntensity:0.6,transparent:true})); mats.led=led.material; led.rotation.x=Math.PI/2; led.position.y=-0.4; add(led,'led',new THREE.Vector3(0,-1.6,0));
+  const ant=new THREE.Mesh(new THREE.CylinderGeometry(0.08,0.08,3.5,6),mats.ant); ant.position.set(-1.2,2.6,1.4); ant.rotation.z=0.4; add(ant,'ant',new THREE.Vector3(-1.5,2.5,1.5));
+
+  // 狀態
+  let spin=false, showCage=true, showDir=false, sel=null, explode=0, angle=0;
+  function applyState(){
+    objs.forEach(o=>{ if(o.scaleExplode){ o.mesh.scale.setScalar(1+explode*0.9); } else { o.mesh.position.copy(o.base).addScaledVector(o.dir,explode*4.5); } });
+    Object.keys(mats).forEach(k=>{ const m=mats[k]; m.opacity=sel&&sel!==k?0.25:1; m.emissive=new THREE.Color(sel===k?0xffc857:(k==='led'?0xff5a5f:0x000000)); m.emissiveIntensity=sel===k?0.5:(k==='led'?0.6:0); });
+    wire.material.opacity=sel&&sel!=='cage'?0.08:0.35; cage.visible=showCage;
+    Object.values(props).forEach(p=>p.dg.visible=showDir);
+    document.querySelectorAll('.part').forEach(p=>p.classList.toggle('on',p.dataset.id===sel));
+  }
+  // 清單
+  const list=$('#partList');
+  PARTS.forEach(p=>{ const d=document.createElement('div'); d.className='part'; d.dataset.id=p.id; d.innerHTML=`<span class="sw" style="background:#${p.color.toString(16).padStart(6,'0')}"></span><div><b>${p.name}</b><span>${p.desc}</span></div>`; d.addEventListener('click',()=>{ sel=sel===p.id?null:p.id; applyState(); }); list.appendChild(d); });
+  $('#btnSpin').addEventListener('click',()=>{ spin=!spin; $('#btnSpin').textContent=spin?'■ 停止螺旋槳':'▶ 啟動螺旋槳'; $('#btnSpin').classList.toggle('on',spin); });
+  $('#btnCage').addEventListener('click',()=>{ showCage=!showCage; $('#btnCage').textContent=showCage?'隱藏護籠':'顯示護籠'; applyState(); });
+  $('#btnDir').addEventListener('click',()=>{ showDir=!showDir; $('#btnDir').classList.toggle('on',showDir); applyState(); });
+  $('#explode').addEventListener('input',e=>{ explode=+e.target.value; applyState(); });
+  // 點模型選零件
+  const ray=new THREE.Raycaster(),pv=new THREE.Vector2(); let downAt=null;
+  renderer.domElement.addEventListener('pointerdown',e=>{ downAt={x:e.clientX,y:e.clientY}; });
+  renderer.domElement.addEventListener('pointerup',e=>{ if(!downAt||Math.hypot(e.clientX-downAt.x,e.clientY-downAt.y)>4) return; const r=renderer.domElement.getBoundingClientRect(); pv.set(((e.clientX-r.left)/r.width)*2-1,-((e.clientY-r.top)/r.height)*2+1); ray.setFromCamera(pv,camera); const hits=ray.intersectObjects(root.children.filter(c=>c!==cage||showCage),true); let h=hits.find(x=>{ let o=x.object; while(o&&!o.userData.part) o=o.parent; return o&&o.userData.part&&(showCage||o.userData.part!=='cage'); }); if(h){ let o=h.object; while(o&&!o.userData.part) o=o.parent; sel=sel===o.userData.part?null:o.userData.part; } else sel=null; applyState(); });
+  function resize(){ const w=view.clientWidth,h=view.clientHeight; if(!w||!h) return; renderer.setSize(w,h,false); camera.aspect=w/h; camera.updateProjectionMatrix(); }
+  new ResizeObserver(resize).observe(view);
+  applyCam(); applyState(); resize();
+  let last=performance.now();
+  (function loop(now){ requestAnimationFrame(loop); if(tab!=='parts') return; const dt=(now-last)/1000; last=now; if(spin&&!reduce){ angle+=dt*18; Object.values(props).forEach(p=>p.pg.rotation.y=-p.dir*angle); } if(!cd&&!pinch) { orbit.theta+=dt*0.08; applyCam(); } renderer.render(scene,camera); })(last);
+})();
+
+/* ================= 飛行原理 ================= */
+/* 鍾兆羽老師整理 */
+(function(){
+  const GREEN='#5ad38a',PURPLE='#c084fc';
+  function propTop(svg,cx,cy,r,color){ const g=el('g',{transform:`translate(${cx},${cy})`},svg); el('circle',{r,fill:'none',stroke:color,'stroke-width':1.5,opacity:.6},g); const bl=el('g',{},g); el('rect',{x:-r,y:-3,width:2*r,height:6,rx:3,fill:color,opacity:.9},bl); el('circle',{r:3,fill:'#0d1218',stroke:color},g); return {g,bl}; }
+  function arrow(svg,x1,y1,x2,y2,color,w){ const g=el('g',{},svg); const l=el('line',{x1,y1,x2,y2,stroke:color,'stroke-width':w||2.5,'stroke-linecap':'round'},g); const a=el('path',{d:'M0 0 L-6 -8 L6 -8 Z',fill:color},g); const set=(x1,y1,x2,y2)=>{ l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2); const ang=Math.atan2(y2-y1,x2-x1)*180/Math.PI+90; a.setAttribute('transform',`translate(${x2},${y2}) rotate(${ang})`); g.style.display=Math.hypot(x2-x1,y2-y1)<2?'none':''; }; set(x1,y1,x2,y2); return {g,set}; }
+  function sideDrone(svg,color){ const g=el('g',{},svg); el('rect',{x:-40,y:-3,width:80,height:6,rx:3,fill:'#6b7d92'},g); el('rect',{x:-9,y:-8,width:18,height:10,rx:2,fill:'#2dd4bf'},g); [-40,40].forEach(x=>{ el('rect',{x:x-3,y:-11,width:6,height:9,fill:'#3a3f47'},g); el('rect',{x:x-14,y:-13,width:28,height:3,rx:1.5,fill:color||'#5ad38a'},g); }); el('path',{d:'M-9 -8 l-4 -4 l4 0 z',fill:'#ffc857'},g); return g; }
+
+  /* 一、升力 */
+  (function(){
+    const svg=$('#anLift'),W=320,H=200; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg); el('line',{x1:10,y1:H-14,x2:W-10,y2:H-14,stroke:MUTED},svg); txt(svg,W-30,H-4,'地面',{fill:MUTED,'font-size':10});
+    const flows=[]; for(let i=0;i<8;i++){ const x=(i<4?-40:40)+((i%4)-1.5)*8; flows.push({x,g:el('line',{x1:0,y1:0,x2:0,y2:14,stroke:'#8fa1b5','stroke-width':1.5,opacity:.6},svg)}); }
+    const d=sideDrone(svg); const thrust=arrow(svg,0,0,0,0,GREEN,4),weight=arrow(svg,0,0,0,0,'#ff7b7b',4);
+    const lT=txt(svg,0,0,'推力',{fill:GREEN}),lW=txt(svg,0,0,'重力',{fill:'#ff7b7b'}),cap=txt(svg,W/2,20,'',{fill:ACC,'font-size':14});
+    let h=1,thr=0.5; const slider=$('#liftThr'); slider.addEventListener('input',()=>{ thr=slider.value/100; $('#liftVal').textContent=slider.value+'%'; });
+    let last=0;
+    addAnim('fly',t=>{ const dt=last?Math.min(0.05,t-last):0; last=t; const acc=(thr-0.5)*3; h=clamp(h+acc*dt,0,2.2); const y=H-30-h*60, x=W/2;
+      d.setAttribute('transform',`translate(${x},${y})`); const T=thr*90,Wt=45; thrust.set(x,y-14,x,y-14-T); weight.set(x,y+4,x,y+4+Wt); lT.setAttribute('x',x+28); lT.setAttribute('y',y-14-T/2); lW.setAttribute('x',x+28); lW.setAttribute('y',y+4+Wt/2+4);
+      flows.forEach((f,i)=>{ const p=((t*(0.5+thr*2)+i*0.13)%1); const fy=y+6+p*40; f.g.setAttribute('x1',x+f.x); f.g.setAttribute('x2',x+f.x); f.g.setAttribute('y1',fy); f.g.setAttribute('y2',fy+8+thr*10); f.g.setAttribute('opacity',(1-p)*0.7*(thr>0.05?1:0)); });
+      cap.textContent=thr>0.53?'推力 > 重力 → 上升':thr<0.47?'推力 < 重力 → 下降':'推力 = 重力 → 懸停'+(h<=0?'（在地面）':''); });
+  })();
+
+  /* 二、扭力 */
+  (function(){
+    const svg=$('#anTorque'),W=320,H=220,cx=W/2,cy=H/2+8; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg);
+    const body=el('g',{},svg); el('line',{x1:-60,y1:-60,x2:60,y2:60,stroke:'#6b7d92','stroke-width':6,'stroke-linecap':'round'},body); el('line',{x1:-60,y1:60,x2:60,y2:-60,stroke:'#6b7d92','stroke-width':6,'stroke-linecap':'round'},body); el('circle',{r:12,fill:'#2dd4bf'},body); el('path',{d:'M0 -16 l-7 10 l14 0 z',fill:ACC},body);
+    const P={FR:[60,-60,-1],FL:[-60,-60,1],RL:[-60,60,-1],RR:[60,60,1]}; const props={}; const labels={};
+    Object.entries(P).forEach(([k,[x,y,d]])=>{ props[k]=propTop(body,x,y,26,d>0?GREEN:PURPLE); props[k].d=d; labels[k]=txt(body,x,y+42,'',{fill:TXT,'font-size':11}); const arc=el('path',{d:d>0?'M-18 -18 A 26 26 0 0 1 18 -18':'M18 -18 A 26 26 0 0 0 -18 -18',fill:'none',stroke:d>0?GREEN:PURPLE,'stroke-width':2},props[k].g); el('path',{d:'M0 0 l-5 -7 l8 -1 z',fill:d>0?GREEN:PURPLE,transform:d>0?'translate(18,-18) rotate(60)':'translate(-18,-18) rotate(-60) scale(-1,1)'},props[k].g); });
+    const cap=txt(svg,cx,18,'',{fill:ACC,'font-size':14}); const cap2=txt(svg,cx,H-8,'',{fill:MUTED,'font-size':11});
+    let mode='hover',ang=0,spin=0,last=0;
+    const setMode=(m,btn)=>{ mode=m; ['tqHover','tqYawL','tqYawR'].forEach(id=>$('#'+id).classList.toggle('on',id===btn)); };
+    $('#tqHover').addEventListener('click',()=>setMode('hover','tqHover')); $('#tqYawL').addEventListener('click',()=>setMode('left','tqYawL')); $('#tqYawR').addEventListener('click',()=>setMode('right','tqYawR'));
+    addAnim('fly',t=>{ const dt=last?Math.min(0.05,t-last):0; last=t; spin+=dt*9;
+      // 左轉：CW 對加速（機身受 CCW 反扭 → 逆時針轉）
+      const fast=mode==='left'?1:mode==='right'?-1:0; let torque=0;
+      Object.values(props).forEach(p=>{ const sp=1+(p.d===fast?0.6:(fast&&p.d!==fast?-0.4:0)); p.bl.setAttribute('transform',`rotate(${ -p.d*spin*sp*57.3 })`); torque+=-p.d*sp; });
+      ang+=torque*dt*40; body.setAttribute('transform',`translate(${cx},${cy}) rotate(${ang})`);
+      Object.entries(props).forEach(([k,p])=>{ const sp=(p.d===fast&&fast)?'快':(fast&&p.d!==fast)?'慢':'一樣'; labels[k].textContent=(p.d>0?'CW ':'CCW ')+sp; labels[k].setAttribute('transform',`rotate(${-ang},${P[k][0]},${P[k][1]+42})`); });
+      cap.textContent=mode==='hover'?'兩對扭力相抵 → 機身不轉':mode==='left'?'CW 對加速 → 反扭力使機身逆時針轉（左轉）':'CCW 對加速 → 機身順時針轉（右轉）';
+      cap2.textContent='綠＝A 槳 CW　紫＝B 槳 CCW　黃色三角＝機頭'; });
+  })();
+
+  /* 三、傾斜移動 */
+  (function(){
+    const svg=$('#anTilt'),W=320,H=200; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg); el('line',{x1:10,y1:H-14,x2:W-10,y2:H-14,stroke:MUTED},svg);
+    txt(svg,40,H-24,'← 後',{fill:MUTED,'font-size':10}); txt(svg,W-40,H-24,'前 →',{fill:MUTED,'font-size':10});
+    const d=el('g',{},svg); const body=sideDrone(d); body.querySelector('path').setAttribute('d','M9 -8 l4 -4 l-4 0 z');
+    const tR=arrow(d,-40,-13,-40,-60,GREEN,3),tF=arrow(d,40,-13,40,-60,GREEN,3); const total=arrow(svg,0,0,0,0,ACC,3.5),horiz=arrow(svg,0,0,0,0,'#3fa2ff',3);
+    const lR=txt(d,-40,-66,'後',{fill:GREEN}),lF=txt(d,40,-66,'前',{fill:GREEN}); const cap=txt(svg,W/2,18,'',{fill:ACC,'font-size':14}); const lH=txt(svg,0,0,'向前分量',{fill:'#3fa2ff','font-size':11});
+    let mode=0,tilt=0,x=W/2,last=0;
+    const setMode=(m,btn)=>{ mode=m; ['tiHover','tiFwd','tiBack'].forEach(id=>$('#'+id).classList.toggle('on',id===btn)); };
+    $('#tiHover').addEventListener('click',()=>setMode(0,'tiHover')); $('#tiFwd').addEventListener('click',()=>setMode(1,'tiFwd')); $('#tiBack').addEventListener('click',()=>setMode(-1,'tiBack'));
+    addAnim('fly',t=>{ const dt=last?Math.min(0.05,t-last):0; last=t; const target=mode*22; tilt+=(target-tilt)*Math.min(1,dt*4); x+=Math.sin(tilt*Math.PI/180)*120*dt; if(x>W-60||x<60){ x=clamp(x,60,W-60); if(mode) setMode(0,'tiHover'); }
+      const y=H-80; d.setAttribute('transform',`translate(${x},${y}) rotate(${tilt})`);
+      const rear=1+mode*0.5,front=1-mode*0.5; tR.set(-40,-13,-40,-13-40*rear); tF.set(40,-13,40,-13-40*front); lR.setAttribute('y',-20-40*rear); lF.setAttribute('y',-20-40*front); lR.textContent=mode>0?'後：快':mode<0?'後：慢':'後'; lF.textContent=mode>0?'前：慢':mode<0?'前：快':'前';
+      const r=tilt*Math.PI/180, L=70; total.set(x,y-8,x+Math.sin(r)*L,y-8-Math.cos(r)*L); horiz.set(x,y-8-Math.cos(r)*L,x+Math.sin(r)*L,y-8-Math.cos(r)*L); lH.setAttribute('x',x+Math.sin(r)*L/2); lH.setAttribute('y',y-16-Math.cos(r)*L); lH.style.display=Math.abs(tilt)>3?'':'none';
+      cap.textContent=mode>0?'後馬達快、前馬達慢 → 前傾 → 前進':mode<0?'前馬達快、後馬達慢 → 後傾 → 後退':'四顆一樣快 → 水平懸停'; });
+  })();
+
+  /* 四、裝錯測試 */
+  (function(){
+    const svg=$('#anWrong'),W=320,H=240,cx=W/2,cy=H/2+10; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg);
+    const CORRECT={FR:'B',FL:'A',RL:'B',RR:'A'}; const cfg={...CORRECT};
+    const body=el('g',{},svg); const inner=el('g',{},body); el('line',{x1:-60,y1:-60,x2:60,y2:60,stroke:'#6b7d92','stroke-width':6,'stroke-linecap':'round'},inner); el('line',{x1:-60,y1:60,x2:60,y2:-60,stroke:'#6b7d92','stroke-width':6,'stroke-linecap':'round'},inner); el('circle',{r:12,fill:'#2dd4bf'},inner); el('path',{d:'M0 -16 l-7 10 l14 0 z',fill:ACC},inner);
+    const P={FR:[60,-60],FL:[-60,-60],RL:[-60,60],RR:[60,60]}; const props={};
+    Object.entries(P).forEach(([k,[x,y]])=>{ const p=propTop(inner,x,y,26,GREEN); p.lbl=txt(inner,x,y+5,'',{fill:'#0d1218','font-size':13,'font-weight':700}); p.ring=p.g.querySelector('circle'); p.rect=p.g.querySelector('rect'); p.warn=txt(inner,x,y-34,'',{fill:'#ff7b7b','font-size':11}); props[k]=p; });
+    const X=el('g',{opacity:0},svg); el('line',{x1:-30,y1:-30,x2:30,y2:30,stroke:'#ff7b7b','stroke-width':6},X); el('line',{x1:-30,y1:30,x2:30,y2:-30,stroke:'#ff7b7b','stroke-width':6},X);
+    const cap=txt(svg,cx,18,'',{fill:ACC,'font-size':14}); const ver=$('#wrongVerdict');
+    function paint(){ Object.entries(props).forEach(([k,p])=>{ const c=cfg[k]==='A'?GREEN:PURPLE; p.ring.setAttribute('stroke',c); p.rect.setAttribute('fill',c); p.lbl.textContent=cfg[k]; p.warn.textContent=cfg[k]!==CORRECT[k]?'裝反':''; }); document.querySelectorAll('.propsel button').forEach(b=>{ b.className=cfg[b.dataset.p]==='A'?'a':'b'; b.textContent=`${b.textContent.slice(0,2)}：${cfg[b.dataset.p]} 槳`; }); }
+    document.querySelectorAll('.propsel button').forEach(b=>{ b.textContent=b.textContent.slice(0,2); b.addEventListener('click',()=>{ cfg[b.dataset.p]=cfg[b.dataset.p]==='A'?'B':'A'; paint(); ver.textContent=''; ver.className='verdict'; }); });
+    let test=null; // {t0,thrust,tx,ty,spinning}
+    function evaluate(){ const wrong=Object.keys(cfg).filter(k=>cfg[k]!==CORRECT[k]); const n=wrong.length; let tx=0,ty=0; wrong.forEach(k=>{ tx+=P[k][0]; ty+=P[k][1]; }); let thrust=(4-2*n)/4,thr2=null; let msg,cls='bad';
+      if(n===0){ msg='四顆槳都正確：推力平衡、扭力相抵，平穩起飛懸停。'; cls='ok'; }
+      else if(n===1){ msg=`${name(wrong[0])}的槳裝反了，它把空氣往上吹。淨推力只剩一半，而且那個角被往下拉：一推油門就朝${name(wrong[0])}翻倒。`; }
+      else if(n===2&&tx===0&&ty===0){ msg='對角兩顆裝反：兩顆往上推、兩顆往下推，淨推力為零，油門推到底也離不了地，機身還會被扭得側翻。'; }
+      else if(n===2){ msg=`${wrong.map(name).join('與')}都裝反：一側往上吹、一側往下吹，淨推力為零，離地瞬間往${wrong.map(name).join('、')}那一側翻倒。`; thr2=0.1; }
+      else if(n===3){ msg='三顆裝反：只剩一顆在推，其他三顆把它壓向地面，會朝正確那顆的對角翻倒，馬達空轉發熱。'; }
+      else { msg='四顆全部裝反（或槳上下顛倒）：全部把空氣往上吹，球機被壓在地上完全飛不起來，油門全開只會讓馬達和電池發熱。'; }
+      ver.textContent=msg; ver.className='verdict '+cls; return {n,tx,ty,thrust:thr2??thrust}; }
+    const name=k=>({FR:'右前',FL:'左前',RL:'左後',RR:'右後'})[k];
+    $('#wrongTest').addEventListener('click',()=>{ test={t0:performance.now()/1000,...evaluate()}; });
+    $('#wrongReset').addEventListener('click',()=>{ Object.assign(cfg,CORRECT); paint(); test=null; ver.textContent=''; ver.className='verdict'; });
+    paint(); let spin=0,last=0;
+    addAnim('fly',t=>{ const dt=last?Math.min(0.05,t-last):0; last=t; let scale=1,dx=0,dy=0,rot=0,xo=0; cap.textContent='點右邊按鈕切換槳，再按「起飛測試」';
+      if(test){ const p=Math.min(1,(t-test.t0)/2.5); spin+=dt*10; Object.entries(props).forEach(([k,pp])=>{ const d=(k==='FL'||k==='RR')?1:-1; pp.bl.setAttribute('transform',`rotate(${-d*spin*57.3})`); });
+        if(test.n===0){ scale=1+0.25*Math.min(1,p*2); cap.textContent='正常起飛，穩定懸停'; }
+        else if(test.thrust<=0){ scale=1; rot=test.n===4?0:Math.sin(t*30)*2; cap.textContent=test.n===4?'槳狂轉但離不了地':'離不了地，機身被扭動'; if(test.n!==4&&test.tx===0&&test.ty===0&&p>0.5){ rot=25*(p-0.5)*2; } }
+        else { const k=Math.min(1,p*1.6); scale=1+0.15*Math.sin(k*Math.PI); dx=test.tx/Math.max(1,test.n)*0.5*k; dy=test.ty/Math.max(1,test.n)*0.5*k; rot=(test.tx-test.ty)/60*40*k; xo=p>0.8?1:0; cap.textContent=p>0.7?'翻倒！':'離地瞬間開始傾斜…'; }
+        if(test.n>=1&&test.n<4&&test.thrust>0){ X.setAttribute('opacity',xo); X.setAttribute('transform',`translate(${cx+dx},${cy+dy})`); } else X.setAttribute('opacity',0);
+      } else { X.setAttribute('opacity',0); }
+      body.setAttribute('transform',`translate(${cx+dx},${cy+dy}) scale(${scale}) rotate(${rot})`); });
+  })();
+})();
+
+/* ================= 總統盃規則 ================= */
+/* 鍾兆羽老師整理 */
+(function(){
+  // 6×3 m 小場地（俯視），比例 2:1
+  function cupField(svg,W,H,pad){
+    const g=el('g',{},svg); const fw=W-2*pad,fh=fw/2, top=(H-fh)/2;
+    el('rect',{x:pad,y:top,width:fw,height:fh,fill:'#141c26',stroke:LINE,'stroke-width':1.2},g);
+    el('rect',{x:pad,y:top,width:fw/2,height:fh,fill:RED,opacity:.06},g); el('rect',{x:pad+fw/2,y:top,width:fw/2,height:fh,fill:BLUE,opacity:.06},g);
+    el('line',{x1:pad+fw/2,y1:top,x2:pad+fw/2,y2:top+fh,stroke:'#fff',opacity:.6},g); el('circle',{cx:pad+fw/2,cy:top+fh/2,r:4,fill:'none',stroke:'#fff',opacity:.6},g);
+    const m=fw/6; // 每公尺像素
+    el('rect',{x:pad+1,y:top+fh/2-m/2,width:m*0.35,height:m,fill:RED,opacity:.3},g); el('rect',{x:pad+fw-1-m*0.35,y:top+fh/2-m/2,width:m*0.35,height:m,fill:BLUE,opacity:.3},g);
+    const gxA=pad+m,gxB=pad+fw-m,cy=top+fh/2;
+    el('line',{x1:gxA,y1:cy-m*0.35,x2:gxA,y2:cy+m*0.35,stroke:RED,'stroke-width':4,'stroke-linecap':'round'},g); el('line',{x1:gxB,y1:cy-m*0.35,x2:gxB,y2:cy+m*0.35,stroke:BLUE,'stroke-width':4,'stroke-linecap':'round'},g);
+    return {gxA,gxB,cy,m,top,fh,pad,fw};
+  }
+  function ball(svg,color,striker){ const g=el('g',{},svg); el('circle',{r:9,fill:color,opacity:.9},g); el('circle',{r:11,fill:'none',stroke:color,'stroke-width':1,opacity:.7,'stroke-dasharray':'2 2'},g); if(striker){ el('circle',{r:14,fill:'none',stroke:ACC,'stroke-width':1.5},g); el('path',{d:'M9 0 l10 -4 l0 8 z',fill:ACC},g); } g.move=(x,y)=>g.setAttribute('transform',`translate(${x},${y})`); return g; }
+
+  /* 一、流程 */
+  (function(){
+    const svg=$('#cupFlow'),W=640;
+    const cols=[{x:70,t:'分區賽',s:'8/24–26（營隊、集訓 7 月）',n:['北區','中區','南區']},{x:320,t:'準決賽',s:'10/2–3 台大體育館',n:['各區前 3 名']},{x:560,t:'決賽',s:'12 月 大臺南會展中心',n:['前 2 名']}];
+    cols.forEach(c=>{ txt(svg,c.x,22,c.t,{'font-size':16,fill:ACC}); txt(svg,c.x,38,c.s,{'font-size':10,fill:MUTED}); });
+    // 三區各三隊 → 準決賽九隊 → 決賽兩隊
+    const regionY=[70,105,140]; const dots=[];
+    regionY.forEach((y,i)=>{ txt(svg,28,y+4,cols[0].n[i],{'font-size':11,fill:TXT,'text-anchor':'end'}); for(let k=0;k<3;k++){ const d=el('circle',{cx:50+k*20,cy:y,r:6,fill:i===0?RED:i===1?ACC:BLUE,opacity:.9},svg); dots.push({d,x:50+k*20,y,tx:290+k*20,ty:y,i,k}); } el('line',{x1:118,y1:y,x2:270,y2:y,stroke:LINE,'stroke-dasharray':'4 3'},svg); });
+    const semiBox=el('rect',{x:280,y:56,width:80,height:100,rx:8,fill:'none',stroke:LINE},svg); txt(svg,320,170,'9 隊積分賽',{'font-size':10,fill:MUTED});
+    el('line',{x1:365,y1:105,x2:520,y2:105,stroke:LINE,'stroke-dasharray':'4 3'},svg);
+    const fin=[el('circle',{cx:545,cy:95,r:9,fill:ACC},svg),el('circle',{cx:575,cy:115,r:9,fill:ACC},svg)]; txt(svg,560,140,'冠亞軍決賽',{'font-size':11,fill:TXT}); txt(svg,560,155,'＋ 40 cm 5v5 示範賽',{'font-size':9,fill:MUTED});
+    const mover=el('circle',{r:7,fill:'#fff'},svg);
+    addAnim('cup',t=>{ const p=(t%6)/6; let x,y; if(p<0.45){ const k=ease(p/0.45); x=lerp(90,290,k); y=lerp(105,105,k); } else if(p<0.55){ x=290+Math.sin((p-0.45)*Math.PI*10)*10; y=105; } else { const k=ease((p-0.55)/0.45); x=lerp(360,545,k); y=lerp(105,95,k); } mover.setAttribute('cx',x); mover.setAttribute('cy',y); dots.forEach(d=>{ const k=ease(clamp((p-0.05-d.i*0.05)/0.35,0,1)); d.d.setAttribute('cx',lerp(d.x,d.tx,k)); }); });
+  })();
+
+  /* 二、場地：俯視＋側視 */
+  (function(){
+    const svg=$('#cupField'),W=320,H=230;
+    // 俯視
+    const f=cupField(svg,W,120,20); const m=f.m;
+    txt(svg,W/2,f.top-4,'俯視 6 m × 3 m',{fill:MUTED,'font-size':10});
+    txt(svg,f.pad+m,f.top+f.fh+12,'球門距底線 1 m',{fill:RED,'font-size':9}); txt(svg,f.pad+m*0.2,f.cy+m*0.75,'起飛區 ≤1 m',{fill:MUTED,'font-size':8,'text-anchor':'start'});
+    // 側視
+    const sy=140, sh=70, sx=20, sw=W-40, pm=sw/6; // 高 3 m → 70px → 每公尺 23.3
+    const hm=sh/3;
+    el('rect',{x:sx,y:sy,width:sw,height:sh,fill:'#141c26',stroke:LINE},svg); txt(svg,W/2,sy-4,'側視 高 3 m 防護網',{fill:MUTED,'font-size':10});
+    [[sx+pm,RED],[sx+sw-pm,BLUE]].forEach(([x,c])=>{ el('line',{x1:x,y1:sy+sh,x2:x,y2:sy+sh-hm*2.35,stroke:'#6b7d92','stroke-width':1.5},svg); el('circle',{cx:x,cy:sy+sh-hm*2.35,r:hm*0.35,fill:'none',stroke:c,'stroke-width':4},svg); });
+    txt(svg,sx+pm+34,sy+sh-hm*2.2,'環底離地 2 m',{fill:RED,'font-size':9,'text-anchor':'start'}); txt(svg,sx+sw-pm-34,sy+sh-hm*2.2,'內徑 40 cm',{fill:BLUE,'font-size':9,'text-anchor':'end'});
+    const b=ball(svg,RED,true); const bt=ball(svg,RED,true);
+    addAnim('cup',t=>{ const p=(t%5)/5; const k=ease(clamp(p/0.8,0,1)); bt.move(lerp(f.pad+m*0.2,f.gxB+8,k),f.cy); b.move(lerp(sx+pm*0.3,sx+sw-pm+8,k),lerp(sy+sh-6,sy+sh-hm*2.35,ease(clamp(p/0.35,0,1)))); });
+  })();
+
+  /* 四、時間軸 */
+  (function(){ const svg=$('#cupTime'); timelineAnim('cup',svg,[[0,3,'第 1 局',ACC],[3,6,'休息',MUTED],[6,9,'第 2 局',ACC],[9,12,'休息',MUTED],[12,15,'第 3 局',ACC]],320,44); txt(svg,160,108,'平手 → 點球大戰 → 黃金進球',{'font-size':10,fill:MUTED}); cycleSteps('cup','#cupStart .step',1.8); })();
+
+  /* 五、得分（完整穿越） */
+  (function(){
+    const svg=$('#cupGoal'),W=320,H=190,f=cupField(svg,W,H,16),cap=$('#cupGoalCap');
+    const s=ball(svg,RED,true),g1=ball(svg,RED),g2=ball(svg,RED),d1=ball(svg,BLUE),d2=ball(svg,BLUE); d1.move(f.gxB-40,f.cy-25); d2.move(f.gxB-55,f.cy+28);
+    const flash=txt(svg,W/2,f.cy-20,'+1',{'font-size':26,fill:ACC,opacity:0}); const half=txt(svg,W/2,f.top-6,'',{'font-size':11,fill:MUTED});
+    const D=9;
+    addAnim('cup',t=>{ const p=t%D; let x,y,c;
+      if(p<3){ const k=ease(p/3); x=lerp(70,f.gxB+16,k); y=lerp(f.cy+18,f.cy,k); c='前鋒由前向後、整顆穿過球門環'; g1.move(lerp(80,f.gxB-30,k),f.cy-30); g2.move(lerp(60,150,k),f.cy+35); flash.setAttribute('opacity',0); half.textContent='球體一半通過還不算，要完全穿越'; }
+      else if(p<4.2){ x=f.gxB+16; y=f.cy; c='得分 +1'; flash.setAttribute('opacity',Math.sin((p-3)/1.2*Math.PI)); half.textContent=''; }
+      else if(p<7.5){ const k=ease((p-4.2)/3.3); x=lerp(f.gxB+16,90,k); y=f.cy+5; c='三架全部退回己方半場'; g1.move(lerp(f.gxB-30,70,k),f.cy-30); g2.move(lerp(150,70,k),f.cy+35); flash.setAttribute('opacity',0); half.textContent='少一架沒回來就再進球 → 不算＋罰點球'; }
+      else { x=90; y=f.cy+5; c='可以再次進攻'; g1.move(70,f.cy-30); g2.move(70,f.cy+35); half.textContent=''; }
+      s.move(x,y); cap.textContent=c; });
+  })();
+
+  /* 六、違規五情境 */
+  (function(){
+    const svg=$('#cupFoul'),W=320,H=190,f=cupField(svg,W,H,16),cap=$('#cupFoulCap');
+    const s=ball(svg,RED,true),g=ball(svg,RED),b=ball(svg,BLUE),b2=ball(svg,BLUE);
+    const top=txt(svg,W/2,f.top-6,'',{'font-size':14,fill:ACC}); const bad=txt(svg,W/2,f.top+f.fh+14,'',{'font-size':12,fill:'#ff7b7b'});
+    const hand=el('path',{d:'M0 0 l-6 10 l3 0 l0 12 l6 0 l0 -12 l3 0 z',fill:'#e8eef5',opacity:0},svg);
+    let scene=0,t0=0,auto=true; const btns=[...document.querySelectorAll('#cupFoulBtns button')];
+    btns.forEach(bt=>bt.addEventListener('click',()=>{ scene=+bt.dataset.i; t0=performance.now()/1000; auto=false; btns.forEach(x=>x.classList.toggle('on',x===bt)); }));
+    const NAMES=['提早起飛 → 罰點球','得分後未退回半場 → 進球不算＋罰點球','非前鋒穿越／停留自家球門環防守 → 罰點球','撞擊落地球機：非故意＝警告，故意＝黃牌','用手干預球機 → 黃牌（該局判負）'];
+    addAnim('cup',t=>{ if(auto){ const i=Math.floor(t/5)%5; if(i!==scene){ scene=i; t0=t; btns.forEach((x,j)=>x.classList.toggle('on',j===i)); } } const k=clamp((t-t0)/5,0,1); hand.setAttribute('opacity',0); b2.move(-50,-50);
+      top.textContent=btns[scene].textContent; bad.textContent=k>0.6?NAMES[scene].split('→')[1].trim():'';
+      if(scene===0){ top.textContent=k<0.5?'裁判尚未鳴笛…':'嗶！'; s.move(k<0.25?f.gxA-12:lerp(f.gxA-12,110,ease(clamp((k-0.25)/0.4,0,1))),f.cy+10); g.move(f.gxA-12,f.cy-14); b.move(f.gxB+12,f.cy); }
+      else if(scene===1){ const x=k<0.35?lerp(150,f.gxB+16,ease(k/0.35)):k<0.65?lerp(f.gxB+16,f.gxB-45,ease((k-0.35)/0.3)):lerp(f.gxB-45,f.gxB+16,ease((k-0.65)/0.35)); s.move(x,f.cy); g.move(W*0.62,f.cy+30); b.move(f.gxB-30,f.cy-28); }
+      else if(scene===2){ s.move(120,f.cy+30); g.move(lerp(f.gxA+30,f.gxA-6,ease(clamp(k/0.6,0,1))),f.cy); b.move(lerp(200,f.gxA+26,ease(clamp(k/0.6,0,1))),f.cy-8); }
+      else if(scene===3){ b.move(180,f.cy+20); b2.move(-50,-50); const gx=lerp(90,180,ease(clamp(k/0.6,0,1))); g.move(gx,f.cy+20); s.move(80,f.cy-25); bad.textContent=k>0.6?'藍機已落地 → 非故意＝警告，故意＝黃牌':'藍機落地中，不可再撞'; }
+      else { s.move(f.gxA+40,f.cy); g.move(f.gxA+30,f.cy-30); b.move(f.gxB-30,f.cy); hand.setAttribute('opacity',k>0.3?1:0); hand.setAttribute('transform',`translate(${f.gxA+40+lerp(30,4,ease(clamp((k-0.3)/0.3,0,1)))},${f.cy-6})`); bad.textContent=k>0.6?'選手用手撥球機 → 黃牌，該局判負':''; }
+    });
+  })();
+
+  /* 七、積分範例 */
+  (function(){
+    const rows=[['忠孝國中',2,1,0,7,3],['仁愛國中',2,1,0,5,2],['信義國中',1,0,2,4,6],['和平國中',0,0,3,1,6]];
+    const tb=$('#cupStand'); rows.map(r=>({n:r[0],w:r[1],d:r[2],l:r[3],gf:r[4],ga:r[5],pts:r[1]*3+r[2],gd:r[4]-r[5]})).sort((a,b)=>b.pts-a.pts||b.gd-a.gd||b.gf-a.gf).forEach((r,i)=>{ const tr=document.createElement('tr'); tr.innerHTML=`<td><b>${i+1}</b>${i<3?' <span class="tag-s tag-y" style="font-size:10px">晉級</span>':''}</td><td>${r.n}</td><td>${r.w}</td><td>${r.d}</td><td>${r.l}</td><td>${r.gf}</td><td>${r.ga}</td><td>${r.gd>0?'+':''}${r.gd}</td><td><b>${r.pts}</b></td>`; tb.appendChild(tr); });
+  })();
+})();
+
+/* ================= 首頁動畫 ================= */
+(function(){
+  const svg=$('#homeAnim'),W=320,H=180; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg);
+  el('rect',{x:20,y:30,width:280,height:120,fill:'none',stroke:LINE},svg); el('line',{x1:160,y1:30,x2:160,y2:150,stroke:'#fff',opacity:.4},svg);
+  el('line',{x1:50,y1:75,x2:50,y2:105,stroke:RED,'stroke-width':4,'stroke-linecap':'round'},svg); el('line',{x1:270,y1:75,x2:270,y2:105,stroke:BLUE,'stroke-width':4,'stroke-linecap':'round'},svg);
+  const mk=(c,s)=>{ const g=el('g',{},svg); el('circle',{r:8,fill:c,opacity:.9},g); el('circle',{r:11,fill:'none',stroke:c,'stroke-dasharray':'2 2'},g); if(s) el('circle',{r:14,fill:'none',stroke:ACC,'stroke-width':1.5},g); return g; };
+  const r=[mk(RED,1),mk(RED),mk(RED)],b=[mk(BLUE,1),mk(BLUE),mk(BLUE)];
+  addAnim('home',t=>{ const k=(Math.sin(t*0.9)+1)/2; r[0].setAttribute('transform',`translate(${lerp(90,235,k)},${90+Math.sin(t*2)*8})`); r[1].setAttribute('transform',`translate(${lerp(110,200,k)},${60})`); r[2].setAttribute('transform',`translate(${70},${120+Math.cos(t*1.3)*10})`); b[0].setAttribute('transform',`translate(${lerp(230,130,1-k)},${100})`); b[1].setAttribute('transform',`translate(${240},${70+Math.sin(t*1.7)*10})`); b[2].setAttribute('transform',`translate(${250},${115})`); });
+})();
+
+/* ================= 認識無人機：圖示與法規動畫 ================= */
+(function(){
+  const gray='#9fb3c8';
+  function quad(svg){ const g=el('g',{transform:'translate(100,60)'},svg); [[-30,-18],[30,-18],[-30,18],[30,18]].forEach(([x,y])=>{ el('line',{x1:0,y1:0,x2:x,y2:y,stroke:gray,'stroke-width':4},g); el('ellipse',{cx:x,cy:y,rx:16,ry:5,fill:'none',stroke:'#5ad38a','stroke-width':2},g); }); el('rect',{x:-10,y:-6,width:20,height:12,rx:3,fill:'#2dd4bf'},g); return g; }
+  quad($('#tQuad'));
+  (function(svg){ const g=el('g',{transform:'translate(100,60)'},svg); el('path',{d:'M-60 0 L60 -4 L70 0 L60 4 Z',fill:gray},g); el('path',{d:'M-10 -3 L20 -3 L5 -40 L-8 -40 Z',fill:'#6b7d92'},g); el('path',{d:'M-10 3 L20 3 L5 40 L-8 40 Z',fill:'#6b7d92'},g); el('path',{d:'M-55 -2 L-40 -2 L-45 -16 L-55 -16 Z',fill:'#6b7d92'},g); el('path',{d:'M-55 2 L-40 2 L-45 16 L-55 16 Z',fill:'#6b7d92'},g); el('circle',{cx:72,cy:0,r:6,fill:'none',stroke:'#5ad38a','stroke-width':2},g); })($('#tFixed'));
+  (function(svg){ const g=el('g',{transform:'translate(100,60)'},svg); el('path',{d:'M-60 0 L60 -4 L70 0 L60 4 Z',fill:gray},g); el('path',{d:'M-10 -3 L20 -3 L5 -40 L-8 -40 Z',fill:'#6b7d92'},g); el('path',{d:'M-10 3 L20 3 L5 40 L-8 40 Z',fill:'#6b7d92'},g); [[-25,-30],[25,-30],[-25,30],[25,30]].forEach(([x,y])=>{ el('ellipse',{cx:x,cy:y,rx:12,ry:4,fill:'none',stroke:'#5ad38a','stroke-width':2},g); }); el('line',{x1:-25,y1:-30,x2:25,y2:-30,stroke:gray,'stroke-width':2},g); el('line',{x1:-25,y1:30,x2:25,y2:30,stroke:gray,'stroke-width':2},g); })($('#tVtol'));
+  (function(svg){ const g=el('g',{transform:'translate(100,62)'},svg); el('ellipse',{cx:0,cy:-22,rx:70,ry:6,fill:'none',stroke:'#5ad38a','stroke-width':2},g); el('line',{x1:0,y1:-22,x2:0,y2:-8,stroke:gray,'stroke-width':3},g); el('ellipse',{cx:0,cy:0,rx:22,ry:12,fill:'#6b7d92'},g); el('path',{d:'M18 -3 L75 -8 L75 -2 L20 4 Z',fill:gray},g); el('circle',{cx:76,cy:-5,r:7,fill:'none',stroke:'#5ad38a','stroke-width':2},g); el('path',{d:'M-14 10 L-18 22 L18 22 L14 10',fill:'none',stroke:gray,'stroke-width':2},g); })($('#tHeli'));
+  // 法規動畫：高度、分區
+  const svg=$('#lawAnim'),W=320,H=200; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg);
+  const gy=170; el('line',{x1:0,y1:gy,x2:W,y2:gy,stroke:MUTED},svg);
+  const zones=[[0,100,'#ff5a5f','紅區 禁飛',0],[100,210,'#ffc857','黃區 ≤60 m',60],[210,320,'#5ad38a','綠區 ≤120 m',120]];
+  zones.forEach(([x0,x1,c,l,h])=>{ el('rect',{x:x0,y:gy-h*0.9,width:x1-x0,height:h*0.9,fill:c,opacity:.12},svg); if(h) el('line',{x1:x0,y1:gy-h*0.9,x2:x1,y2:gy-h*0.9,stroke:c,'stroke-dasharray':'4 3'},svg); el('rect',{x:x0,y:gy,width:x1-x0,height:8,fill:c,opacity:.8},svg); txt(svg,(x0+x1)/2,gy+22,l,{fill:c,'font-size':11}); });
+  el('path',{d:'M30 170 l10 -30 l10 30 z',fill:'#6b7d92'},svg); txt(svg,40,135,'機場／軍事',{fill:MUTED,'font-size':9});
+  txt(svg,265,gy-120*0.9-6,'400 呎 ≈ 120 m',{fill:'#5ad38a','font-size':10}); txt(svg,155,gy-60*0.9-6,'60 m',{fill:'#ffc857','font-size':10});
+  const d=el('g',{},svg); el('circle',{r:7,fill:'#2dd4bf'},d); el('circle',{r:10,fill:'none',stroke:'#2dd4bf','stroke-dasharray':'2 2'},d); const warn=txt(svg,0,0,'',{fill:'#ff7b7b','font-size':11});
+  addAnim('intro',t=>{ const p=(t%8)/8; const x=lerp(300,20,p); const cap=x>210?120:x>100?60:0; const want=60+Math.sin(t*1.5)*50; const h=Math.min(want,cap); d.setAttribute('transform',`translate(${x},${gy-h*0.9-8})`); warn.setAttribute('x',x); warn.setAttribute('y',gy-h*0.9-24); warn.textContent=cap===0?'禁飛！':want>cap?'到頂了 ↓':''; });
+})();
+
+/* ================= 世界時間軸動畫 ================= */
+(function(){
+  const svg=$('#worldMap'),W=320,H=200; el('rect',{x:0,y:0,width:W,height:H,fill:'#141c26'},svg);
+  const ev=[['2016','韓國全州 發明'],['2017','首次公開賽'],['2019','FAI 承認 F9A'],['2021','傳入美國'],['2023','首屆世界盃'],['2025','FAI 世錦賽 18 國'],['2026','台灣總統盃']];
+  const x0=24,x1=W-24,y=110; el('line',{x1:x0,y1:y,x2:x1,y2:y,stroke:LINE,'stroke-width':2},svg);
+  const nodes=ev.map(([yr,l],i)=>{ const x=x0+(x1-x0)*i/(ev.length-1); const c=el('circle',{cx:x,cy:y,r:5,fill:LINE},svg); txt(svg,x,y+20,yr,{fill:MUTED,'font-size':11}); const lab=txt(svg,x,i%2?y-36:y-18,l,{fill:TXT,'font-size':9}); lab.setAttribute('opacity',0); return {c,lab,x}; });
+  const pulse=el('circle',{r:9,fill:'none',stroke:ACC,'stroke-width':2},svg); const globe=el('g',{transform:'translate(160,160)'},svg); el('circle',{r:22,fill:'none',stroke:'#5ad38a','stroke-width':1.5},globe); el('ellipse',{rx:22,ry:8,fill:'none',stroke:'#5ad38a',opacity:.6},globe); el('ellipse',{rx:8,ry:22,fill:'none',stroke:'#5ad38a',opacity:.6},globe); const cnt=txt(svg,160,197,'',{fill:'#5ad38a','font-size':10});
+  addAnim('world',t=>{ const p=(t%14)/14; const i=Math.min(ev.length-1,Math.floor(p*ev.length)); nodes.forEach((n,j)=>{ n.c.setAttribute('fill',j<=i?ACC:LINE); n.lab.setAttribute('opacity',j<=i?1:0); }); pulse.setAttribute('cx',nodes[i].x); pulse.setAttribute('cy',110); pulse.setAttribute('r',7+Math.sin(t*6)*2); const nations=[1,1,3,6,10,18,19][i]; cnt.textContent=`參與國家 ≈ ${nations}`; globe.setAttribute('transform',`translate(160,160) rotate(${t*20})`); });
+})();
+
+/* ================= 計時計分板 ================= */
+(function(){
+  const S={a:0,b:0,setA:0,setB:0,set:1,phase:'ready',rem:180,run:false,results:[],log:[]};
+  const el$=id=>document.getElementById(id);
+  let ac=null; function beep(seq){ try{ ac=ac||new (window.AudioContext||window.webkitAudioContext)(); let t=ac.currentTime; seq.forEach(([f,d])=>{ const o=ac.createOscillator(),g=ac.createGain(); o.type='square'; o.frequency.value=f; g.gain.value=0.15; o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t+d); t+=d+0.08; }); }catch(e){} }
+  const whistleStart=()=>beep([[2200,0.35]]), whistleEnd=()=>beep([[2200,0.9],[2200,0.3]]), tick=()=>beep([[1200,0.08]]);
+  function fmt(s){ s=Math.max(0,Math.ceil(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+  function log(m){ S.log.unshift(`[${new Date().toLocaleTimeString('zh-TW',{hour12:false})}] ${m}`); S.log=S.log.slice(0,30); el$('sbLog').innerHTML=S.log.join('<br>'); }
+  function render(){ el$('sbScA').textContent=S.a; el$('sbScB').textContent=S.b; el$('sbSetA').textContent=S.setA; el$('sbSetB').textContent=S.setB; el$('sbTime').textContent=S.phase==='countdown'?Math.ceil(S.rem):fmt(S.rem); el$('sbTime').classList.toggle('warn',S.phase==='play'&&S.rem<=10);
+    const ph={ready:'準備',countdown:'倒數',play:'比賽中',pause:'暫停',break:'局間休息',pen:'罰球（不計時）',over:'比賽結束'}[S.phase]; el$('sbPhase').textContent=ph; el$('sbSetInfo').textContent=S.phase==='over'?'比賽結束':`第 ${S.set} 局`;
+    const A=el$('sbNameA').value||'紅隊',B=el$('sbNameB').value||'藍隊';
+    el$('sbSub').textContent=S.phase==='ready'?'按開始 → 倒數 3 秒鳴笛':S.phase==='break'?'休息結束後按開始進入下一局':S.phase==='over'?(S.setA>S.setB?A:B)+' 獲勝':S.phase==='pen'?'罰完球按開始繼續':'';
+    el$('sbSets').innerHTML=S.results.map((r,i)=>`<span class="${r}">第${i+1}局 ${r==='r'?A:r==='b'?B:'平'}</span>`).join(''); }
+  let last=null; function loop(now){ requestAnimationFrame(loop); if(!S.run){ last=null; return; } if(last==null){ last=now; return; } const dt=(now-last)/1000; last=now; S.rem-=dt;
+    if(S.phase==='countdown'){ if(Math.ceil(S.rem+dt)!==Math.ceil(S.rem)&&S.rem>0) tick(); if(S.rem<=0){ S.phase='play'; S.rem=180; whistleStart(); log(`第 ${S.set} 局開始`); } }
+    else if(S.phase==='play'){ if(S.rem<=0){ endSet(); } }
+    else if(S.phase==='break'){ if(S.rem<=0){ S.run=false; S.phase='ready'; S.rem=180; beep([[1500,0.2],[1500,0.2]]); log('休息結束'); } }
+    render(); }
+  requestAnimationFrame(loop);
+  function endSet(){ S.run=false; whistleEnd(); const r=S.a>S.b?'r':S.b>S.a?'b':'d'; S.results.push(r); if(r==='r') S.setA++; if(r==='b') S.setB++; log(`第 ${S.set} 局結束 ${S.a}:${S.b}`);
+    if(S.setA>=2||S.setB>=2||S.set>=3){ S.phase='over'; render(); return; } S.set++; S.a=0; S.b=0; S.phase='break'; S.rem=180; S.run=true; render(); }
+  el$('sbStart').addEventListener('click',()=>{ if(S.phase==='ready'){ S.phase='countdown'; S.rem=3; S.run=true; } else if(S.phase==='pause'||S.phase==='pen'){ S.phase='play'; S.run=true; } else if(S.phase==='break'){ S.run=true; } else if(S.phase==='over'){ return; } render(); });
+  el$('sbPause').addEventListener('click',()=>{ if(S.phase==='play'){ S.phase='pause'; S.run=false; log('暫停'); } else if(S.phase==='break'){ S.run=false; } render(); });
+  el$('sbPen').addEventListener('click',()=>{ if(S.phase==='play'||S.phase==='pause'){ S.phase='pen'; S.run=false; log('罰球'); render(); } });
+  el$('sbEndSet').addEventListener('click',()=>{ if(S.phase==='play'||S.phase==='pause'||S.phase==='pen') endSet(); });
+  el$('sbBreak').addEventListener('click',()=>{ S.phase='break'; S.rem=180; S.run=true; render(); });
+  el$('sbWhistle').addEventListener('click',whistleStart);
+  el$('sbFoul').addEventListener('click',()=>{ const who=prompt('犯規紀錄（例如：紅 2 提早起飛 → 罰球）'); if(who) log('犯規：'+who); });
+  el$('sbFull').addEventListener('click',()=>{ const b=el$('board'); if(document.fullscreenElement) document.exitFullscreen(); else b.requestFullscreen?.(); });
+  el$('sbReset').addEventListener('click',()=>{ if(!confirm('重設整場比賽？')) return; Object.assign(S,{a:0,b:0,setA:0,setB:0,set:1,phase:'ready',rem:180,run:false,results:[]}); log('重設'); render(); });
+  document.querySelectorAll('[data-sc]').forEach(b=>b.addEventListener('click',()=>{ const [t,d]=[b.dataset.sc[0],+b.dataset.sc.slice(1)]; if(t==='A') S.a=Math.max(0,S.a+d); else S.b=Math.max(0,S.b+d); if(d>0) log(`${t==='A'?el$('sbNameA').value:el$('sbNameB').value} 得分 ${S.a}:${S.b}`); render(); }));
+  window.addEventListener('keydown',e=>{ if(tab!=='score'||e.target.tagName==='INPUT') return; const k=e.key.toLowerCase(); if(k===' '){ e.preventDefault(); (S.run&&S.phase==='play'?el$('sbPause'):el$('sbStart')).click(); } else if(k==='q'){ S.a++; render(); } else if(k==='p'){ S.a=Math.max(0,S.a-1); render(); } else if(k==='z'){ S.b++; render(); } else if(k==='m'){ S.b=Math.max(0,S.b-1); render(); } else if(k==='f'){ el$('sbFull').click(); } });
+  ['sbNameA','sbNameB'].forEach(id=>el$(id).addEventListener('input',render)); render();
+})();
+
+/* ================= 飛行訓練關卡 ================= */
+(function(){
+  const LS='droneTrain.v1'; let rec={}; try{ rec=JSON.parse(localStorage.getItem(LS)||'{}'); }catch(e){}
+  const LV=[
+    {id:'l1',t:'懸停 10 秒',sub:'Level 1',c:['起飛到約 1 m 高度','在 1 m × 1 m 的方格內懸停 10 秒不出界','高度變化不超過 ±30 cm','平穩降落回方格內'],tip:'只用小幅修正；飄出去就反方向輕推，不要大動作。',draw:(g)=>{ el('rect',{x:70,y:35,width:60,height:60,fill:'none',stroke:ACC,'stroke-dasharray':'4 3'},g); return t=>({x:100+Math.sin(t*1.3)*6,y:65+Math.cos(t*1.7)*5,r:0}); }},
+    {id:'l2',t:'方形航線',sub:'Level 2',c:['沿 2 m × 1 m 長方形飛一圈，四個角要停 1 秒','機頭保持朝前（不轉向），只用前後左右平移','30 秒內完成','不碰地、不碰網'],tip:'這一關練的是 Roll 與 Pitch 的分離：轉角時先停、再換方向。',draw:(g)=>{ el('rect',{x:40,y:35,width:120,height:60,fill:'none',stroke:ACC,'stroke-dasharray':'4 3'},g); return t=>{ const p=(t%8)/8; const pts=[[40,35],[160,35],[160,95],[40,95],[40,35]]; const i=Math.floor(p*4),k=ease(p*4-i); return {x:lerp(pts[i][0],pts[i+1][0],k),y:lerp(pts[i][1],pts[i+1][1],k),r:0}; }; }},
+    {id:'l3',t:'轉向與機頭控制',sub:'Level 3',c:['在原地做 360° 旋轉，高度不變','旋轉後機頭朝任意方向，仍能正確前進到指定點','完成「機頭朝右時往自己方向飛回來」','不出 2 m 圓圈'],tip:'記住：前後左右永遠是機頭的方向，眼睛要盯著機頭的 LED。',draw:(g)=>{ el('circle',{cx:100,cy:65,r:45,fill:'none',stroke:ACC,'stroke-dasharray':'4 3'},g); return t=>({x:100+Math.cos(t)*20,y:65+Math.sin(t)*20,r:t*90}); }},
+    {id:'l4',t:'穿環',sub:'Level 4',c:['距離 3 m、環心高 2 m（20 cm 級規格）','正面穿過球門環，整顆球通過','3 次嘗試至少成功 2 次','穿環後退回起點'],tip:'先在環前 50 cm 懸停對準，再直線推進；高度比環心略高一點比較容易。',draw:(g)=>{ el('ellipse',{cx:160,cy:65,rx:5,ry:20,fill:'none',stroke:BLUE,'stroke-width':4},g); el('line',{x1:160,y1:85,x2:160,y2:110,stroke:'#6b7d92'},g); return t=>{ const p=(t%4)/4; return {x:p<0.6?lerp(30,175,ease(p/0.6)):lerp(175,30,ease((p-0.6)/0.4)),y:65+(p<0.6?0:-25*Math.sin((p-0.6)/0.4*Math.PI)),r:0}; }; }},
+    {id:'l5',t:'繞樁計時與卡位',sub:'Level 5',c:['S 形繞過 3 支樁（間距 1 m）再穿環，計時','兩人一組：一人穿環、一人卡位阻擋，30 秒內至少成功 1 次','撞擊後能在 3 秒內恢復控制','完成後全隊退回半場'],tip:'這一關是比賽的縮影：進攻要有節奏，卡位要用身體不是用撞。',draw:(g)=>{ [60,100,140].forEach(x=>el('circle',{cx:x,cy:65,r:5,fill:'#6b7d92'},g)); el('ellipse',{cx:180,cy:65,rx:4,ry:16,fill:'none',stroke:BLUE,'stroke-width':3},g); return t=>{ const p=(t%5)/5; const x=lerp(25,190,p); const y=65+Math.sin((x-40)/40*Math.PI)*(x<160?25:0); return {x,y,r:0}; }; }},
+  ];
+  const wrap=$('#levels'); const timers={};
+  function prog(){ const n=LV.filter(l=>rec[l.id]).length; $('#trainProg').style.width=(n/LV.length*100)+'%'; }
+  LV.forEach(l=>{
+    const d=document.createElement('div'); d.className='lv'+(rec[l.id]?' done':''); d.id='lv-'+l.id;
+    d.innerHTML=`<svg viewBox="0 0 200 130"></svg><div><h4>${l.t}<small>${l.sub}</small></h4><ul class="crit">${l.c.map(x=>`<li>${x}</li>`).join('')}</ul><div class="note" style="font-size:12px;color:var(--muted)">教練提示：${l.tip}</div><div class="tools"><span class="sw">0.0</span><button data-a="start">計時</button><button data-a="stop">停止</button><button data-a="reset">歸零</button><button data-a="pass">標記通過</button><button data-a="undo">取消</button><span class="rec">${rec[l.id]?'通過日期：'+rec[l.id]:''}</span></div></div>`;
+    const svg=d.querySelector('svg'); el('rect',{x:0,y:0,width:200,height:130,fill:'#141c26'},svg); const g=el('g',{},svg); const upd=l.draw(g); const dr=el('g',{},svg); el('circle',{r:8,fill:RED},dr); el('path',{d:'M0 -12 l-5 7 l10 0 z',fill:ACC},dr);
+    addAnim('train',t=>{ const s=upd(t); dr.setAttribute('transform',`translate(${s.x},${s.y}) rotate(${s.r})`); });
+    const sw=d.querySelector('.sw'); const T={t0:0,acc:0,run:false};
+    d.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ const a=b.dataset.a;
+      if(a==='start'&&!T.run){ T.run=true; T.t0=performance.now(); } else if(a==='stop'&&T.run){ T.acc+=performance.now()-T.t0; T.run=false; } else if(a==='reset'){ T.acc=0; T.run=false; sw.textContent='0.0'; }
+      else if(a==='pass'){ rec[l.id]=new Date().toLocaleDateString('zh-TW'); d.classList.add('done'); d.querySelector('.rec').textContent='通過日期：'+rec[l.id]; try{ localStorage.setItem(LS,JSON.stringify(rec)); }catch(e){} prog(); }
+      else if(a==='undo'){ delete rec[l.id]; d.classList.remove('done'); d.querySelector('.rec').textContent=''; try{ localStorage.setItem(LS,JSON.stringify(rec)); }catch(e){} prog(); } }));
+    addAnim('train',()=>{ if(T.run) sw.textContent=((T.acc+performance.now()-T.t0)/1000).toFixed(1); else if(T.acc) sw.textContent=(T.acc/1000).toFixed(1); });
+    wrap.appendChild(d);
+  });
+  prog();
+})();
+
+/* ================= 規則小測驗 ================= */
+(function(){
+  const Q=[
+    {q:'在無人機足球中，哪一台球機穿過對方球門環才算得分？',o:['任何一台','只有前鋒（Striker）','只有守門球機','隊長的球機'],a:1,e:'只有指定的前鋒得分，其他球機穿過不計分。',t:'cup',an:'#cup-goal'},
+    {q:'教育部 115 年競賽規定，前鋒要怎麼穿過球門環才算得分？',o:['球體一半通過即可','從任何方向穿過','由前向後完整穿越','碰到環就算'],a:2,e:'實施計畫規定「由前向後」完整穿越；FAI 40 cm 級是球體一半通過即可。',t:'cup',an:'#cup-goal'},
+    {q:'得分之後，該隊必須做什麼才能再次進攻？',o:['降落一次','所有球機退回己方半場','只有前鋒退回','不需要做任何事'],a:1,e:'全隊都要越過中線回到己方半場，否則下一球不算並判罰球。',t:'cup',an:'#cup-goal'},
+    {q:'一場比賽有幾局、每局幾分鐘？',o:['2 局、5 分鐘','3 局、3 分鐘','4 局、2 分鐘','1 局、10 分鐘'],a:1,e:'3 局制、每局 3 分鐘、局間休息 3 分鐘，先贏 2 局者勝。',t:'cup',an:'#cup-time'},
+    {q:'三局打完雙方平手，接下來怎麼辦？',o:['擲硬幣','加賽一局','點球大戰，仍平手再黃金進球','並列冠軍'],a:2,e:'實施計畫：點球大戰 → 仍平手 → 黃金進球驟死賽。',t:'cup',an:'#cup-time'},
+    {q:'20 cm 級（F9A-B）的場地大小是？',o:['20 × 10 m','10 × 5 m','6 × 3 m','8 × 4 m'],a:2,e:'長 6 m、寬 3 m、防護網高 3 m。',t:'cup',an:'#cup-field'},
+    {q:'20 cm 級球門環的離地高度是？',o:['1 m','2 m','3.5 m','5 m'],a:1,e:'球門環懸掛高度離地 2 m；40 cm 級才是 3～3.5 m。',t:'cup',an:'#cup-field'},
+    {q:'20 cm 級球機含電池的起飛總重上限？',o:['150 g','300 g','500 g','1 kg'],a:1,e:'不得超過 300 g；40 cm 級為 1 kg。',t:'cup',an:'#cup-spec'},
+    {q:'裁判宣告「Arm your quads」後，選手可以做什麼？',o:['立刻起飛','解鎖馬達但不能離地','把球機拿到場中央','關閉遙控器'],a:1,e:'解鎖後仍須停在地上，聽到鳴笛才能起飛，提早離地判罰球。',t:'cup',an:'#cup-start'},
+    {q:'下列哪一種情況會被判罰球（點球）？',o:['球機撞到防護網','非前鋒的球機為了防守穿過自家球門環','球機墜落在地','前鋒被對方擋住'],a:1,e:'FAI A.9.1：非前鋒穿過或停留在自家球門環內防守要判罰球。',t:'cup',an:'#cup-foul'},
+    {q:'比賽中用手去撥動、抓取場上的球機，會怎樣？',o:['警告','罰球','黃牌，該局判負','沒事'],a:2,e:'故意用手操作球機是黃牌，該局判負；兩張黃牌等於紅牌。',t:'cup',an:'#cup-foul'},
+    {q:'哪一種情況是紅牌？',o:['局中換人','未登錄的選手上場','提早起飛','碰到落地的球機'],a:1,e:'未登錄選手上場、危險飛行、嚴重不文明行為都是紅牌，整場判負。',t:'cup',an:'#cup-foul'},
+    {q:'飛行中的球機「不小心」撞到已經落在地上的球機，依 FAI 2026 年版規則？',o:['罰球','警告','黃牌','紅牌'],a:1,e:'非故意是警告，故意才是黃牌（2026 年新增條文）。',t:'cup',an:'#cup-foul'},
+    {q:'分區賽積分怎麼算？',o:['勝 2 平 1 負 0','勝 3 平 1 負 0','勝 1 負 0','以進球數計'],a:1,e:'勝 3 分、平 1 分、負 0 分，同分比淨勝球，再比總進球。',t:'cup',an:'#cup-rank'},
+    {q:'四軸無人機要「左轉（Yaw）」時，飛控會怎麼做？',o:['四顆馬達一起加速','讓順時針那一對加速、逆時針那一對減速','只讓左邊兩顆減速','讓前面兩顆減速'],a:1,e:'對角同向的一對加速，反扭力讓機身往反方向轉，總推力不變所以不掉高度。',t:'fly',an:'#fly-torque'},
+    {q:'一顆螺旋槳 A/B 裝反，一推油門會發生什麼？',o:['正常起飛','原地打轉','朝那一角翻倒','飛得更快'],a:2,e:'裝反的槳把空氣往上吹，那個角被往下拉，起飛瞬間就翻倒。',t:'fly',an:'#fly-wrong'},
+    {q:'Mode 2（美手）遙控器，左搖桿控制的是？',o:['前後＋左右','油門＋旋轉','油門＋左右','前後＋旋轉'],a:1,e:'Mode 2 左桿是油門與旋轉，右桿是前後與左右。',t:'ctrl'},
+    {q:'球機「前進」是相對於什麼方向？',o:['操作者面對的方向','場地的長邊','機頭的方向','球門的方向'],a:2,e:'前後左右永遠是相對機頭；機頭轉了，你的前方就變了。',t:'ctrl'},
+    {q:'台灣法規中，自然人所有的無人機多重以上需要向民航局註冊？',o:['100 g','250 g','1 kg','2 kg'],a:1,e:'250 g 以上要註冊；學校、法人所有則不分重量都要註冊。',t:'intro',an:'#intro-law'},
+    {q:'失控時第一個該做的動作是？',o:['伸手接住','猛推油門拉高','收油門讓它落地','關遙控器'],a:2,e:'收油門落地最安全；不要用手接飛行中的球機。',t:'intro',an:'#intro-safety'},
+  ];
+  const list=$('#qzList'); let order=Q.map((_,i)=>i), score=0, answered={};
+  function render(){ list.innerHTML=''; score=0; answered={}; $('#qzScore').textContent=0; $('#qzMsg').textContent='';
+    order.forEach((qi,n)=>{ const q=Q[qi]; const d=document.createElement('div'); d.className='q'; d.innerHTML=`<div class="qt"><em>${n+1}.</em>${q.q}</div><div class="opts">${q.o.map((o,i)=>`<button data-i="${i}">${String.fromCharCode(65+i)}. ${o}</button>`).join('')}</div><div class="exp" hidden></div>`;
+      d.querySelectorAll('.opts button').forEach(b=>b.addEventListener('click',()=>{ if(answered[qi]!=null) return; const i=+b.dataset.i; answered[qi]=i; const ok=i===q.a; if(ok) score++; d.querySelectorAll('.opts button').forEach((x,j)=>{ if(j===q.a) x.classList.add('ok'); else if(j===i) x.classList.add('ng'); });
+        const ex=d.querySelector('.exp'); ex.hidden=false; ex.innerHTML=(ok?'✓ 答對了。':'✗ 答錯了。')+q.e+(ok?'':` <a data-tab="${q.t}"${q.an?` data-anchor="${q.an}"`:''}>回去看這一段 →</a>`);
+        $('#qzScore').textContent=score; const done=Object.keys(answered).length; if(done===Q.length) $('#qzMsg').textContent=score>=18?'太強了，可以去當裁判了！':score>=14?'不錯，把答錯的看一遍就完整了。':'再讀一次規則頁，然後重新作答。'; }));
+      list.appendChild(d); }); }
+  $('#qzReset').addEventListener('click',render); $('#qzShuffle').addEventListener('click',()=>{ order.sort(()=>Math.random()-0.5); render(); }); render();
+})();
+
+/* ================= 戰術範例庫 ================= */
+(function(){
+  const D=(id,team,idx,role,x,y,h,path)=>({id,team,idx,role,x,y,h,path:path||[]});
+  const T=[
+    {name:'開球站位',desc:'鳴笛前的標準站位。前鋒在起飛區中央、兩台防守機 在兩側；鳴笛後防守機先起飛搶中線，前鋒隨後跟上，避免起飛瞬間就被對方撞落。',pts:['防守機先起飛，前鋒慢半拍','起飛後立刻拉到 2 m 以上','別急著衝，先看對方前鋒在哪'],
+      drones:[D('A1','A',1,'S',1.5,5,0.3,[{x:5,y:5,h:2}]),D('A2','A',2,'G',1.5,3,0.3,[{x:8,y:3.5,h:2.5}]),D('A3','A',3,'G',1.5,7,0.3,[{x:8,y:6.5,h:2.5}]),D('B1','B',1,'S',18.5,5,0.3,[{x:15,y:5,h:2}]),D('B2','B',2,'G',18.5,3,0.3,[{x:12,y:3.5,h:2.5}]),D('B3','B',3,'G',18.5,7,0.3,[{x:12,y:6.5,h:2.5}])]},
+    {name:'三角進攻',desc:'兩台防守機 在前方形成三角形的兩個頂點，把對方防守球機頂開，前鋒從三角形後方沿中線推進，最後一段拉高對準球門環。',pts:['防守機走外側，把空間讓給前鋒','前鋒保持在防守機後方 2 m','最後 3 m 才拉到環的高度'],
+      drones:[D('A1','A',1,'S',6,5,2,[{x:12,y:5,h:2.2},{x:16,y:5,h:3.5},{x:18.6,y:5,h:3.5}]),D('A2','A',2,'G',8,3,2.5,[{x:14,y:2.5,h:3},{x:17,y:3.5,h:3.3}]),D('A3','A',3,'G',8,7,2.5,[{x:14,y:7.5,h:3},{x:17,y:6.5,h:3.3}]),D('B1','B',1,'S',13,8.5,2,[]),D('B2','B',2,'G',16.5,4,3,[{x:15.5,y:2.5,h:3}]),D('B3','B',3,'G',16.5,6,3,[{x:15.5,y:7.5,h:3}])]},
+    {name:'雙後衛防守',desc:'兩台防守機 站在自家球門環前方 1～2 m、一高一低，形成一道牆；前鋒留在中線附近準備反攻，不要退太深。',pts:['一台守環的高度、一台守下方','用身體擋，不要追著對方跑','對方射失就是反攻時機'],
+      drones:[D('A1','A',1,'S',9,5,2,[]),D('A2','A',2,'G',3.5,4,3.5,[{x:3.5,y:6,h:3.5},{x:3.5,y:4,h:3.5}]),D('A3','A',3,'G',3,6,2,[{x:3,y:4,h:2},{x:3,y:6,h:2}]),D('B1','B',1,'S',8,3,3,[{x:5,y:4.5,h:3.5},{x:3.5,y:5,h:3.5}]),D('B2','B',2,'G',6,7,2.5,[{x:4,y:7,h:2.5}]),D('B3','B',3,'G',7,2,2.5,[{x:4.5,y:2.5,h:3}])]},
+    {name:'邊路突破',desc:'一台輔助機 假裝從中路進攻吸引防守，前鋒與另一台輔助機 沿邊線推進，到球門側邊再切入，從斜角穿環。',pts:['中路輔助機 要「像真的」','邊路走高，靠近網也沒關係','切入角度 45° 內才算正面穿越'],
+      drones:[D('A1','A',1,'S',6,9,2.5,[{x:13,y:9,h:3},{x:16.5,y:7.5,h:3.5},{x:18.6,y:5.2,h:3.5}]),D('A2','A',2,'G',7,5,2.5,[{x:12,y:5,h:3},{x:15,y:5,h:3}]),D('A3','A',3,'G',6,8,2.5,[{x:14,y:8.5,h:3},{x:17,y:8,h:3}]),D('B1','B',1,'S',14,2,2,[]),D('B2','B',2,'G',16,5,3,[{x:15,y:5.5,h:3}]),D('B3','B',3,'G',17,6,3,[{x:17,y:7,h:3}])]},
+    {name:'反攻轉換',desc:'對方射門失敗、球機集中在我方半場時，前鋒立刻拉高沿中線衝刺，兩台防守機 一前一後護送，趁對方回防前完成射門。',pts:['守成功的瞬間就是進攻','前鋒先走，防守機在後方擋追兵','對方沒回半場前得分最容易'],
+      drones:[D('A1','A',1,'S',5,5,2.5,[{x:11,y:5,h:3},{x:16,y:5,h:3.5},{x:18.6,y:5,h:3.5}]),D('A2','A',2,'G',3.5,4,3,[{x:9,y:4,h:3},{x:14,y:4.5,h:3}]),D('A3','A',3,'G',4,6.5,2,[{x:8,y:6.5,h:2.5},{x:12,y:6,h:3}]),D('B1','B',1,'S',4.5,3,3.5,[{x:9,y:3,h:3},{x:13,y:3,h:3}]),D('B2','B',2,'G',5,7,3,[{x:10,y:7,h:3},{x:15,y:6,h:3}]),D('B3','B',3,'G',6,5,2.5,[{x:11,y:5.5,h:3},{x:16,y:6,h:3}])]},
+    {name:'罰球（點球）',desc:'罰球時由進攻方前鋒在無干擾下射門一次。前鋒先在環前 3 m 懸停對準，確認高度後直線推進；防守方全部退到指定位置。',pts:['先懸停對準，再前進','高度取環心略高 10 cm','不要在最後一刻修正方向'],
+      drones:[D('A1','A',1,'S',15,5,3.5,[{x:17,y:5,h:3.5},{x:18.6,y:5,h:3.5}]),D('A2','A',2,'G',8,2,2,[]),D('A3','A',3,'G',8,8,2,[]),D('B1','B',1,'S',12,9,2,[]),D('B2','B',2,'G',13,1,2,[]),D('B3','B',3,'G',19.5,1,2,[])]},
+  ];
+  const wrap=$('#tacList');
+  T.forEach((t,ti)=>{
+    const d=document.createElement('div'); d.className='tac'; d.innerHTML=`<svg viewBox="0 0 220 120"></svg><div><h4>${t.name}</h4><p>${t.desc}</p><ul style="font-size:13px;margin:4px 0;padding-left:18px;line-height:1.6">${t.pts.map(x=>`<li>${x}</li>`).join('')}</ul><div class="tools"><button class="pri" data-p="${ti}" data-play="1">載入並播放</button><button data-p="${ti}">載入戰術板</button></div></div>`;
+    const svg=d.querySelector('svg'); el('rect',{x:0,y:0,width:220,height:120,fill:'#141c26'},svg); const f=el('g',{},svg); const sx=x=>10+x*10, sy=y=>10+y*10;
+    el('rect',{x:10,y:10,width:200,height:100,fill:'none',stroke:LINE},f); el('line',{x1:110,y1:10,x2:110,y2:110,stroke:'#fff',opacity:.4},f); el('line',{x1:sx(2),y1:sy(4.5),x2:sx(2),y2:sy(5.5),stroke:RED,'stroke-width':3},f); el('line',{x1:sx(18),y1:sy(4.5),x2:sx(18),y2:sy(5.5),stroke:BLUE,'stroke-width':3},f);
+    t.drones.forEach(dr=>{ const c=dr.team==='A'?RED:BLUE; let px=sx(dr.x),py=sy(dr.y); dr.path.forEach(p=>{ const nx=sx(p.x),ny=sy(p.y); el('line',{x1:px,y1:py,x2:nx,y2:ny,stroke:c,'stroke-width':1.5,opacity:.8},f); const a=Math.atan2(ny-py,nx-px); el('path',{d:'M0 0 L-5 -3 L-5 3 Z',fill:c,transform:`translate(${nx},${ny}) rotate(${a*180/Math.PI})`},f); px=nx; py=ny; }); el('circle',{cx:sx(dr.x),cy:sy(dr.y),r:5,fill:c},f); if(dr.role==='S') el('circle',{cx:sx(dr.x),cy:sy(dr.y),r:7.5,fill:'none',stroke:ACC,'stroke-width':1.5},f); });
+    d.querySelectorAll('.tools button').forEach(b=>b.addEventListener('click',()=>{ goTab('app'); window.board.load(T[+b.dataset.p],!!b.dataset.play); }));
+    wrap.appendChild(d);
+  });
+})();
+
+/* ================= 隊伍與器材管理 ================= */
+/* 鍾兆羽老師整理 */
+(function(){
+  const LS='droneManage.v1'; const today=()=>new Date().toISOString().slice(0,10);
+  const SCHEMA={
+    members:{name:'隊員',hint:'角色：前鋒（S）、防守／輔助（G）、候補。球機編號對應「球機」表。',cols:[{k:'name',t:'姓名',w:'14%'},{k:'cls',t:'班級／年級',w:'12%'},{k:'role',t:'角色',type:'select',opts:['前鋒','防守','輔助','候補','隊長','裁判']},{k:'drone',t:'球機編號',w:'12%'},{k:'mode',t:'搖桿模式',type:'select',opts:['Mode 2','Mode 1']},{k:'note',t:'備註'}]},
+    drones:{name:'球機',hint:'狀態：可用／待修／報廢。整機與零組件編號不得塗改，檢核時要對得上。',cols:[{k:'id',t:'編號',w:'10%'},{k:'model',t:'型號',w:'14%'},{k:'status',t:'狀態',type:'select',opts:['可用','待修','報廢','借出']},{k:'motor',t:'最近換馬達',type:'date'},{k:'prop',t:'最近換槳',type:'date'},{k:'hours',t:'累計飛行(分)',type:'number',w:'10%'},{k:'note',t:'備註'}]},
+    batteries:{name:'電池',hint:'每次充電按「+1」累計循環；超過 100 次或狀態異常就淘汰。存放電壓約 3.8 V。',cols:[{k:'id',t:'編號',w:'10%'},{k:'cap',t:'容量 mAh',type:'number',w:'10%'},{k:'cycles',t:'循環次數',type:'counter',w:'12%'},{k:'status',t:'狀態',type:'select',opts:['正常','衰退','鼓起・停用','報廢']},{k:'last',t:'最後充電',type:'date'},{k:'note',t:'備註'}]},
+    repairs:{name:'維修紀錄',hint:'症狀寫具體一點（例如「起飛往右前翻」），之後查問題會快很多。',cols:[{k:'date',t:'日期',type:'date',w:'12%'},{k:'drone',t:'球機',w:'9%'},{k:'sym',t:'症狀'},{k:'fix',t:'處理'},{k:'who',t:'處理人',w:'10%'},{k:'ok',t:'結果',type:'select',opts:['已修好','待零件','觀察中','報廢']}]},
+  };
+  const CHECK=[['遙控器電量足夠、天線完好','低電會導致訊號不穩'],['球機電池充飽、無鼓起，插頭乾淨','鼓起或發燙的電池不上場'],['四片槳無缺角、A/B 位置正確、壓到底','對角同款、字面朝上'],['護籠無裂縫、扣點全部扣緊','手撥槳任何角度都碰不到籠'],['馬達手轉順暢、無異物','有阻力先清理'],['LED 顏色正確（隊色／前鋒標示）','裁判要能一眼認出前鋒'],['先開遙控器再插電池，LED 穩定後放平校正',''],['失控保護測試：關遙控器，槳應停止','比賽必備'],['起飛區內、機頭朝場內、油門最低','等鳴笛'],['護目鏡戴上、觀眾在網外','']];
+  let data={members:[],drones:[],batteries:[],repairs:[],check:{}}; try{ Object.assign(data,JSON.parse(localStorage.getItem(LS)||'{}')); }catch(e){}
+  let cur='members'; const save=()=>{ try{ localStorage.setItem(LS,JSON.stringify(data)); }catch(e){} };
+  function blank(m){ const o={}; SCHEMA[m].cols.forEach(c=>o[c.k]=c.type==='number'||c.type==='counter'?0:c.type==='select'?c.opts[0]:c.type==='date'?today():''); return o; }
+  function render(){
+    document.querySelectorAll('#mgTabs button').forEach(b=>b.classList.toggle('on',b.dataset.m===cur));
+    const isCheck=cur==='check'; $('#mgTable').hidden=isCheck; $('#mgCheck').hidden=!isCheck; $('#mgAdd').hidden=isCheck; $('#mgCsv').hidden=isCheck;
+    if(isCheck){ $('#mgHint').textContent='每次上場前逐項確認；按「清空此表」可以重新開始。'; $('#mgCnt').textContent=`${Object.values(data.check).filter(Boolean).length} / ${CHECK.length} 完成`;
+      $('#mgCheck').innerHTML='<div class="chk">'+CHECK.map((c,i)=>`<label class="${data.check[i]?'on':''}"><input type="checkbox" data-i="${i}" ${data.check[i]?'checked':''}><div><b>${c[0]}</b><span>${c[1]}</span></div></label>`).join('')+'</div>';
+      $('#mgCheck').querySelectorAll('input').forEach(i=>i.addEventListener('change',()=>{ data.check[i.dataset.i]=i.checked; save(); render(); })); return; }
+    const sc=SCHEMA[cur],rows=data[cur]; $('#mgHint').textContent=sc.hint; $('#mgCnt').textContent=rows.length+' 筆';
+    const t=document.createElement('table'); t.innerHTML='<tr>'+sc.cols.map(c=>`<th style="width:${c.w||'auto'}">${c.t}</th>`).join('')+'<th style="width:36px"></th></tr>';
+    rows.forEach((r,ri)=>{ const tr=document.createElement('tr'); sc.cols.forEach(c=>{ const td=document.createElement('td'); let inp;
+      if(c.type==='select'){ inp=document.createElement('select'); c.opts.forEach(o=>{ const op=document.createElement('option'); op.value=o; op.textContent=o; inp.appendChild(op); }); inp.value=r[c.k]; }
+      else if(c.type==='counter'){ td.className='num'; const n=+r[c.k]||0; td.innerHTML=`<span class="badge ${n>=100?'bad':n>=60?'warn':'ok'}">${n}</span> <button class="pl">+1</button>`; td.querySelector('.pl').addEventListener('click',()=>{ r[c.k]=n+1; if(c.k==='cycles') r.last=today(); save(); render(); }); tr.appendChild(td); return; }
+      else { inp=document.createElement('input'); inp.type=c.type||'text'; inp.value=r[c.k]??''; }
+      inp.addEventListener('change',()=>{ r[c.k]=inp.type==='number'?+inp.value:inp.value; save(); if(c.type==='select') render(); }); td.appendChild(inp); tr.appendChild(td); });
+      const td=document.createElement('td'); td.innerHTML='<button class="x" title="刪除">×</button>'; td.querySelector('.x').addEventListener('click',()=>{ if(confirm('刪除這一列？')){ rows.splice(ri,1); save(); render(); } }); tr.appendChild(td); t.appendChild(tr); });
+    $('#mgTable').innerHTML=''; $('#mgTable').appendChild(t);
+    if(!rows.length){ $('#mgTable').innerHTML+='<p class="note">還沒有資料，按「＋ 新增一列」開始。</p>'; }
+  }
+  document.querySelectorAll('#mgTabs button').forEach(b=>b.addEventListener('click',()=>{ cur=b.dataset.m; render(); }));
+  $('#mgAdd').addEventListener('click',()=>{ data[cur].push(blank(cur)); save(); render(); setTimeout(()=>{ const last=$('#mgTable').querySelector('tr:last-child input'); last&&last.focus(); },50); });
+  $('#mgClear').addEventListener('click',()=>{ if(!confirm('清空「'+(cur==='check'?'飛前檢查':SCHEMA[cur].name)+'」？')) return; if(cur==='check') data.check={}; else data[cur]=[]; save(); render(); });
+  $('#mgCsv').addEventListener('click',()=>{ const sc=SCHEMA[cur]; const esc=v=>'"'+String(v??'').replace(/"/g,'""')+'"'; const csv='﻿'+[sc.cols.map(c=>esc(c.t)).join(','),...data[cur].map(r=>sc.cols.map(c=>esc(r[c.k])).join(','))].join('\r\n'); window.saveFile(`${sc.name}-${today()}.csv`,csv); });
+  $('#mgExport').addEventListener('click',()=>window.saveFile(`隊伍器材備份-${today()}.json`,JSON.stringify({app:'無人機足球一站式學習平台',author:'鍾兆羽老師整理',exported:new Date().toISOString(),data},null,1)));
+  $('#mgImport').addEventListener('click',()=>$('#mgFile').click());
+  $('#mgFile').addEventListener('change',e=>{ const f=e.target.files[0]; if(!f) return; const rd=new FileReader(); rd.onload=()=>{ try{ const j=JSON.parse(rd.result); const d=j.data||j; if(!d.members&&!d.drones) throw 0; if(confirm('匯入會覆蓋目前資料，確定？')){ data={members:[],drones:[],batteries:[],repairs:[],check:{},...d}; save(); render(); } }catch(err){ alert('檔案格式不正確'); } }; rd.readAsText(f); e.target.value=''; });
+  render();
+})();
+
+/* ================= 教案與學習單 ================= */
+/* 鍾兆羽老師整理 */
+(function(){
+  const L=[
+    {t:'認識無人機與安全',goal:['能分辨多旋翼、固定翼、VTOL 三種構型','能說出 250 g 註冊、400 呎、紅黃綠區三個法規重點','能複述教室安全守則並示範正確拿取球機'],flow:[['5 分','引起動機：播放球機互撞影片，問「為什麼不會受傷？」'],['10 分','投影「種類・用途・法規」：四種構型與用途','intro'],['10 分','法規動畫：分區與高度；討論體育館為什麼可以飛','intro','#intro-law'],['10 分','實物觀察：發一台球機，對照「球機構造 3D」找出九個零件','parts'],['7 分','安全守則演練：拔電池、油門最低、失控收油門','intro','#intro-safety'],['3 分','總結與學習單 1']],gear:'每組一台球機（不裝電池）、投影機',eval:'學習單 1；口頭抽問三個法規數字'},
+    {t:'飛行原理與槳的方向',goal:['能用推力與重力解釋上升、懸停、下降','能說明為什麼兩顆順時針、兩顆逆時針','能正確裝上四片槳並用手撥檢查轉向'],flow:[['5 分','複習零件名稱'],['10 分','升力動畫：拉油門滑桿觀察','fly'],['10 分','扭力動畫：左轉時哪一對加速？','fly','#fly-torque'],['12 分','裝錯測試：學生上台切換 A/B 槳並預測結果','fly','#fly-wrong'],['5 分','實作：每組拆槳、依配置圖裝回、手撥檢查'],['3 分','總結']],gear:'每組一台球機、備用槳、槳配置圖',eval:'每組裝槳正確率；學習單 2'},
+    {t:'搖桿與起飛降落',goal:['能說出 Mode 2 四個動作的對應','能完成開機順序、解鎖、起飛、懸停 10 秒、降落、關機'],flow:[['8 分','搖桿互動頁：拖動搖桿看球機反應，示範四個動作','ctrl'],['7 分','起飛到降落七步驟','ctrl'],['25 分','分組實飛：訓練關卡 1（懸停 10 秒），教練在旁，一人飛、一人計時、一人檢查','train'],['5 分','紀錄通過、收拾器材']],gear:'每組一台球機、兩顆電池、方格膠帶、護目鏡、防護網',eval:'關卡 1 通過人數'},
+    {t:'平移與轉向',goal:['能保持機頭朝前完成方形航線','能在機頭轉向後仍正確操控'],flow:[['5 分','複習：前後左右是機頭的方向'],['5 分','關卡 2、3 說明與示範','train'],['30 分','分組實飛：關卡 2 → 關卡 3；完成者協助同學'],['5 分','紀錄與討論：哪個方向最容易搞混？']],gear:'同上、地面方形與圓圈標記',eval:'關卡 2、3 通過紀錄'},
+    {t:'穿環與繞樁',goal:['穿環 3 次成功 2 次','完成 S 形繞樁並計時'],flow:[['5 分','示範穿環要領：先懸停對準、再直線推進','train'],['30 分','分組實飛：關卡 4 → 關卡 5，用計時器記錄'],['7 分','班級排行：各組最佳時間'],['3 分','預告下週規則課']],gear:'球門環（或呼拉圈＋立架）、三支樁、碼表',eval:'關卡 4、5 通過與時間'},
+    {t:'規則與角色',goal:['能說明得分條件、退回半場規定','能分辨罰球、黃牌、紅牌情形','小測驗 14 分以上'],flow:[['12 分','總統盃規則：得分與違規動畫','cup','#cup-goal'],['8 分','賽制與開局流程','cup','#cup-time'],['5 分','角色分工：前鋒與兩名防守／輔助','rules'],['15 分','規則小測驗（個人作答），答錯回去看','quiz'],['5 分','檢討最多人錯的題目']],gear:'投影機、每人一台裝置（或紙本學習單 3）',eval:'小測驗分數；學習單 3'},
+    {t:'戰術與分工',goal:['能執行三角進攻與雙後衛防守','能用戰術板說明自己隊的陣型'],flow:[['10 分','戰術範例庫：載入並播放三角進攻、雙後衛','tactics'],['10 分','各組在戰術板上擺出自己的開球陣型並畫動向','app'],['20 分','分組對練：3 分鐘一局，攻守互換'],['5 分','檢討：得分後有沒有退回半場？']],gear:'球機 6 台、計分板、場地',eval:'各組戰術板截圖；對練得分'},
+    {t:'班際友誼賽',goal:['依正式規則完成三局兩勝的比賽','能擔任裁判並正確判罰'],flow:[['5 分','抽籤與器材檢核：對照飛前檢查清單','manage'],['35 分','循環賽：每場 3 局，學生輪流當裁判與計分','score'],['5 分','頒獎與回顧：整學期通過的關卡']],gear:'計分板投影、哨子、球機與備用電池、飛前檢查清單',eval:'比賽成績；裁判判罰正確性'},
+  ];
+  const wrap=$('#lessonList');
+  L.forEach((l,i)=>{ const d=document.createElement('details'); d.className='lesson'; if(i===0) d.open=true;
+    d.innerHTML=`<summary><span class="n">${i+1}</span><div><b>${l.t}</b><span>45 分鐘 · ${l.gear}</span></div></summary><div class="body"><h5>學習目標</h5><ul style="margin:2px 0;padding-left:20px">${l.goal.map(g=>`<li>${g}</li>`).join('')}</ul><h5>流程</h5><div class="flow">${l.flow.map(f=>`<b>${f[0]}</b><div>${f[1]}${f[2]?` <a data-tab="${f[2]}"${f[3]?` data-anchor="${f[3]}"`:''}>→ 開啟單元</a>`:''}</div>`).join('')}</div><h5>評量</h5><div>${l.eval}</div></div>`;
+    wrap.appendChild(d); });
+  const WS=[
+    {t:'學習單 1：認識無人機與安全',items:['寫出三種無人機構型，各舉一個用途：','自然人所有的無人機多重以上要註冊？學校的呢？','無人機最高可以飛多高？紅區、黃區、綠區分別代表什麼？','球機失控時，第一個動作是什麼？為什麼不能用手接？','畫出球機的九個零件並標名稱（可對照 3D 模型）：']},
+    {t:'學習單 2：飛行原理',items:['用「推力」和「重力」說明：上升、懸停、下降各是什麼情況？','為什麼四顆槳要兩顆順時針、兩顆逆時針？如果四顆都同方向會怎樣？','要讓球機「左轉」，哪一對馬達要加速？高度會不會變？','在下面的四個位置寫上 A 或 B 槳（機頭朝上）：','如果右前的槳裝反了，一推油門會發生什麼事？']},
+    {t:'學習單 3：規則與戰術',items:['哪一台球機可以得分？穿過球門的方向有什麼規定？','得分後全隊要做什麼才能再進攻？沒做會怎樣？','寫出三種會被判罰球的情況：','黃牌和紅牌各舉一例，結果分別是什麼？','在下面的場地圖畫出你們隊的開球陣型與前 5 秒動向：']},
+  ];
+  $('#wsList').innerHTML=WS.map(w=>`<div class="ws"><h4>${w.t}</h4><div class="meta">無人機足球一站式學習平台 · 鍾兆羽老師整理　　班級：＿＿＿＿　姓名：＿＿＿＿＿＿　日期：＿＿＿＿＿</div><ol>${w.items.map(q=>`<li>${q}<div class="box"></div></li>`).join('')}</ol></div>`).join('');
+  $('#wsPrint').addEventListener('click',()=>window.print());
+})();
+
+/* ================= 詞彙表 ================= */
+/* 鍾兆羽老師整理 */
+(function(){
+  const G=[
+    ['前鋒','Striker','比賽','每隊唯一能得分的球機，須有明顯識別。'],['防守／輔助','Guard / Keeper','比賽','簡章用詞「防守／輔助」：防守己方球門或協助前鋒進攻，進球不計分；不可穿過自家球門環防守。'],['進球積分制','Goal-scoring format','比賽','國中小組簡章對本賽事規則的稱呼：以進球數決定單局勝負。'],['先發／候補','Starter / Substitute','比賽','國中小組每隊 3 名先發＋2 名候補，局間才能換人。'],['賽事委員會','Competition committee','比賽','裁判長、資深裁判與主辦代表組成，爭議的最終裁定機構。'],['選手區','Pilots area','比賽','防護籠短邊外側，比賽中只有上場選手能待在裡面。'],['無人機足球（球機）','Drone ball','機體','簡章中的「無人機足球」指的就是球機本身。'],['開路／前衛','Guide','比賽','在前鋒前方清出路線、卡位。'],['球門環','Goal ring','比賽','圓形球門，20 cm 級內徑 40 cm、離地 2 m。'],['起飛區','Start area','比賽','底線中央、寬 1 m 以內，鳴笛前球機停放處。'],['局','Set','比賽','3 分鐘一局，三局兩勝。'],['罰球／點球','Penalty shot','比賽','由對方前鋒無干擾射門一次，時間不計入該局。'],['黃牌','Yellow card','比賽','該局判負；兩張等於紅牌。'],['紅牌','Red card','比賽','整場判負。'],['黃金進球','Golden goal','比賽','驟死賽，先進球者勝。'],['解鎖馬達','Arm','操作','裁判宣告 Arm your quads 後才可做，仍不得離地。'],['上鎖','Disarm','操作','降落後停止馬達。'],['失控保護','Failsafe','操作','訊號中斷自動停槳，比賽必備。'],['油門','Throttle','操作','控制總推力，上升／下降。'],['偏航／旋轉','Yaw','操作','機頭左右轉。'],['俯仰','Pitch','操作','前進／後退。'],['橫滾','Roll','操作','左右平移。'],['微調','Trim','操作','修正搖桿中立點的小偏移。'],['無頭模式','Headless mode','操作','以操作者方向為前方；練習時建議關閉。'],['懸停','Hover','操作','原地停在空中，推力等於重力。'],['美手／日手','Mode 2 / Mode 1','操作','搖桿配置：Mode 2 左桿油門＋旋轉；Mode 1 右桿油門。'],['多旋翼','Multirotor','機體','靠多顆旋翼產生升力的無人機。'],['四軸','Quadcopter','機體','四顆馬達的多旋翼。'],['飛控','Flight controller (FC)','機體','讀取陀螺儀與加速度計、計算四顆馬達轉速的主板。'],['電子調速器','ESC','機體','無刷機才有，把飛控訊號變成馬達電流；有刷機由飛控直接驅動。'],['有刷馬達','Brushed motor','機體','空心杯馬達，便宜、壽命短，20 cm 球機常用。'],['無刷馬達','Brushless motor','機體','效率高、壽命長，需搭配 ESC。'],['螺旋槳','Propeller','機體','A 槳（CW）與 B 槳（CCW）互為鏡像。'],['順時針／逆時針','CW / CCW','機體','馬達與槳的旋轉方向，對角同向。'],['護籠','Cage / Exoskeleton','機體','球形外殼，20 cm ± 2 cm。'],['接收機','Receiver (RX)','機體','接收遙控器訊號。'],['遙控器','Transmitter (TX)','機體','2.4 GHz 遙控發射器。'],['對頻','Binding','機體','讓接收機記住這支遙控器。'],['陀螺儀','Gyroscope','機體','量測角速度，飛控穩定的核心。'],['加速度計','Accelerometer','機體','量測傾斜與加速度。'],['鋰聚合物電池','LiPo battery','機體','1S = 3.7 V；4S 上限 17 V。'],['循環次數','Cycle count','機體','充放電次數，100 次左右考慮淘汰。'],['推重比','Thrust-to-weight ratio','原理','總推力除以重量，大於 1 才能飛，球機約 1.5～2。'],['反扭力','Reaction torque','原理','馬達轉動槳時機身受到的反向扭轉。'],['升力／推力','Lift / Thrust','原理','槳把空氣往下推產生的向上力。'],['第一人稱視角','FPV','其他','戴眼鏡看機上鏡頭飛行；球機一般不用。'],['國際航空運動聯盟','FAI','其他','無人機足球的國際主管單位，級別 F9A。'],['F9A-A / F9A-B','Class 40 / Class 20','其他','FAI 的 40 cm 五對五與 20 cm 三對三級別。'],['韓國無人機足球協會','KDSA','其他','發源地韓國的主管單位。'],['民航局','CAA','其他','台灣無人機註冊與法規主管機關。'],['禁航區','No-fly zone','其他','紅區禁飛；用 DroneMap 查詢。'],
+  ];
+  const cats=['全部',...new Set(G.map(g=>g[2]))]; let cat='全部';
+  $('#glCats').innerHTML=cats.map(c=>`<button data-c="${c}" class="${c===cat?'on':''}">${c}</button>`).join('');
+  document.querySelectorAll('#glCats button').forEach(b=>b.addEventListener('click',()=>{ cat=b.dataset.c; document.querySelectorAll('#glCats button').forEach(x=>x.classList.toggle('on',x===b)); render(); }));
+  function render(){ const q=$('#glSearch').value.trim().toLowerCase(); const items=G.filter(g=>(cat==='全部'||g[2]===cat)&&(!q||g.join(' ').toLowerCase().includes(q))); $('#glList').innerHTML=items.map(g=>`<div class="it"><b>${g[0]}<small>${g[1]}</small></b><span>${g[3]}</span><div class="cat">${g[2]}</div></div>`).join('')||'<p class="note">沒有符合的詞彙。</p>'; }
+  $('#glSearch').addEventListener('input',render); render();
+})();
+
+/* ================= 維修手冊 ================= */
+/* 鍾兆羽老師整理 */
+(function(){
+  const ISSUES=[
+    {t:'插電後 LED 不亮、完全沒反應',lv:'簡單',kw:'不亮 沒反應 沒電 開機',s:'插上電池後 LED 不亮、馬達也不動。',c:['電池沒電或電壓過低（1S 低於 3.3 V 飛控會拒絕開機）','電池插頭氧化或插反（注意紅線方向）','電池線斷在插頭根部（常見於用力拉線拔電池）','飛控板進水或撞擊後焊點裂開'],f:['換一顆確定充飽的電池再試','用電表量電池電壓，低於 3.5 V 先充電','檢查插頭金屬片是否鬆開或發黑，用細砂紙輕磨','輕搖電池線根部看 LED 是否閃爍，是的話重焊或換線','以上都正常就是飛控板故障，直接換板']},
+    {t:'遙控器對不上頻（無法連線）',lv:'簡單',kw:'對頻 連線 遙控器 訊號 綁定',s:'遙控器開機後球機 LED 持續快閃，搖桿沒反應。',c:['沒有做對頻程序（每台球機記住一支遙控器）','遙控器電池電壓不足','天線斷裂或折進護籠內','附近有多台同型球機互相干擾'],f:['關掉球機電源，遙控器油門推到最高再開球機電，等 LED 由快閃變恆亮或依說明書做對頻','換遙控器電池','檢查天線有沒有整根露出、是否折斷；斷了要換接收板或重焊','一次只開一台球機做對頻，對好再開下一台']},
+    {t:'解鎖後馬達不轉或只轉一下',lv:'簡單',kw:'不轉 解鎖 arm 起飛不了 馬達',s:'做解鎖動作 LED 有變化，但推油門馬達不動，或轉一下就停。',c:['球機沒放平，陀螺儀校正失敗','油門桿沒有回到最低就解鎖','某顆馬達卡住或斷線，飛控偵測異常停機','電池電壓在負載下掉太多（老化電池）'],f:['放到平地、拔電再插電重新校正','油門推到最低、等兩秒再做一次解鎖','用手輕轉每顆槳，卡住的那顆檢查有沒有頭髮、線材、護籠碎片纏住軸心','換電池；換了就正常代表舊電池該淘汰']},
+    {t:'某一顆馬達不轉或明顯比較慢',lv:'中等',kw:'馬達 不轉 一顆 慢 燒 換馬達',s:'四顆槳有一顆不轉、轉得慢或聲音尖銳，起飛就翻向那一角。',c:['馬達線斷（有刷馬達線很細，撞擊後常斷在根部）','馬達碳刷磨損壽命到了（累積飛行數小時後）','軸心有異物、軸承卡死','飛控上該路馬達的驅動晶片燒毀'],f:['先把那顆槳跟對角的槳互換位置測試：問題跟著槳走就是槳的問題','用手轉軸心，阻力明顯大於其他三顆就是異物或軸承，先清理再上一滴薄油','換一顆同轉向（CW/CCW）的新馬達；焊線時注意紅黑（或藍白）線色與原本相同，裝反轉向會錯','換新馬達仍不轉，就是飛控驅動故障，換飛控']},
+    {t:'一起飛就翻倒',lv:'簡單',kw:'翻 翻倒 翻覆 起飛 傾斜 槳',s:'油門一推，球機立刻朝某個方向翻過去。',c:['螺旋槳 A/B 裝錯（最常見，尤其是剛換槳之後）','馬達裝錯轉向位置（換馬達後）','一顆馬達不轉或推力不足','護籠變形頂到某一片槳'],f:['對照「飛行原理」頁的配置圖：右前 B、左前 A、左後 B、右後 A，對角同款','手撥每顆槳確認轉向：右前、左後逆時針；左前、右後順時針','翻向哪一角，就先檢查那一角的槳與馬達','把護籠拆下來裸機測試，正常就是護籠的問題']},
+    {t:'懸停一直往某個方向飄',lv:'簡單',kw:'飄 漂 飄移 微調 trim 校正',s:'放手不動搖桿，球機自己慢慢往一邊移動。',c:['陀螺儀／加速度計校正時沒放平','遙控器搖桿中立點偏移或微調（trim）被動過','某片槳缺角、推力不對稱','重心偏移：電池沒放正中央'],f:['在水平地面重新校正（拔電重插，或依說明書做校正手勢）','把遙控器的微調鍵全部歸零，再往飄的反方向調 1～2 格','換一組新槳測試','電池置中並用束帶固定，不要靠一邊']},
+    {t:'飛行中抖動、震動、聲音不均',lv:'中等',kw:'抖 震 抖動 震動 晃 聲音',s:'懸停時機身明顯發抖，馬達聲音時高時低。',c:['槳缺角、變形或裝歪（沒壓到底）','馬達軸心彎曲（撞擊後）','護籠鬆脫，共振','飛控板固定螺絲鬆動或減震墊掉了'],f:['換整組新槳，裝時壓到底、轉一下確認沒晃','馬達通電空轉看軸心有沒有畫圈，有就換馬達','鎖緊護籠所有扣點，斷掉的扣點用尼龍束帶補固','檢查飛控固定，四角都要鎖']},
+    {t:'飛行時間很短、電池很快沒電',lv:'簡單',kw:'電池 沒電 飛行時間 短 鼓起 充電',s:'新電池只能飛 2～3 分鐘就低電量警示，或降落後電池發燙。',c:['電池老化（循環次數多、長期滿電或空電存放）','馬達磨損，同樣推力需要更大電流','槳損傷造成效率變差','電池鼓起（內部已損壞）'],f:['電池編號並記錄使用次數，超過 100～150 次循環就淘汰','沒有要飛時存放在約 3.8 V（半電），不要滿電放整個學期','鼓起、變形、發熱明顯的電池立刻停用，放在防火袋回收','同時換槳與馬達後再測一次飛行時間']},
+    {t:'護籠破裂、變形、扣點斷掉',lv:'簡單',kw:'護籠 外框 籠子 破 裂 變形 扣',s:'撞擊後護籠有裂縫或凹陷，槳會打到籠子。',c:['高速撞擊圍網或其他球機','護籠塑膠老化變脆','扣點沒有全部扣緊，受力集中在少數幾個'],f:['小裂縫用瞬間膠加一滴小蘇打粉快速硬化，或用尼龍束帶跨過裂縫綁緊','凹陷處用熱風槍低溫吹軟再壓回原形（塑膠件）','扣點斷掉超過三個就換整組護籠，勉強用會在比賽中散開','裝回去後手撥四顆槳，確認每片槳在任何角度都不會碰到籠子']},
+    {t:'飛一飛突然掉下來（失控保護）',lv:'中等',kw:'掉 墜落 失控 訊號 failsafe 斷訊',s:'飛行中突然停槳墜落，或飄離後自動降落。',c:['遙控訊號中斷觸發失控保護（天線問題、距離太遠、干擾）','電池電壓瞬間掉到保護值以下（電池老化）','電池插頭鬆脫，飛行中瞬斷','飛控過熱或焊點裂開'],f:['檢查天線完整、方向朝上不要被護籠壓住','換新電池測試，並確認插頭插緊、用束帶固定電池','不要在多台同型球機密集的場地邊緣飛，遠離 Wi-Fi 基地台與金屬圍網死角','摔落後檢查飛控板焊點，有裂痕補焊']},
+    {t:'換馬達、換槳後怎麼確認裝對',lv:'簡單',kw:'換馬達 換槳 確認 檢查 轉向 順時針 逆時針',s:'維修後的標準檢查流程，避免一起飛就翻。',c:['馬達轉向與位置不符','槳型號（A/B）與馬達轉向不符','線焊反'],f:['拆掉所有槳，插電解鎖、油門推一點點，用手指感覺或看軸心轉向：右前、左後應為逆時針（CCW），左前、右後順時針（CW）','轉向錯的馬達把兩條線對調重焊（有刷馬達對調正負極就反轉）','裝槳：CW 馬達裝 A 槳、CCW 馬達裝 B 槳，槳的字面朝上','裝上護籠，放平校正，先在離地 30 cm 試飛 10 秒，穩了才正常使用']},
+  ];
+  const list=$('#fixList');
+  function render(q){ list.innerHTML=''; const qq=(q||'').trim().toLowerCase(); let n=0;
+    ISSUES.forEach(it=>{ const hay=(it.t+' '+it.kw+' '+it.s+' '+it.c.join(' ')+' '+it.f.join(' ')).toLowerCase(); if(qq&&!qq.split(/\s+/).every(w=>hay.includes(w))) return; n++;
+      const d=document.createElement('details'); d.className='acc'; if(qq) d.open=true;
+      d.innerHTML=`<summary>${it.t}<span class="lv">${it.lv}</span></summary><div class="body"><h5>症狀</h5><p style="margin:0">${it.s}</p><h5>可能原因（由常見到少見）</h5><ul>${it.c.map(x=>`<li>${x}</li>`).join('')}</ul><h5>處理步驟</h5><ol>${it.f.map(x=>`<li>${x}</li>`).join('')}</ol></div>`;
+      list.appendChild(d); });
+    if(!n) list.innerHTML='<p class="note">找不到符合的症狀，試試其他關鍵字，例如「翻」「飄」「不轉」。</p>'; }
+  $('#fixSearch').addEventListener('input',e=>render(e.target.value)); render('');
+})();
+})();
+</script>
+
+</body>
+</html>
